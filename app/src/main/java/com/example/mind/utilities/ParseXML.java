@@ -17,10 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class ParseXML {
-    public static List<Question> parse(Question.QuestionType type, String rawXML) throws ParserConfigurationException, IOException, NullPointerException, SAXException {
-        // Check if rawXML is null
-        if (rawXML == null) throw new NullPointerException("Raw XML is null");
-
+    public static List<Question> parse(Question.QuestionType type, String rawXML) throws ParserConfigurationException, IOException, SAXException {
         // Create questions list
         List<Question> questions = new ArrayList<>();
 
@@ -64,10 +61,16 @@ public class ParseXML {
 
                     break;
                 case TRUE_OR_FALSE:
+                    // Lowercase the answer
                     question.answer = answerContent.toLowerCase();
 
+                    // Assign choices
                     question.choices.add("true");
                     question.choices.add("false");
+                    break;
+                case IDENTIFICATION:
+                    // Assign the answer
+                    question.answer = answerContent;
                     break;
             }
 
@@ -75,6 +78,7 @@ public class ParseXML {
             questions.add(question);
         }
 
+        // Return all parsed questions
         return questions;
     }
 }

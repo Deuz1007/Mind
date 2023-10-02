@@ -2,7 +2,10 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 }
+
+val CHATGPT_KEY: String = "\"${gradleLocalProperties(rootDir).getProperty("CHATGPT_KEY")}\"";
 
 android {
     namespace = "com.example.mind"
@@ -20,7 +23,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "CHATGPT_KEY", "\"${gradleLocalProperties(rootDir).getProperty("CHATGPT_KEY")}\"")
+            buildConfigField("String", "CHATGPT_KEY", CHATGPT_KEY)
         }
 
         release {
@@ -30,7 +33,7 @@ android {
                 "proguard-rules.pro"
             )
 
-            buildConfigField("String", "CHATGPT_KEY", "\"${gradleLocalProperties(rootDir).getProperty("CHATGPT_KEY")}\"")
+            buildConfigField("String", "CHATGPT_KEY", CHATGPT_KEY)
         }
     }
     compileOptions {
