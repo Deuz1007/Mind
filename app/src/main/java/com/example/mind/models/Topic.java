@@ -32,19 +32,10 @@ public class Topic {
         this.quizzes = snapshot.child("quizzes").getValue(new GenericTypeIndicator<Map<String, Quiz>>() {});
     }
 
-    public static DatabaseReference collection;
-
-    public static void add(Topic newTopic, PostProcess callback) {
-        collection
-                .child(newTopic.topicId)
-                .setValue(newTopic)
-                .addOnSuccessListener(unused -> {
-                    // Save new topic
-                    User.current.topics.put(newTopic.topicId, newTopic);
-
-                    callback.Success();
-                })
-                .addOnFailureListener(callback::Failed);
+    public DatabaseReference getCollection() {
+        return User.collection
+                .child("topics")
+                .child(topicId);
     }
 
     public void createQuiz(String quizContent, int itemsPerLevel, PostProcess callback) throws MaxContentTokensReachedException {
@@ -110,5 +101,17 @@ public class Topic {
                     }
                 }
         );
+    }
+
+    public static void add(Topic newTopic, PostProcess callback) {
+        newTopic.getCollection()
+                .setValue(newTopic)
+                .addOnSuccessListener(unused -> {
+                    // Save new topic
+                    User.current.topics.put(newTopic.topicId, newTopic);
+
+                    callback.Success();
+                })
+                .addOnFailureListener(callback::Failed);
     }
 }

@@ -84,8 +84,7 @@ public class Quiz {
     }
 
     public DatabaseReference getCollection(Topic topic) {
-        return Topic.collection
-                .child(topic.topicId)
+        return topic.getCollection()
                 .child("quizzes")
                 .child(quizId);
     }
