@@ -82,7 +82,7 @@ public class ExtractText {
         return result.getValue();
     }
 
-    public static void Image(Context context, Uri uri, PostProcess callback) throws IOException, FileSizeLimitException {
+    public static void Image(Context context, Uri uri, PostProcess callback) throws IOException {
         recognizer.process(InputImage.fromFilePath(context, uri))
                 .addOnSuccessListener(text -> callback.Success(text.getText()))
                 .addOnFailureListener(callback::Failed);
