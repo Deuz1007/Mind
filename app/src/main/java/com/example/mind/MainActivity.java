@@ -1,35 +1,16 @@
 package com.example.mind;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import com.example.mind.interfaces.PostProcess;
-import com.example.mind.models.Question;
-import com.example.mind.models.Quiz;
-import com.example.mind.models.Topic;
 import com.example.mind.models.User;
-import com.example.mind.utilities.AIRequest;
-import com.example.mind.utilities.ExtractText;
 import com.example.mind.utilities.FBInstances;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import okhttp3.Request;
 
 public class MainActivity extends AppCompatActivity {
 
