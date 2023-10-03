@@ -1,8 +1,17 @@
 package com.example.mind.utilities;
 
 public class UniqueID {
-    private static final int BYTES_LENGTH = 28;
-    private static final char[] ALPHABET = new char[] {'u','s','e','a','n','d','o','m','-','2','6','T','1','9','8','3','4','0','P','X','7','5','p','x','J','A','C','K','V','E','R','Y','M','I','N','D','B','U','S','H','W','O','L','F','_','G','Q','Z','b','f','g','h','j','k','l','q','v','w','y','z','r','i','c','t'};
+    private static final int BYTES_LENGTH = 16;
+    private static final char[] ALPHABET = new char[] {
+            'u', 's', 'e', 'a', 'n', 'd', 'o', 'm',
+            '-', '2', '6', 'T', '1', '9', '8', '3',
+            '4', '0', 'P', 'X', '7', '5', 'p', 'x',
+            'J', 'A', 'C', 'K', 'V', 'E', 'R', 'Y',
+            'M', 'I', 'N', 'D', 'B', 'U', 'S', 'H',
+            'W', 'O', 'L', 'F', '_', 'G', 'Q', 'Z',
+            'b', 'f', 'g', 'h', 'j', 'k', 'l', 'q',
+            'v', 'w', 'y', 'z', 'r', 'i', 'c', 't'
+    };
 
     public static String generate() {
         // Prepare char[] for id
