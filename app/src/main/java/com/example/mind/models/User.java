@@ -1,9 +1,7 @@
 package com.example.mind.models;
 
 import com.example.mind.interfaces.PostProcess;
-import com.example.mind.utilities.FBInstances;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -38,7 +36,7 @@ public class User {
 
     public static void initialize(PostProcess callback) {
         // Get the uid if the logged in user
-        String uid = FBInstances.auth.getUid();
+        String uid = FirebaseAuth.getInstance().getUid();
 
         collection.child(uid)
                 .get()
@@ -52,7 +50,7 @@ public class User {
     }
 
     public static void register(User newUser, String password, PostProcess callback) {
-        FBInstances.auth
+        FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(newUser.email, password)
                 .addOnSuccessListener(authResult -> {
                     // Get the uid if the registered user
@@ -75,7 +73,7 @@ public class User {
     }
 
     public static void login(String email, String password, PostProcess callback) {
-        FBInstances.auth
+        FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     // Get the uid if the logged in user
@@ -94,14 +92,14 @@ public class User {
     }
 
     public static void resetPassword(String email, PostProcess callback) {
-        FBInstances.auth
+        FirebaseAuth.getInstance()
                 .sendPasswordResetEmail(email)
                 .addOnSuccessListener(callback::Success)
                 .addOnFailureListener(callback::Failed);
     }
 
     public static void logout() {
-        FBInstances.auth.signOut();
+        FirebaseAuth.getInstance().signOut();
 
         // Reset user
         current = null;

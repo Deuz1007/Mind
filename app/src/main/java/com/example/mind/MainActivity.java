@@ -8,7 +8,6 @@ import android.widget.Button;
 
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
-import com.example.mind.utilities.FBInstances;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -19,13 +18,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FBInstances.auth = FirebaseAuth.getInstance();
-        FBInstances.database = FirebaseDatabase.getInstance();
-
-        User.collection = FBInstances.database.getReference("users");
+        User.collection = FirebaseDatabase.getInstance().getReference("users");
 
         // Check if there is saved user log in information
-        if (FBInstances.auth.getCurrentUser() != null)
+        if (FirebaseAuth.getInstance().getCurrentUser() != null)
             // If so, use that to login user
             User.initialize(new PostProcess() {
                 @Override
