@@ -44,8 +44,8 @@ public class User {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     collection = collection.child(uid);
-
                     loadUser(snapshot);
+
                     callback.Success();
                 })
                 .addOnFailureListener(callback::Failed);
@@ -93,9 +93,9 @@ public class User {
                 .addOnFailureListener(callback::Failed);
     }
 
-    public static void resetPassword(User user, PostProcess callback) {
+    public static void resetPassword(String email, PostProcess callback) {
         FBInstances.auth
-                .sendPasswordResetEmail(user.email)
+                .sendPasswordResetEmail(email)
                 .addOnSuccessListener(callback::Success)
                 .addOnFailureListener(callback::Failed);
     }
@@ -109,7 +109,7 @@ public class User {
 
     private static void loadUser(DataSnapshot snapshot) {
         // Get the user value of the snapshot and make it the current user
-        current = snapshot.getValue(User.class);
+        current = new User(snapshot);
         Topic.collection = collection.child("topics");
     }
 }

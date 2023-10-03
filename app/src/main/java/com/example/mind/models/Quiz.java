@@ -2,7 +2,9 @@ package com.example.mind.models;
 
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.UniqueID;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.ArrayList;
@@ -114,21 +116,16 @@ public class Quiz {
     }
 
     public static void add(Quiz newQuiz, Topic topic, PostProcess callback) {
-        Topic.collection
-                .child(topic.topicId)
-                .child("quizzes")
-                .child(newQuiz.quizId)
+        newQuiz.getCollection(topic)
                 .setValue(newQuiz)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Save new quiz
-                        User.current
-                                .topics.get(topic.topicId)
-                                .quizzes.put(newQuiz.quizId, newQuiz);
+                .addOnSuccessListener(unused -> {
+                    // Save new quiz
+                    User.current
+                            .topics.get(topic.topicId)
+                            .quizzes.put(newQuiz.quizId, newQuiz);
 
-                        callback.Success();
-                    }
-                    else callback.Failed(task.getException());
-                });
+                    callback.Success();
+                })
+                .addOnFailureListener(callback::Failed);
     }
 }

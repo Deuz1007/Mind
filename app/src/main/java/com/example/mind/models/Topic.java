@@ -53,9 +53,7 @@ public class Topic {
             throw new MaxContentTokensReachedException();
 
         // Create new quiz
-        Quiz newQuiz = new Quiz();
-        // Assign the itemsPerLevel
-        newQuiz.itemsPerLevel = itemsPerLevel;
+        Quiz newQuiz = new Quiz(itemsPerLevel);
 
         /* Create requests */
 
@@ -91,7 +89,7 @@ public class Topic {
 
         // Send requests
         AIRequest.send(
-                new AIRequest.QuestionRequest[]{ level1, level2, level3},
+                new AIRequest.QuestionRequest[]{ level1, level2, level3 },
                 new PostProcess() {
                     @Override
                     public void Success(Object... o) {

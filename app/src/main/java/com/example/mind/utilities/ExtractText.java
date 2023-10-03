@@ -54,6 +54,9 @@ public class ExtractText {
         // Extract the raw text
         Result<String> result = converter.extractRawText(stream);
 
+        // Close streams
+        stream.close();
+
         // Return the extracted text
         return result.getValue();
     }

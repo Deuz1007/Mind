@@ -24,9 +24,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AIRequest {
-    private static final OkHttpClient client = new OkHttpClient.Builder().readTimeout(0, TimeUnit.SECONDS).build();
-    private static final String BEARER = "Bearer " + BuildConfig.CHATGPT_KEY;
+    private static final OkHttpClient client = new OkHttpClient.Builder().readTimeout(150, TimeUnit.SECONDS).build();
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("<response>(.|\\n)*<\\/response>", Pattern.CASE_INSENSITIVE);
+    private static final String BEARER = "Bearer " + BuildConfig.CHATGPT_KEY;
 
     public static class QuestionRequest {
         public Request request;
@@ -69,7 +69,7 @@ public class AIRequest {
                     // Create a matcher for the response body
                     Matcher matcher = RESPONSE_PATTERN.matcher(responseBody);
                     // Check if there is matched with the pattern;
-                    if (matcher.find()) {
+                    if (matcher.find())
                         try {
                             // Save the generated questions to the mapping
                             generatedQuestions.put(questionRequest.type, ParseXML.parse(questionRequest.type, matcher.group()));
@@ -97,7 +97,6 @@ public class AIRequest {
                         catch (Exception e) {
                             callback.Failed(e);
                         }
-                    }
                 }
 
                 @Override

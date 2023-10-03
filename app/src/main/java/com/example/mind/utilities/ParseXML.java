@@ -67,10 +67,12 @@ public class ParseXML {
                     // Assign choices
                     question.choices.add("true");
                     question.choices.add("false");
+
                     break;
                 case IDENTIFICATION:
                     // Assign the answer
                     question.answer = answerContent;
+
                     break;
             }
 
