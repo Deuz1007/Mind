@@ -6,29 +6,28 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class User {
-    public String username;
     public String email;
-
+    public String fullName;
+    public String birthDate;
     public Map<String, Topic> topics;
 
-    public User() {
+    public User(String fullName, String email, String birthDate) {
+        this.email = email;
+        this.fullName = fullName;
+        this.birthDate = birthDate;
         this.topics = new HashMap<>();
     }
 
     public User(DataSnapshot snapshot) {
-        this.username = snapshot.child("username").getValue(String.class);
-        this.email = snapshot.child("username").getValue(String.class);
+        this.email = snapshot.child("email").getValue(String.class);
+        this.fullName = snapshot.child("fullName").getValue(String.class);
+        this.birthDate = snapshot.child("birthDate").getValue(String.class);
         this.topics = snapshot.child("topics").getValue(new GenericTypeIndicator<Map<String, Topic>>() {});
-    }
-
-    public User(String username, String email) {
-        this();
-        this.username = username;
-        this.email = email;
     }
 
     public static User current;
@@ -42,7 +41,8 @@ public class User {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     collection = collection.child(uid);
-                    loadUser(snapshot);
+                    // Get the user value of the snapshot and make it the current user
+                    current = new User(snapshot);
 
                     callback.Success();
                 })
@@ -63,7 +63,6 @@ public class User {
                             .addOnSuccessListener(unused -> {
                                 // Make the registered user the current user
                                 current = newUser;
-                                Topic.collection = collection.child("topics");
 
                                 callback.Success();
                             })
@@ -83,7 +82,9 @@ public class User {
                     // Get the user details of the logged in user
                     collection.get()
                             .addOnSuccessListener(snapshot -> {
-                                loadUser(snapshot);
+                                // Get the user value of the snapshot and make it the current user
+                                current = new User(snapshot);
+
                                 callback.Success();
                             })
                             .addOnFailureListener(callback::Failed);
@@ -103,11 +104,5 @@ public class User {
 
         // Reset user
         current = null;
-    }
-
-    private static void loadUser(DataSnapshot snapshot) {
-        // Get the user value of the snapshot and make it the current user
-        current = new User(snapshot);
-        Topic.collection = collection.child("topics");
     }
 }
