@@ -12,20 +12,24 @@ import java.util.Map;
 
 public class Quiz {
     public String quizId;
-    public int score;
     public int itemsPerLevel;
+    public double average;
+    public int retries;
     public Map<String, Question> questions;
 
-    public Quiz() {
+    public Quiz(int itemsPerLevel) {
         this.quizId = UniqueID.generate();
-        this.score = 0;
+        this.itemsPerLevel = itemsPerLevel;
+        this.average = 0;
+        this.retries = 0;
         this.questions = new HashMap<>();
     }
 
     public Quiz(DataSnapshot snapshot) {
         this.quizId = snapshot.child("quizId").getValue(String.class);
-        this.score = snapshot.child("score").getValue(int.class);
         this.itemsPerLevel = snapshot.child("itemsPerLevel").getValue(int.class);
+        this.average = snapshot.child("average").getValue(double.class);
+        this.retries = snapshot.child("retries").getValue(int.class);
         this.questions = snapshot.child("questions").getValue(new GenericTypeIndicator<Map<String, Question>>() {});
     }
 
@@ -53,6 +57,35 @@ public class Quiz {
         grouped.put(Question.QuestionType.IDENTIFICATION, level3);
 
         return grouped;
+    }
+
+    public void saveScore(int score, Topic topic, PostProcess callback) {
+        int newRetries = retries == 0 ? 1 : retries + 1;
+        double newAverage = retries == 0 ? score : (average * retries + score) / newRetries;
+
+        // Enable multiple setValues in saving data
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("retries", newRetries);
+        updates.put("average", newAverage);
+
+        // Save updates
+        getCollection(topic)
+                .setValue(updates)
+                .addOnSuccessListener(unused -> {
+                    // Update quiz data
+                    retries = newRetries;
+                    average = newAverage;
+
+                    callback.Success();
+                })
+                .addOnFailureListener(callback::Failed);
+    }
+
+    public DatabaseReference getCollection(Topic topic) {
+        return Topic.collection
+                .child(topic.topicId)
+                .child("quizzes")
+                .child(quizId);
     }
 
     public String createContent(String content, String description, String xml) {
