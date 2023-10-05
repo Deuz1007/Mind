@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        User.collection = FirebaseDatabase.getInstance().getReference("users");
+        User.setStatics();
 
         // Check if there is saved user log in information
         if (FirebaseAuth.getInstance().getCurrentUser() != null)

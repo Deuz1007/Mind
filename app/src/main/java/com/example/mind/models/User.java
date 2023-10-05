@@ -4,6 +4,7 @@ import com.example.mind.interfaces.PostProcess;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.Date;
@@ -35,6 +36,11 @@ public class User {
 
     public static User current;
     public static DatabaseReference collection;
+
+    public static void setStatics() {
+        current = null;
+        collection = FirebaseDatabase.getInstance().getReference("users");
+    }
 
     public static void initialize(PostProcess callback) {
         // Get the uid if the logged in user
@@ -105,7 +111,7 @@ public class User {
     public static void logout() {
         FirebaseAuth.getInstance().signOut();
 
-        // Reset user
-        current = null;
+        // Reset values
+        setStatics();
     }
 }
