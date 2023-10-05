@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "483602095902",
+    "project_id": "mind-e5c9c",
+    "storage_bucket": "mind-e5c9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:483602095902:android:9fc30577dafab9611bf30f",
+        "android_client_info": {
+          "package_name": "com.example.mind"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFnSUZk6fYIpU5ADxHxbeyceZzA4XKJvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
