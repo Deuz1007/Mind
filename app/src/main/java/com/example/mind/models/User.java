@@ -12,13 +12,15 @@ import java.util.Map;
 
 public class User {
     public String email;
+    public String username;
     public String fullName;
     public String birthDate;
     public Map<String, Topic> topics;
 
-    public User(String fullName, String email, String birthDate) {
+    public User(String fullName, String username, String email, String birthDate) {
         this.email = email;
         this.fullName = fullName;
+        this.username = username;
         this.birthDate = birthDate;
         this.topics = new HashMap<>();
     }
@@ -26,6 +28,7 @@ public class User {
     public User(DataSnapshot snapshot) {
         this.email = snapshot.child("email").getValue(String.class);
         this.fullName = snapshot.child("fullName").getValue(String.class);
+        this.username = snapshot.child("username").getValue(String.class);
         this.birthDate = snapshot.child("birthDate").getValue(String.class);
         this.topics = snapshot.child("topics").getValue(new GenericTypeIndicator<Map<String, Topic>>() {});
     }
