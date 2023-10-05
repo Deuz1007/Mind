@@ -1,13 +1,23 @@
 {
   "project_info": {
+<<<<<<< Updated upstream
     "project_number": "483602095902",
     "project_id": "mind-e5c9c",
     "storage_bucket": "mind-e5c9c.appspot.com"
+=======
+    "project_number": "639411726078",
+    "project_id": "mind-6cc7d",
+    "storage_bucket": "mind-6cc7d.appspot.com"
+>>>>>>> Stashed changes
   },
   "client": [
     {
       "client_info": {
+<<<<<<< Updated upstream
         "mobilesdk_app_id": "1:483602095902:android:9fc30577dafab9611bf30f",
+=======
+        "mobilesdk_app_id": "1:639411726078:android:15da29b81b584f91e4a7af",
+>>>>>>> Stashed changes
         "android_client_info": {
           "package_name": "com.example.mind"
         }
@@ -15,7 +25,11 @@
       "oauth_client": [],
       "api_key": [
         {
+<<<<<<< Updated upstream
           "current_key": "AIzaSyDFnSUZk6fYIpU5ADxHxbeyceZzA4XKJvI"
+=======
+          "current_key": "AIzaSyBHB69IKFISzTL7cgEYHIaY6EWqF2Dwy6o"
+>>>>>>> Stashed changes
         }
       ],
       "services": {
