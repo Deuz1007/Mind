@@ -4,6 +4,7 @@ import com.example.mind.exceptions.MaxContentTokensReachedException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.AIRequest;
 import com.example.mind.utilities.UniqueID;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -36,6 +37,21 @@ public class Topic {
         return User.collection
                 .child("topics")
                 .child(topicId);
+    }
+
+    public void editTopic(String newTitle, String newContent, PostProcess callback) {
+        Map<String, String> updates = new HashMap<>();
+        updates.put("title", newTitle);
+        updates.put("content", newContent);
+
+        getCollection().setValue(updates)
+                .addOnSuccessListener(unused -> {
+                    title = newTitle;
+                    content = newContent;
+
+                    callback.Success();
+                })
+                .addOnFailureListener(callback::Failed);
     }
 
     public void createQuiz(String quizContent, int itemsPerLevel, PostProcess callback) throws MaxContentTokensReachedException {
