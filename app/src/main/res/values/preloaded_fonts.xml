@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/marko_one</item>
         <item>@font/roboto_slab</item>
         <item>@font/roboto_slab_bold</item>
         <item>@font/work_sans_bold</item>
+        <item>@font/work_sans_light</item>
         <item>@font/work_sans_medium</item>
     </array>
 </resources>

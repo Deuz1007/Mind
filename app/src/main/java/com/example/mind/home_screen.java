@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Gravity;
@@ -21,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -105,14 +107,67 @@ public class home_screen extends AppCompatActivity {
         library.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         library.getWindow().setGravity(Gravity.BOTTOM);
 
+        // Show Quiz Content
+        Button showContent = library.findViewById(R.id.ict);
+
+        showContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(home_screen.this, QuizContentPage.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
-    public void buttonOpenFile(View view){
-        Intent intent = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            intent = new Intent(Intent.ACTION_VIEW, MediaStore.Downloads.EXTERNAL_CONTENT_URI);
-        }
+    // For Uploading File
+//    public void buttonOpenFile(View view){
+//        Intent intent = null;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+//            intent = new Intent(Intent.ACTION_VIEW, MediaStore.Downloads.EXTERNAL_CONTENT_URI);
+//        }
+//        intent.setType("*/*");
+//        this.startActivity(intent);
+//    }
+
+    public void buttonOpenFile(View view) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Set MIME types for PDF, Word, and image files
+        String[] mimeTypes = {"application/pdf", "application/msword", "image/*"};
         intent.setType("*/*");
-        this.startActivity(intent);
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+
+        // Start the file picker activity
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Uri selectedFileUri = data.getData();
+
+                // Handle the selected file (e.g., open, display, or process it)
+                openSelectedFile(selectedFileUri);
+            }
+        }
+    }
+
+    private void openSelectedFile(Uri fileUri) {
+        // Here, you can implement code to open, display, or process the selected file.
+        // For example, you can use Intent.ACTION_VIEW to open it with the appropriate application.
+        Intent openFileIntent = new Intent(Intent.ACTION_VIEW);
+        openFileIntent.setData(fileUri);
+        openFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        // Make sure to catch any ActivityNotFoundException
+        try {
+            startActivity(openFileIntent);
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(home_screen.this, "Unnexpected File Error", Toast.LENGTH_SHORT).show();
+        }
     }
 }

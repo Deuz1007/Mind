@@ -21,10 +21,20 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/add_content"
+            android:onClick="buttonOpenFile"
             android:layout_marginLeft="15dp"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/baseline_add_24"/>
+            android:background="@drawable/baseline_add_24"
+            android:layout_gravity="center"/>
+
+        <ImageView
+            android:layout_marginLeft="20dp"
+            android:layout_width="48dp"
+            android:layout_height="50dp"
+            android:background="@drawable/library_logo"
+            android:layout_gravity="center"/>
 
         <TextView
             android:id="@+id/textView3"
@@ -35,23 +45,22 @@
             android:textColor="#FFFFFF"
             android:textSize="46sp"
             android:gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="50dp"
-            tools:ignore="HardcodedText" />
+            android:layout_marginLeft="5dp"
+            tools:ignore="HardcodedText"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center">
 
         <Button
             android:id="@+id/ict"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
             android:layout_marginTop="20dp"
             android:background="@drawable/library_round_button"
             android:fontFamily="@font/roboto_slab_bold"
@@ -59,19 +68,10 @@
             android:textColor="#000000"
             android:textSize="22sp" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
         <Button
             android:id="@+id/advance"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
             android:layout_marginTop="20dp"
             android:background="@drawable/library_round_button"
             android:fontFamily="@font/roboto_slab_bold"
@@ -79,19 +79,32 @@
             android:textColor="#000000"
             android:textSize="22sp" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
         <Button
             android:id="@+id/bpo"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/library_round_button"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:text="BPO"
+            android:textColor="#000000"
+            android:textSize="22sp" />
+
+        <Button
+            android:id="@+id/bpo2"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/library_round_button"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:text="BPO"
+            android:textColor="#000000"
+            android:textSize="22sp" />
+
+        <Button
+            android:id="@+id/bpo3"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="@drawable/library_round_button"
             android:fontFamily="@font/roboto_slab_bold"
