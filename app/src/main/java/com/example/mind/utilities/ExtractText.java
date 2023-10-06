@@ -25,7 +25,7 @@ import java.io.InputStream;
 public class ExtractText {
     private static final TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
     private static final DocumentConverter converter = new DocumentConverter();
-    private static final double FILE_SIZE_LIMIT = 1024 * 1024; //1 MiB
+    private static final double FILE_SIZE_LIMIT = 1024 * 1024 * 1.5; // 1.5 MiB
 
     private static void checkFileSize(ContentResolver resolver, Uri uri) throws FileSizeLimitException {
         Cursor cursor = resolver.query(uri, null, null, null, null);
