@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void Success(Object... o) {
                     // Proceed to dashboard
-//                    dashboard();
+                    dashboard();
                 }
 
                 @Override
@@ -40,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         Button login = findViewById(R.id.login_button);
 
         login.setOnClickListener(view -> {
-            String email = "sample@gmail.com";
-            String password = "Testing!123";
+            String email = ((EditText) findViewById(R.id.username)).getText().toString();
+            String password = ((EditText) findViewById(R.id.password)).getText().toString();
             User.login(email, password, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void Failed(Exception e) {
                     // Display error
+                    Toast.makeText(MainActivity.this, "user not registered", Toast.LENGTH_SHORT).show();
                 }
             });
         });

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.mind.models.User;
+
 public class UserProfilePage extends AppCompatActivity {
 
     @Override
@@ -21,6 +23,18 @@ public class UserProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(UserProfilePage.this, home_screen.class);
+                startActivity(intent);
+            }
+        });
+
+        // Logging out, going to Login Page
+        Button signingOut = findViewById(R.id.signout_btn);
+
+        signingOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                User.logout();
+                Intent intent = new Intent(UserProfilePage.this, MainActivity.class);
                 startActivity(intent);
             }
         });

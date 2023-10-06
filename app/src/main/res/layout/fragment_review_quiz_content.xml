@@ -10,22 +10,24 @@
     tools:context=".ReviewQuizContentFragment">
 
     <ScrollView
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:background="@color/cool">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="25dp">
 
-            <TextView
-                android:layout_width="240dp"
+            <EditText
+                android:id="@+id/edit_content_field"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="@string/sample_quiz_content"
                 android:textColor="@color/white"
                 android:textSize="15sp"
+                android:background="?android:attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -101,50 +101,68 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/create_section"
                 android:layout_width="276dp"
-                android:layout_height="227dp"
+                android:layout_height="180dp"
                 android:background="@drawable/round_create_bg"
                 app:cardCornerRadius="20dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="50dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-                <Button
-                    android:id="@+id/capture_button"
-                    android:layout_width="100dp"
-                    android:layout_height="135dp"
-                    android:layout_margin="30dp"
-                    android:layout_marginEnd="28dp"
-                    android:layout_marginBottom="28dp"
-                    android:background="@drawable/round_button_blue"
-                    android:drawableTop="@drawable/capture_logo"
-                    android:drawablePadding="-20dp"
-                    android:fontFamily="@font/roboto_slab_bold"
-                    android:paddingTop="20dp"
-                    android:text="@string/capture"
-                    android:textColor="#FFFFFF"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+<!--                <Button-->
+<!--                    android:id="@+id/capture_button"-->
+<!--                    android:layout_width="100dp"-->
+<!--                    android:layout_height="135dp"-->
+<!--                    android:layout_margin="30dp"-->
+<!--                    android:layout_marginEnd="28dp"-->
+<!--                    android:layout_marginBottom="28dp"-->
+<!--                    android:background="@drawable/round_button_blue"-->
+<!--                    android:drawableTop="@drawable/capture_logo"-->
+<!--                    android:drawablePadding="-20dp"-->
+<!--                    android:fontFamily="@font/roboto_slab_bold"-->
+<!--                    android:paddingTop="20dp"-->
+<!--                    android:text="@string/capture"-->
+<!--                    android:textColor="#FFFFFF"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent" />-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/upload_btn"-->
+<!--                    android:layout_width="100dp"-->
+<!--                    android:layout_height="135dp"-->
+<!--                    android:layout_marginEnd="16dp"-->
+<!--                    android:layout_marginBottom="28dp"-->
+<!--                    android:background="@drawable/round_button_blue"-->
+<!--                    android:drawableTop="@drawable/upload_logo"-->
+<!--                    android:drawablePadding="-20dp"-->
+<!--                    android:fontFamily="@font/roboto_slab_bold"-->
+<!--                    android:onClick="buttonOpenFile"-->
+<!--                    android:paddingTop="20dp"-->
+<!--                    android:text="@string/upload"-->
+<!--                    android:textColor="#FFFFFF"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/capture_button"-->
+<!--                    app:layout_constraintHorizontal_bias="1.0"-->
+<!--                    app:layout_constraintStart_toStartOf="parent" />-->
 
                 <Button
-                    android:id="@+id/upload_btn"
-                    android:layout_width="100dp"
-                    android:layout_height="135dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="28dp"
-                    android:background="@drawable/round_button_blue"
-                    android:drawableTop="@drawable/upload_logo"
-                    android:drawablePadding="-20dp"
+                    android:id="@+id/create_option_btn"
+                    android:layout_width="190dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/library_round_button"
                     android:fontFamily="@font/roboto_slab_bold"
-                    android:onClick="buttonOpenFile"
-                    android:paddingTop="20dp"
                     android:text="@string/upload"
-                    android:textColor="#FFFFFF"
+                    android:textSize="30sp"
+                    android:drawableRight="@drawable/dropdown"
+                    android:paddingRight="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/capture_button"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4"
+                    app:layout_constraintVertical_bias="0.0"
+                    android:onClick="ShowUploadOption"/>
 
                 <TextView
                     android:id="@+id/textView4"

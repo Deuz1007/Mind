@@ -22,21 +22,29 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.mind.exceptions.FileSizeLimitException;
+import com.example.mind.interfaces.PostProcess;
+import com.example.mind.utilities.ExtractText;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.navigation.NavigationBarMenu;
 import com.google.android.material.navigation.NavigationView;
 
-public class home_screen extends AppCompatActivity {
-    // For Library Bottom Sheet
-    Button libraryButton;
+import java.io.IOException;
 
+public class home_screen extends AppCompatActivity {
+    Button libraryButton; // For Library Bottom Sheet
+    Dialog popupDialog;
+    Button popupOption; // For popup Upload option button
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
 
         // To Open the library bottom sheet
         libraryButton = findViewById(R.id.library_btn);
@@ -49,7 +57,7 @@ public class home_screen extends AppCompatActivity {
             }
         });
 
-        // Go to Capture Page
+        // Go to Profile Page
         Button goToProfile = findViewById(R.id.userprofile_btn);
 
         goToProfile.setOnClickListener(new View.OnClickListener() {
@@ -83,15 +91,19 @@ public class home_screen extends AppCompatActivity {
         });
 
         // Go to Capture Page
-        Button goToCapture = findViewById(R.id.capture_button);
+//        Button goToCapture = findViewById(R.id.capture_button);
 
-        goToCapture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home_screen.this, Capture_ShowImage_Page.class);
-                startActivity(intent);
-            }
-        });
+//        goToCapture.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(home_screen.this, Capture_ShowImage_Page.class);
+//                startActivity(intent);
+//            }
+//        });
+
+        // To display upload option popup layout
+        popupDialog = new Dialog(this);
+
     }
 
     // To Open Library Bottom Sheet
@@ -115,6 +127,7 @@ public class home_screen extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(home_screen.this, QuizContentPage.class);
                 startActivity(intent);
+
             }
         });
 
@@ -130,18 +143,19 @@ public class home_screen extends AppCompatActivity {
 //        this.startActivity(intent);
 //    }
 
-    public void buttonOpenFile(View view) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        // Set MIME types for PDF, Word, and image files
-        String[] mimeTypes = {"application/pdf", "application/msword", "image/*"};
-        intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-
-        // Start the file picker activity
-        startActivityForResult(intent, 1);
-    }
+    // Upload File
+//    public void buttonOpenFile(View view) {
+//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//
+//        // Set MIME types for PDF, Word, and image files
+//        String[] mimeTypes = {"application/pdf", "application/msword", "image/*"};
+//        intent.setType("*/*");
+//        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+//
+//        // Start the file picker activity
+//        startActivityForResult(intent, 1);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -151,7 +165,43 @@ public class home_screen extends AppCompatActivity {
                 Uri selectedFileUri = data.getData();
 
                 // Handle the selected file (e.g., open, display, or process it)
-                openSelectedFile(selectedFileUri);
+//                openSelectedFile(selectedFileUri);
+
+                final String[] extractedText = new String[1];
+                try {
+                    extractedText[0] = "";
+
+                    System.out.println(home_screen.this.getContentResolver().getType(selectedFileUri));
+
+                    switch(home_screen.this.getContentResolver().getType(selectedFileUri)) {
+                        case "application/pdf":
+                            extractedText[0] = ExtractText.PDF(home_screen.this, selectedFileUri);
+                            break;
+                        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                            extractedText[0] = ExtractText.Word(home_screen.this, selectedFileUri);
+                            break;
+                        default:
+                            ExtractText.Image(home_screen.this, selectedFileUri, new PostProcess() {
+                                @Override
+                                public void Success(Object... o) {
+                                    extractedText[0] = (String) o[0];
+                                    System.out.println(extractedText[0]);
+                                }
+
+                                @Override
+                                public void Failed(Exception e) {
+                                    System.out.println(e.getMessage());
+                                    Toast.makeText(home_screen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    }
+
+                }
+                catch(Exception e) {
+                    System.out.println(e.getMessage());
+                    Toast.makeText(home_screen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
             }
         }
     }
@@ -169,5 +219,53 @@ public class home_screen extends AppCompatActivity {
         } catch (android.content.ActivityNotFoundException e) {
             Toast.makeText(home_screen.this, "Unnexpected File Error", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void ShowUploadOption(View view){
+        popupDialog.setContentView(R.layout.upload_option_popup);
+
+        // Uploading File
+        Button uploadFileOption = (Button) popupDialog.findViewById(R.id.uplaod_option);
+        uploadFileOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                // Set MIME types for PDF, Word, and image files
+                String[] mimeTypes = {
+                        "application/pdf",
+                        "image/*",
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"};
+                intent.setType("*/*");
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+
+                // Start the file picker activity
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        // Go to Capture Page for Capture Option
+        Button goToCapture = (Button) popupDialog.findViewById(R.id.capture_option);
+        goToCapture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(home_screen.this, Capture_ShowImage_Page.class);
+                startActivity(intent);
+            }
+        });
+
+        Button editFileOption = (Button) popupDialog.findViewById(R.id.edit_option);
+        final int PICK_FILE_REQUEST_CODE = 1;
+        editFileOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(home_screen.this, EditTextOptionPage.class);
+                startActivity(intent);
+            }
+        });
+
+        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupDialog.show();
     }
 }

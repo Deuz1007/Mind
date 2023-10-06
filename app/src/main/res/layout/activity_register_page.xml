@@ -28,8 +28,9 @@
                 android:id="@+id/imageView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="72dp"
+                android:layout_marginTop="40dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/register_logo" />
@@ -63,7 +64,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/username_input" />
 
             <EditText
-                android:id="@+id/birth_input"
+                android:id="@+id/email_input"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="50dp"
@@ -75,6 +76,21 @@
                 app:layout_constraintHorizontal_bias="0.495"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fullname_input" />
+
+            <Button
+                android:id="@+id/birth_input"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/white_button_round"
+                android:ems="10"
+                android:text="JAN 01 2023"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/email_input"
+                android:onClick="openDatePicker"/>
 
             <EditText
                 android:id="@+id/password_input"
@@ -110,10 +126,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:fontFamily="@font/work_sans_medium"
-                android:text="@string/username"
+                android:text="@string/fullname"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/fullname_input"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.159"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/email_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/work_sans_medium"
+                android:text="@string/email"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/email_input"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.159"
                 app:layout_constraintStart_toStartOf="parent"/>
@@ -124,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:fontFamily="@font/work_sans_medium"
-                android:text="@string/username"
+                android:text="@string/birthdate"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/birth_input"
@@ -138,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:fontFamily="@font/work_sans_medium"
-                android:text="@string/username"
+                android:text="@string/password"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/password_input"
@@ -150,7 +180,7 @@
                 android:id="@+id/createAccount_btn"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="40dp"
                 android:background="@drawable/round_button_blue"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="@string/new_register"
