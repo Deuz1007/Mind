@@ -39,12 +39,12 @@ public class Quiz {
         this.questions = snapshot.child("questions").getValue(new GenericTypeIndicator<Map<String, Question>>() {});
     }
 
-    public Map<Question.QuestionType, List<Question>> getGroupedQuestions() {
+    public static Map<Question.QuestionType, List<Question>> getGroupedQuestions(Quiz quiz) {
         List<Question> level1 = new ArrayList<>();
         List<Question> level2 = new ArrayList<>();
         List<Question> level3 = new ArrayList<>();
 
-        for (Question question : questions.values()) {
+        for (Question question : quiz.questions.values()) {
             switch (question.type) {
                 case TRUE_OR_FALSE:
                     level1.add(question);
@@ -65,35 +65,35 @@ public class Quiz {
         return grouped;
     }
 
-    public void saveScore(int score, Topic topic, PostProcess callback) {
-        int newRetries = retries == 0 ? 1 : retries + 1;
-        double newAverage = retries == 0 ? score : (average * retries + score) / newRetries;
+    public static void saveScore(Quiz quiz, int score, Topic topic, PostProcess callback) {
+        int retries = quiz.retries == 0 ? 1 : quiz.retries + 1;
+        double average = quiz.retries == 0 ? score : (quiz.average * retries + score) / retries;
 
         // Enable multiple setValues in saving data
         Map<String, Object> updates = new HashMap<>();
-        updates.put("retries", newRetries);
-        updates.put("average", newAverage);
+        updates.put("retries", retries);
+        updates.put("average", average);
 
         // Save updates
-        getCollection(topic)
+        getCollection(topic, quiz)
                 .setValue(updates)
                 .addOnSuccessListener(unused -> {
                     // Update quiz data
-                    retries = newRetries;
-                    average = newAverage;
+                    User.current.topics.get(topic.topicId).quizzes.get(quiz.quizId).retries = retries;
+                    User.current.topics.get(topic.topicId).quizzes.get(quiz.quizId).average = average;
 
                     callback.Success();
                 })
                 .addOnFailureListener(callback::Failed);
     }
 
-    public DatabaseReference getCollection(Topic topic) {
-        return topic.getCollection()
+    private static DatabaseReference getCollection(Topic topic, Quiz quiz) {
+        return Topic.getCollection(topic)
                 .child("quizzes")
-                .child(quizId);
+                .child(quiz.quizId);
     }
 
-    public String createContent(String content, String description, String xml) {
+    public static String createContent(int itemsPerLevel, String content, String description, String xml) {
         return "With this given content:\\n\\n" + content +
                 "\\n\\nWrite me a " + itemsPerLevel + " " + description +
                 ", written in this xml format:\\n\\n" + xml +

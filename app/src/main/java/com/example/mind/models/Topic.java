@@ -37,12 +37,13 @@ public class Topic {
         this.quizzes = snapshot.child("quizzes").getValue(new GenericTypeIndicator<Map<String, Quiz>>() {});
     }
 
-    public DatabaseReference getCollection() {
+    public static DatabaseReference getCollection(Topic topic) {
         return User.collection
                 .child("topics")
-                .child(topicId);
+                .child(topic.topicId);
     }
 
+<<<<<<< Updated upstream
     public void editTopic(String newTitle, String newContent, PostProcess callback) {
         Map<String, String> updates = new HashMap<>();
         updates.put("title", newTitle);
@@ -59,6 +60,9 @@ public class Topic {
     }
 
     public void createQuiz(String quizContent, int itemsPerLevel, PostProcess callback) throws MaxContentTokensReachedException {
+=======
+    public static void createQuiz(Topic topic, String quizContent, int itemsPerLevel, PostProcess callback) throws MaxContentTokensReachedException {
+>>>>>>> Stashed changes
         // Check if the quizContent exceeds token max length
         if (quizContent.split("\\W+").length > MaxContentTokensReachedException.MAX_TOKEN)
             throw new MaxContentTokensReachedException();
@@ -71,7 +75,8 @@ public class Topic {
         // Level 1
         AIRequest.QuestionRequest level1 = new AIRequest.QuestionRequest(
                 Question.QuestionType.TRUE_OR_FALSE,
-                AIRequest.createRequest(newQuiz.createContent(
+                AIRequest.createRequest(Quiz.createContent(
+                        itemsPerLevel,
                         quizContent,
                         Quiz.Description.TRUE_OR_FALSE,
                         Quiz.XML.ANSWER_ONLY
@@ -81,7 +86,8 @@ public class Topic {
         // Level 2
         AIRequest.QuestionRequest level2 = new AIRequest.QuestionRequest(
                 Question.QuestionType.MULTIPLE_CHOICE,
-                AIRequest.createRequest(newQuiz.createContent(
+                AIRequest.createRequest(Quiz.createContent(
+                        itemsPerLevel,
                         quizContent,
                         Quiz.Description.MULTIPLE_CHOICE,
                         Quiz.XML.HAS_CHOICES
@@ -91,7 +97,8 @@ public class Topic {
         // Level 3
         AIRequest.QuestionRequest level3 = new AIRequest.QuestionRequest(
                 Question.QuestionType.IDENTIFICATION,
-                AIRequest.createRequest(newQuiz.createContent(
+                AIRequest.createRequest(Quiz.createContent(
+                        itemsPerLevel,
                         quizContent,
                         Quiz.Description.IDENTIFICATION,
                         Quiz.XML.ANSWER_ONLY
@@ -112,7 +119,7 @@ public class Topic {
                         }
 
                         // Save new quiz to database
-                        Quiz.add(newQuiz, Topic.this, callback);
+                        Quiz.add(newQuiz, topic, callback);
                     }
 
                     @Override
@@ -124,9 +131,13 @@ public class Topic {
     }
 
     public static void add(Topic newTopic, PostProcess callback) {
+<<<<<<< Updated upstream
 //        System.out.print(newTopic.getCollection() == null);
 
         newTopic.getCollection()
+=======
+        getCollection(newTopic)
+>>>>>>> Stashed changes
                 .setValue(newTopic)
                 .addOnSuccessListener(unused -> {
                     // Save new topic
