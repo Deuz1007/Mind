@@ -1,6 +1,8 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,14 @@ public class library_sheet extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library_sheet);
+
+        // Container of the Recycleview
+        RecyclerView recyclerView = findViewById(R.id.content_items_container);
+
+        // To populate content data and creating list
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setAdapter(new LibraryContetntAdapter(getApplicationContext()));
 
     }
 

@@ -51,67 +51,12 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/content_items_container"
+        android:layout_marginTop="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/ict"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/library_round_button"
-            android:fontFamily="@font/roboto_slab_bold"
-            android:text="ICT"
-            android:textColor="#000000"
-            android:textSize="22sp" />
-
-        <Button
-            android:id="@+id/advance"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/library_round_button"
-            android:fontFamily="@font/roboto_slab_bold"
-            android:text="Advance SIA"
-            android:textColor="#000000"
-            android:textSize="22sp" />
-
-        <Button
-            android:id="@+id/bpo"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/library_round_button"
-            android:fontFamily="@font/roboto_slab_bold"
-            android:text="BPO"
-            android:textColor="#000000"
-            android:textSize="22sp" />
-
-        <Button
-            android:id="@+id/bpo2"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/library_round_button"
-            android:fontFamily="@font/roboto_slab_bold"
-            android:text="BPO"
-            android:textColor="#000000"
-            android:textSize="22sp" />
-
-        <Button
-            android:id="@+id/bpo3"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/library_round_button"
-            android:fontFamily="@font/roboto_slab_bold"
-            android:text="BPO"
-            android:textColor="#000000"
-            android:textSize="22sp" />
-
-    </LinearLayout>
+        android:gravity="center"/>
 
 </LinearLayout>

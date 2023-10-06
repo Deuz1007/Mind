@@ -186,6 +186,10 @@ public class home_screen extends AppCompatActivity {
                                 public void Success(Object... o) {
                                     extractedText[0] = (String) o[0];
                                     System.out.println(extractedText[0]);
+
+                                    Intent passTextData = new Intent(home_screen.this, EditTextOptionPage.class);
+                                    passTextData.putExtra("extractedtextData", extractedText[0]);
+                                    startActivity(passTextData);
                                 }
 
                                 @Override
