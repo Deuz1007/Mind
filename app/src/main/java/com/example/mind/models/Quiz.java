@@ -39,6 +39,12 @@ public class Quiz {
         this.questions = snapshot.child("questions").getValue(new GenericTypeIndicator<Map<String, Question>>() {});
     }
 
+    private static DatabaseReference getCollection(Topic topic, Quiz quiz) {
+        return Topic.getCollection(topic)
+                .child("quizzes")
+                .child(quiz.quizId);
+    }
+
     public static Map<Question.QuestionType, List<Question>> getGroupedQuestions(Quiz quiz) {
         List<Question> level1 = new ArrayList<>();
         List<Question> level2 = new ArrayList<>();
@@ -87,12 +93,6 @@ public class Quiz {
                 .addOnFailureListener(callback::Failed);
     }
 
-    private static DatabaseReference getCollection(Topic topic, Quiz quiz) {
-        return Topic.getCollection(topic)
-                .child("quizzes")
-                .child(quiz.quizId);
-    }
-
     public static String createContent(int itemsPerLevel, String content, String description, String xml) {
         return "With this given content:\\n\\n" + content +
                 "\\n\\nWrite me a " + itemsPerLevel + " " + description +
@@ -119,7 +119,7 @@ public class Quiz {
     }
 
     public static void add(Quiz newQuiz, Topic topic, PostProcess callback) {
-        newQuiz.getCollection(topic)
+        Quiz.getCollection(topic, newQuiz)
                 .setValue(newQuiz)
                 .addOnSuccessListener(unused -> {
                     // Save new quiz

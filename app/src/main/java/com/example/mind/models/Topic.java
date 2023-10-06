@@ -43,26 +43,23 @@ public class Topic {
                 .child(topic.topicId);
     }
 
-<<<<<<< Updated upstream
-    public void editTopic(String newTitle, String newContent, PostProcess callback) {
+    public static void editTopic(Topic topic, String title, String content, PostProcess callback) {
         Map<String, String> updates = new HashMap<>();
-        updates.put("title", newTitle);
-        updates.put("content", newContent);
+        updates.put("title", title);
+        updates.put("content", content);
 
-        getCollection().setValue(updates)
+        getCollection(topic)
+                .setValue(updates)
                 .addOnSuccessListener(unused -> {
-                    title = newTitle;
-                    content = newContent;
+                    User.current.topics.get(topic.topicId).title = title;
+                    User.current.topics.get(topic.topicId).content = content;
 
                     callback.Success();
                 })
                 .addOnFailureListener(callback::Failed);
     }
 
-    public void createQuiz(String quizContent, int itemsPerLevel, PostProcess callback) throws MaxContentTokensReachedException {
-=======
     public static void createQuiz(Topic topic, String quizContent, int itemsPerLevel, PostProcess callback) throws MaxContentTokensReachedException {
->>>>>>> Stashed changes
         // Check if the quizContent exceeds token max length
         if (quizContent.split("\\W+").length > MaxContentTokensReachedException.MAX_TOKEN)
             throw new MaxContentTokensReachedException();
@@ -131,13 +128,7 @@ public class Topic {
     }
 
     public static void add(Topic newTopic, PostProcess callback) {
-<<<<<<< Updated upstream
-//        System.out.print(newTopic.getCollection() == null);
-
-        newTopic.getCollection()
-=======
         getCollection(newTopic)
->>>>>>> Stashed changes
                 .setValue(newTopic)
                 .addOnSuccessListener(unused -> {
                     // Save new topic
