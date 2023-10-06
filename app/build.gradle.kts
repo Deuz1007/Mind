@@ -61,7 +61,7 @@ dependencies {
     // Text Extractor
     implementation("com.itextpdf:itextg:5.5.10")
     implementation("org.zwobble.mammoth:mammoth:1.5.0")
-    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
+    implementation("com.google.mlkit:text-recognition:16.0.0")
 
     // HTTP Request
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
