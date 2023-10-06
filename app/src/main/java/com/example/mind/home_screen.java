@@ -196,6 +196,11 @@ public class home_screen extends AppCompatActivity {
                             });
                     }
 
+                    // Pass text Data
+                    Intent passTextData = new Intent(home_screen.this, EditTextOptionPage.class);
+                    passTextData.putExtra("extractedtextData", extractedText[0]);
+                    startActivity(passTextData);
+
                 }
                 catch(Exception e) {
                     System.out.println(e.getMessage());

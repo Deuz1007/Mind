@@ -19,12 +19,16 @@ public class Quiz {
     public int retries;
     public Map<String, Question> questions;
 
-    public Quiz(int itemsPerLevel) {
+    public Quiz() {
         this.quizId = UniqueID.generate();
-        this.itemsPerLevel = itemsPerLevel;
         this.average = 0;
         this.retries = 0;
         this.questions = new HashMap<>();
+    }
+
+    public Quiz(int itemsPerLevel) {
+        this();
+        this.itemsPerLevel = itemsPerLevel;
     }
 
     public Quiz(DataSnapshot snapshot) {

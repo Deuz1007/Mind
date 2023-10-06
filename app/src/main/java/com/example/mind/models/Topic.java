@@ -19,11 +19,15 @@ public class Topic {
     public String content;
     public Map<String, Quiz> quizzes;
 
-    public Topic(String title, String content) {
+    public Topic() {
         this.topicId = UniqueID.generate();
+        this.quizzes = new HashMap<>();
+    }
+
+    public Topic(String title, String content) {
+        this();
         this.title = title;
         this.content = content;
-        this.quizzes = new HashMap<>();
     }
 
     public Topic(DataSnapshot snapshot) {
@@ -120,6 +124,8 @@ public class Topic {
     }
 
     public static void add(Topic newTopic, PostProcess callback) {
+//        System.out.print(newTopic.getCollection() == null);
+
         newTopic.getCollection()
                 .setValue(newTopic)
                 .addOnSuccessListener(unused -> {
