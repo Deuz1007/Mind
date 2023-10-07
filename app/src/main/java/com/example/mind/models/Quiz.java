@@ -1,5 +1,6 @@
 package com.example.mind.models;
 
+import com.example.mind.exceptions.MaxContentTokensReachedException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.UniqueID;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -130,5 +131,10 @@ public class Quiz {
                     callback.Success();
                 })
                 .addOnFailureListener(callback::Failed);
+    }
+
+    public static boolean isValidContent(String content) {
+        // Check if the quizContent exceeds token max length
+        return content.split("\\W+").length <= MaxContentTokensReachedException.MAX_TOKEN;
     }
 }

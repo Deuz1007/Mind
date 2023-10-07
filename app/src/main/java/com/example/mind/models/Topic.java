@@ -61,7 +61,7 @@ public class Topic {
 
     public static void createQuiz(Topic topic, String quizContent, int itemsPerLevel, PostProcess callback) throws MaxContentTokensReachedException {
         // Check if the quizContent exceeds token max length
-        if (quizContent.split("\\W+").length > MaxContentTokensReachedException.MAX_TOKEN)
+        if (!Quiz.isValidContent(quizContent))
             throw new MaxContentTokensReachedException();
 
         // Create new quiz
