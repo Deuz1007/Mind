@@ -52,7 +52,7 @@
     <string name="choice">Choice</string>
 
     <string name="content">Quiz Content</string>
-    <string name="take">Take Quiz</string>
+    <string name="generate">Generate Quiz</string>
 
     <string name="sample_quiz_content">
     <![CDATA[

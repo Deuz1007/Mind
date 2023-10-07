@@ -64,6 +64,10 @@ public class Quiz {
             }
         }
 
+        System.out.println(level1.size());
+        System.out.println(level2.size());
+        System.out.println(level3.size());
+
         Map<Question.QuestionType, List<Question>> grouped = new HashMap<>();
         grouped.put(Question.QuestionType.TRUE_OR_FALSE, level1);
         grouped.put(Question.QuestionType.MULTIPLE_CHOICE, level2);
@@ -128,7 +132,7 @@ public class Quiz {
                             .topics.get(topic.topicId)
                             .quizzes.put(newQuiz.quizId, newQuiz);
 
-                    callback.Success();
+                    callback.Success(newQuiz);
                 })
                 .addOnFailureListener(callback::Failed);
     }

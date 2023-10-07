@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QuizFragment"
+    tools:context=".MultiChoiceQuizPage"
     android:background="@color/black">
 
     <LinearLayout
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_slab"
-            android:text="Quiz Type"
+            android:text="Multiple Choice"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:gravity="center"

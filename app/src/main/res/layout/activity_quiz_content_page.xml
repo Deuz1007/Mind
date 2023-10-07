@@ -98,13 +98,13 @@
         android:background="@color/black">
 
         <Button
-            android:id="@+id/takequiz_btn"
+            android:id="@+id/generate_quiz_btn"
             android:layout_width="180dp"
             android:layout_height="60dp"
             android:background="@drawable/round_button_blue"
-            android:text="@string/take"
+            android:text="@string/generate"
             android:textSize="18dp"
-            android:fontFamily="@font/work_sans_bold"
+            android:fontFamily="@font/work_sans_medium"
             android:textColor="@color/black"/>
 
     </LinearLayout>

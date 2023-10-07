@@ -17,6 +17,18 @@
         android:theme="@style/Theme.Mind"
         tools:targetApi="31">
         <activity
+            android:name=".BooleanQuizPage"
+            android:exported="false" />
+        <activity
+            android:name=".IdentificationQuizPage"
+            android:exported="false" />
+        <activity
+            android:name=".QuizResultPage"
+            android:exported="false" />
+        <activity
+            android:name=".MultiChoiceQuizPage"
+            android:exported="false" />
+        <activity
             android:name=".EditTextOptionPage"
             android:exported="false" />
         <activity

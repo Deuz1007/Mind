@@ -1,8 +1,6 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +10,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.mind.exceptions.MaxContentTokensReachedException;
+import com.example.mind.interfaces.PostProcess;
+import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 public class QuizContentPage extends AppCompatActivity {
+
+    private Topic topic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +30,7 @@ public class QuizContentPage extends AppCompatActivity {
 
         // Get topic from intent from library sheet
         String topicId = getIntent().getStringExtra("topicId");
-        Topic topic = User.current.topics.get(topicId);
+        topic = User.current.topics.get(topicId);
 
         editContentField.setText(topic.content); // display the intent text in the editText
 
@@ -72,6 +75,50 @@ public class QuizContentPage extends AppCompatActivity {
 
                 editContent.setVisibility(View.VISIBLE);
                 saveContent.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        // Generate Quiz
+        Button generate = findViewById(R.id.generate_quiz_btn);
+        generate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Check topic content
+                // true if less than max
+                if(Quiz.isValidContent(topic.content)){
+                    try {
+                        Topic.createQuiz(topic, topic.content, 5, new PostProcess() {
+                            @Override
+                            public void Success(Object... o) {
+                                Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
+
+                                try {
+                                    System.out.println(o.length);
+                                    Quiz quiz = (Quiz) o[0];
+
+                                    Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+                                    intent.putExtra("quizId", quiz.quizId);
+                                    intent.putExtra("topicId", topic.topicId);
+                                    startActivity(intent);
+                                } catch (Exception e){
+                                    System.out.println(e.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void Failed(Exception e) {
+                                Toast.makeText(QuizContentPage.this, "Quiz Generation Failed", Toast.LENGTH_SHORT).show();
+                                System.out.println(e.getMessage());
+                            }
+                        });
+                    } catch (MaxContentTokensReachedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                //
+                else {
+
+                }
             }
         });
 
