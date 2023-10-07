@@ -51,9 +51,9 @@ public class home_screen extends AppCompatActivity {
         libraryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                showLibrary();
-
+                //showLibrary();
+                Intent intent = new Intent(home_screen.this, library_sheet.class);
+                startActivity(intent);
             }
         });
 
@@ -120,16 +120,16 @@ public class home_screen extends AppCompatActivity {
         library.getWindow().setGravity(Gravity.BOTTOM);
 
         // Show Quiz Content
-        Button showContent = library.findViewById(R.id.ict);
+//        Button showContent = library.findViewById(R.id.ict);
 
-        showContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home_screen.this, QuizContentPage.class);
-                startActivity(intent);
-
-            }
-        });
+//        showContent.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(home_screen.this, QuizContentPage.class);
+//                startActivity(intent);
+//
+//            }
+//        });
 
     }
 

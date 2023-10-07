@@ -9,9 +9,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mind.interfaces.PostProcess;
+import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
                 public void Success(Object... o) {
                     // Proceed to dashboard
                     dashboard();
+//                    Intent intent = new Intent(MainActivity.this, LoadingDialog.class);
+//                    startActivity(intent);
                 }
 
                 @Override
