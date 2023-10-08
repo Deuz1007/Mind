@@ -59,6 +59,8 @@ public class ParseXML {
                     // Get the choice from choices by index and assign it as answer
                     question.answer = question.choices.get(choiceIndex);
 
+                    question.type = Question.QuestionType.MULTIPLE_CHOICE;
+
                     break;
                 case TRUE_OR_FALSE:
                     // Lowercase the answer
@@ -68,12 +70,14 @@ public class ParseXML {
                     question.choices.add("true");
                     question.choices.add("false");
 
+                    question.type = Question.QuestionType.TRUE_OR_FALSE;
+
                     break;
                 case IDENTIFICATION:
                     // Assign the answer
                     question.answer = answerContent;
 
-                    break;
+                    question.type = Question.QuestionType.IDENTIFICATION;
             }
 
             // Add the question to the quiz
