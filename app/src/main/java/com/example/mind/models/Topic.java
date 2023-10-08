@@ -64,9 +64,14 @@ public class Topic {
         if (!Quiz.isValidContent(quizContent))
             throw new MaxContentTokensReachedException();
 
+        System.out.println(quizContent);
+        System.out.println("=================================================================");
+
         // Create new quiz
         Quiz newQuiz = new Quiz(itemsPerLevel);
         quizContent = quizContent.replaceAll("\\n", " ");
+
+        System.out.println(quizContent);
 
         /* Create requests */
 
@@ -109,8 +114,6 @@ public class Topic {
                 new PostProcess() {
                     @Override
                     public void Success(Object... o) {
-                        System.out.println("Questions generated. Saving quiz...");
-
                         // Extract the questions
                         for (Object obj : (List<?>) o[0]) {
                             Question question = (Question) obj;
