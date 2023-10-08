@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="440dp"
+        android:background="@drawable/upload_option_popup_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="40dp">
+
+        <!--    analytics title texts-->
+        <!--        Items Per Level-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_slab"
+            android:text="Items Per Level"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+
+        <!--    analytics value-->
+        <TextView
+            android:id="@+id/perlevel_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:text="score"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
+
+        <!--    analytics title texts-->
+        <!--        Average Score-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_slab"
+            android:text="Average Score"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:layout_marginTop="10dp"/>
+
+        <!--    analytics value-->
+        <TextView
+            android:id="@+id/average_score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:text="score"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
+
+        <!--    analytics title texts-->
+        <!--        Number of Retries-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_slab"
+            android:text="Number of Retries"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:layout_marginTop="10dp"/>
+
+        <!--    analytics value-->
+        <TextView
+            android:id="@+id/num_retires_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:text="score"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/retry_btn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Retry"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:textSize="25sp"
+            android:padding="20dp"
+            android:background="@drawable/nofill_button"/>
+
+    </LinearLayout>
+
+</LinearLayout>

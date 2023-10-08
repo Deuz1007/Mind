@@ -66,7 +66,16 @@ public class BooleanQuizPage extends AppCompatActivity {
 
     public void btnClick(View v) {
         Button clickedButton = (Button) v;
+
+        int choiceBtnColor = getResources().getColor(R.color.cool);
+
+        choiceA.setBackgroundColor(choiceBtnColor);
+        choiceB.setBackgroundColor(choiceBtnColor);
+
         if (clickedButton.getId() == R.id.choice_one_button) {
+            selectedAnswer = clickedButton.getText().toString();
+            clickedButton.setBackgroundColor(Color.DKGRAY);
+
             currentQuestionIndex++;
             loadNewQuestion();
 
@@ -75,15 +84,15 @@ public class BooleanQuizPage extends AppCompatActivity {
             }
         }
         if (clickedButton.getId() == R.id.choice_one_button) {
+            selectedAnswer = clickedButton.getText().toString();
+            clickedButton.setBackgroundColor(Color.DKGRAY);
+
             currentQuestionIndex++;
             loadNewQuestion();
 
             if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
                 score++;
             }
-        } else {
-            selectedAnswer = clickedButton.getText().toString();
-            clickedButton.setBackgroundColor(Color.DKGRAY);
         }
     }
 
@@ -105,9 +114,9 @@ public class BooleanQuizPage extends AppCompatActivity {
 
 //        Question getCurrentQuestions = questionList.get(currentQuestionIndex);
 //
-////        questionItem.setText(getCurrentQuestions.question);
-////        choiceA.setText(getCurrentQuestions.choices.get(0));
-////        choiceB.setText(getCurrentQuestions.choices.get(1));
+//        questionItem.setText(getCurrentQuestions.question);
+//        choiceA.setText(getCurrentQuestions.choices.get(0));
+//        choiceB.setText(getCurrentQuestions.choices.get(1));
 
     }
 }
