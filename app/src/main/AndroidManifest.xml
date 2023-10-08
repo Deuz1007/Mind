@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Mind"
         tools:targetApi="31">
         <activity
+            android:name=".TopicQuizContentPage"
+            android:exported="false" />
+        <activity
             android:name=".BooleanQuizPage"
             android:exported="false" />
         <activity

@@ -60,7 +60,7 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         numberOfQuestions.setText(String.valueOf(totalQuestions));
 
-//        loadNewQuestion();
+        loadNewQuestion();
 
     }
 
@@ -89,25 +89,25 @@ public class BooleanQuizPage extends AppCompatActivity {
 
     public void loadNewQuestion() {
 
-//        if (currentQuestionIndex == totalQuestions) {
-//            Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
-//            intent.putExtra("quizScore", score);
-//            startActivity(intent);
-//            return;
-//        } else {
-//
-//            Question getCurrentQuestions = questionList.get(currentQuestionIndex);
-//
-//            questionItem.setText(getCurrentQuestions.question);
-//            choiceA.setText(getCurrentQuestions.choices.get(0));
-//            choiceB.setText(getCurrentQuestions.choices.get(1));
-//        }
+        if (currentQuestionIndex == totalQuestions) {
+            Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
+            intent.putExtra("quizScore", score);
+            startActivity(intent);
+            return;
+        } else {
 
-        Question getCurrentQuestions = questionList.get(currentQuestionIndex);
+            Question getCurrentQuestions = questionList.get(currentQuestionIndex);
 
-//        questionItem.setText(getCurrentQuestions.question);
-//        choiceA.setText(getCurrentQuestions.choices.get(0));
-//        choiceB.setText(getCurrentQuestions.choices.get(1));
+            questionItem.setText(getCurrentQuestions.question);
+            choiceA.setText(getCurrentQuestions.choices.get(0));
+            choiceB.setText(getCurrentQuestions.choices.get(1));
+        }
+
+//        Question getCurrentQuestions = questionList.get(currentQuestionIndex);
+//
+////        questionItem.setText(getCurrentQuestions.question);
+////        choiceA.setText(getCurrentQuestions.choices.get(0));
+////        choiceB.setText(getCurrentQuestions.choices.get(1));
 
     }
 }
