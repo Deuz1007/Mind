@@ -48,11 +48,9 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
         ExtractText.Image(photo, new PostProcess() {
             @Override
             public void Success(Object... o) {
-                String text = (String) o[0];
-
-                Intent passTextData = new Intent(Capture_ShowImage_Page.this, EditTextOptionPage.class);
-                passTextData.putExtra("extractedtextData", text);
-                startActivity(passTextData);
+                Intent intent = new Intent(Capture_ShowImage_Page.this, EditTextOptionPage.class);
+                intent.putExtra("extractedText", (String) o[0]);
+                startActivity(intent);
             }
 
             @Override

@@ -80,20 +80,31 @@ public class QuizContentPage extends AppCompatActivity {
 
         // check content of the quiz
         Button goToQuizContent = findViewById(R.id.check_content_btn);
-        goToQuizContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
-                intent.putExtra("topicId", topic.topicId);
-                startActivity(intent);
-            }
-        });
+//        goToQuizContent.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
+//                intent.putExtra("topicId", topic.topicId);
+//                startActivity(intent);
+//            }
+//        });
 
         // Generate Quiz
         Button generate = findViewById(R.id.generate_quiz_btn);
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Get existing quiz
+                for (Quiz quiz : User.current.topics.get(topicId).quizzes.values()) {
+                    Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+                    intent.putExtra("quizId", quiz.quizId);
+                    intent.putExtra("topicId", topicId);
+                    startActivity(intent);
+
+                    break;
+                }
+
+                /*
                 // Check topic content
                 // true if less than max
                 try {
@@ -124,9 +135,9 @@ public class QuizContentPage extends AppCompatActivity {
                     });
                 }
                 catch (MaxContentTokensReachedException e) {
-                    Toast.makeText(QuizContentPage.this, "Content max token exceeded", Toast.LENGTH_SHORT).show();
-                    throw new RuntimeException(e);
+                    // Proceed to select text feature
                 }
+                */
             }
         });
 

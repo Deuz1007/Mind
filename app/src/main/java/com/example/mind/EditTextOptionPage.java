@@ -54,7 +54,7 @@ public class EditTextOptionPage extends AppCompatActivity {
 
         // Get text from intent
         Intent getExtractedText = getIntent(); // initializing get intent
-        String extractedText = getExtractedText.getStringExtra("extractedtextData"); // calling the intent named extractedtextData
+        String extractedText = getExtractedText.getStringExtra("extractedText"); // calling the intent named extractedText
         displayText.setText(extractedText); // display the intent text in the editText
 
         // Upload the text after clicking save
@@ -70,7 +70,8 @@ public class EditTextOptionPage extends AppCompatActivity {
                 Topic.add(newTopic, new PostProcess() {
                     @Override
                     public void Success(Object... o) {
-                        Toast.makeText(EditTextOptionPage.this, "Upload Success", Toast.LENGTH_SHORT);
+                        Toast.makeText(EditTextOptionPage.this, "Topic saved", Toast.LENGTH_SHORT);
+
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {

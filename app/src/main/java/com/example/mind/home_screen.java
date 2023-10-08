@@ -167,47 +167,43 @@ public class home_screen extends AppCompatActivity {
                 // Handle the selected file (e.g., open, display, or process it)
 //                openSelectedFile(selectedFileUri);
 
-                final String[] extractedText = new String[1];
                 try {
-                    extractedText[0] = "";
+                    String mimetype = home_screen.this.getContentResolver().getType(selectedFileUri);
 
-                    System.out.println(home_screen.this.getContentResolver().getType(selectedFileUri));
+                    if (!mimetype.contains("image")) {
+                        ExtractText.Image(home_screen.this, selectedFileUri, new PostProcess() {
+                            @Override
+                            public void Success(Object... o) {
+                                Intent intent = new Intent(home_screen.this, EditTextOptionPage.class);
+                                intent.putExtra("extractedText", (String) o[0]);
+                                startActivity(intent);
+                            }
 
-                    switch(home_screen.this.getContentResolver().getType(selectedFileUri)) {
-                        case "application/pdf":
-                            extractedText[0] = ExtractText.PDF(home_screen.this, selectedFileUri);
-                            break;
-                        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                            extractedText[0] = ExtractText.Word(home_screen.this, selectedFileUri);
-                            break;
-                        default:
-                            ExtractText.Image(home_screen.this, selectedFileUri, new PostProcess() {
-                                @Override
-                                public void Success(Object... o) {
-                                    extractedText[0] = (String) o[0];
-                                    System.out.println(extractedText[0]);
-
-                                    Intent passTextData = new Intent(home_screen.this, EditTextOptionPage.class);
-                                    passTextData.putExtra("extractedtextData", extractedText[0]);
-                                    startActivity(passTextData);
-                                }
-
-                                @Override
-                                public void Failed(Exception e) {
-                                    System.out.println(e.getMessage());
-                                    Toast.makeText(home_screen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            @Override
+                            public void Failed(Exception e) {
+                                System.out.println(e.getMessage());
+                                Toast.makeText(home_screen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
+                    else {
+                        String extractedText = null;
 
-                    // Pass text Data
-                    Intent passTextData = new Intent(home_screen.this, EditTextOptionPage.class);
-                    passTextData.putExtra("extractedtextData", extractedText[0]);
-                    startActivity(passTextData);
+                        switch(mimetype) {
+                            case "application/pdf":
+                                extractedText = ExtractText.PDF(home_screen.this, selectedFileUri);
+                                break;
+                            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                                extractedText = ExtractText.Word(home_screen.this, selectedFileUri);
+                                break;
+                        }
 
+                        Intent intent = new Intent(home_screen.this, EditTextOptionPage.class);
+                        intent.putExtra("extractedText", extractedText);
+                        startActivity(intent);
+                    }
                 }
                 catch(Exception e) {
-                    System.out.println(e.getMessage());
                     Toast.makeText(home_screen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 

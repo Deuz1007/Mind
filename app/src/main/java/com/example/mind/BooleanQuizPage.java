@@ -25,12 +25,11 @@ public class BooleanQuizPage extends AppCompatActivity {
     List<Question> questionList;
 
     int score = 0;
-    int totalQuestions;
     int currentQuestionIndex = 0;
     String selectedAnswer = "";
 
     Topic topic;
-    public Quiz quiz;
+    Quiz quiz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,77 +45,68 @@ public class BooleanQuizPage extends AppCompatActivity {
         String quizId = getIntent().getStringExtra("quizId");
         String topicId = getIntent().getStringExtra("topicId");
 
+        // Load topic and quiz from their ids
         topic = User.current.topics.get(topicId);
         quiz = topic.quizzes.get(quizId);
 
-        totalQuestions = quiz.itemsPerLevel;
+        // Get the true or false questions
         questionList = Quiz.getQuestionsByType(quiz, Question.QuestionType.TRUE_OR_FALSE); // get list of true of false items
 
-        System.out.println(questionList);
-        System.out.println(quiz.questions);
+        // Set the number of questions per level
+        numberOfQuestions.setText(quiz.itemsPerLevel);
 
-        choiceA.setOnClickListener(this::btnClick);
-        choiceB.setOnClickListener(this::btnClick);
-
-        numberOfQuestions.setText(String.valueOf(totalQuestions));
-
+        // Load the question
         loadNewQuestion();
 
     }
 
     public void btnClick(View v) {
         Button clickedButton = (Button) v;
+        int btnId = clickedButton.getId();
 
-        int choiceBtnColor = getResources().getColor(R.color.cool);
-
-        choiceA.setBackgroundColor(choiceBtnColor);
-        choiceB.setBackgroundColor(choiceBtnColor);
-
-        if (clickedButton.getId() == R.id.choice_one_button) {
+        if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button) {
+            // Change button design
             selectedAnswer = clickedButton.getText().toString();
             clickedButton.setBackgroundColor(Color.DKGRAY);
 
-            currentQuestionIndex++;
-            loadNewQuestion();
-
-            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
+            // Increment score if answer is correct
+            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer))
                 score++;
-            }
+
+            // Increment current question index
+            currentQuestionIndex++;
+
+            // Proceed to new question
+            loadNewQuestion();
         }
-        if (clickedButton.getId() == R.id.choice_one_button) {
-            selectedAnswer = clickedButton.getText().toString();
-            clickedButton.setBackgroundColor(Color.DKGRAY);
-
-            currentQuestionIndex++;
-            loadNewQuestion();
-
-            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
-                score++;
-            }
+        else {
+            selectedAnswer = "";
+            // Set clicked button color to default
         }
     }
 
     public void loadNewQuestion() {
-
-        if (currentQuestionIndex == totalQuestions) {
+        if (currentQuestionIndex == quiz.itemsPerLevel) {
             Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
-            intent.putExtra("quizScore", score);
+            intent.putExtra("score", score);
+            intent.putExtra("quizId", quiz.quizId);
+            intent.putExtra("topicId", topic.topicId);
+
             startActivity(intent);
-            return;
-        } else {
-
-            Question getCurrentQuestions = questionList.get(currentQuestionIndex);
-
-            questionItem.setText(getCurrentQuestions.question);
-            choiceA.setText(getCurrentQuestions.choices.get(0));
-            choiceB.setText(getCurrentQuestions.choices.get(1));
         }
+        else {
+            /* Reset values: */
+            // Timer
+            selectedAnswer = ""; // Selected answer
+            // Selected button color
 
-//        Question getCurrentQuestions = questionList.get(currentQuestionIndex);
-//
-//        questionItem.setText(getCurrentQuestions.question);
-//        choiceA.setText(getCurrentQuestions.choices.get(0));
-//        choiceB.setText(getCurrentQuestions.choices.get(1));
+            Question current = questionList.get(currentQuestionIndex);
+
+            // Reset UI texts
+            questionItem.setText(current.question);
+            choiceA.setText(current.choices.get(0));
+            choiceB.setText(current.choices.get(1));
+        }
 
     }
 }
