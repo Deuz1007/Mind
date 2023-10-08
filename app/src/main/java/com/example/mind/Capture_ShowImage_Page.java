@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.mind.interfaces.PostProcess;
+import com.example.mind.utilities.ExtractText;
+
 public class Capture_ShowImage_Page extends AppCompatActivity {
 
     // To access Camera
@@ -41,5 +44,21 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Bitmap photo = (Bitmap)data.getExtras().get("data");
         imageView.setImageBitmap(photo);
+
+        ExtractText.Image(photo, new PostProcess() {
+            @Override
+            public void Success(Object... o) {
+                String text = (String) o[0];
+
+                Intent passTextData = new Intent(Capture_ShowImage_Page.this, EditTextOptionPage.class);
+                passTextData.putExtra("extractedtextData", text);
+                startActivity(passTextData);
+            }
+
+            @Override
+            public void Failed(Exception e) {
+
+            }
+        });
     }
 }
