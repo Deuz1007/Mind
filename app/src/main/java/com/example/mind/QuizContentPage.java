@@ -80,14 +80,14 @@ public class QuizContentPage extends AppCompatActivity {
 
         // check content of the quiz
         Button goToQuizContent = findViewById(R.id.check_content_btn);
-        goToQuizContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
-                intent.putExtra("topicId", topic.topicId);
-                startActivity(intent);
-            }
-        });
+//        goToQuizContent.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
+//                intent.putExtra("topicId", topic.topicId);
+//                startActivity(intent);
+//            }
+//        });
 
         // Generate Quiz
         Button generate = findViewById(R.id.generate_quiz_btn);
