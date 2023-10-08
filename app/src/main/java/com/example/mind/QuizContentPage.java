@@ -94,6 +94,17 @@ public class QuizContentPage extends AppCompatActivity {
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Get existing quiz
+                for (Quiz quiz : User.current.topics.get(topicId).quizzes.values()) {
+                    Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+                    intent.putExtra("quizId", quiz.quizId);
+                    intent.putExtra("topicId", topicId);
+                    startActivity(intent);
+
+                    break;
+                }
+
+                /*
                 // Check topic content
                 // true if less than max
                 try {
@@ -124,9 +135,9 @@ public class QuizContentPage extends AppCompatActivity {
                     });
                 }
                 catch (MaxContentTokensReachedException e) {
-                    Toast.makeText(QuizContentPage.this, "Content max token exceeded", Toast.LENGTH_SHORT).show();
-                    throw new RuntimeException(e);
+                    // Proceed to select text feature
                 }
+                */
             }
         });
 
