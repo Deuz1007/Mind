@@ -99,6 +99,7 @@ public class QuizContentPage extends AppCompatActivity {
                                 intent.putExtra("quizId", quiz.quizId);
                                 intent.putExtra("topicId", topic.topicId);
                                 startActivity(intent);
+
                             } catch (Exception e){
                                 System.out.println(e.getMessage());
                             }

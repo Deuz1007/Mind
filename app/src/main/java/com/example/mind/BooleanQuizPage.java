@@ -51,45 +51,63 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         totalQuestions = quiz.itemsPerLevel;
         questionList = Quiz.getQuestionsByType(quiz, Question.QuestionType.TRUE_OR_FALSE); // get list of true of false items
-//
-//        choiceA.setOnClickListener(this::btnClick);
-//        choiceB.setOnClickListener(this::btnClick);
-//
-//        numberOfQuestions.setText(totalQuestions);
-//
+
+        System.out.println(questionList);
+        System.out.println(quiz.questions);
+
+        choiceA.setOnClickListener(this::btnClick);
+        choiceB.setOnClickListener(this::btnClick);
+
+        numberOfQuestions.setText(String.valueOf(totalQuestions));
+
 //        loadNewQuestion();
 
     }
 
-    private void loadNewQuestion() {
-
-        if (currentQuestionIndex == totalQuestions){
-            Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
-            intent.putExtra("quizScore", score);
-            startActivity(intent);
-        }
-
-        questionItem.setText(questionList.get(currentQuestionIndex).question);
-        choiceA.setText(questionList.get(currentQuestionIndex).choices.get(0));
-        choiceB.setText(questionList.get(currentQuestionIndex).choices.get(1));
-    }
-
-    private void btnClick(View v) {
+    public void btnClick(View v) {
         Button clickedButton = (Button) v;
-        if(clickedButton.getId() == R.id.choice_one_button){
+        if (clickedButton.getId() == R.id.choice_one_button) {
             currentQuestionIndex++;
             loadNewQuestion();
 
-            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)){
+            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
                 score++;
             }
         }
-        if (clickedButton.getId() == R.id.choice_one_button){
+        if (clickedButton.getId() == R.id.choice_one_button) {
+            currentQuestionIndex++;
+            loadNewQuestion();
 
-        }
-        else {
+            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
+                score++;
+            }
+        } else {
             selectedAnswer = clickedButton.getText().toString();
             clickedButton.setBackgroundColor(Color.DKGRAY);
         }
+    }
+
+    public void loadNewQuestion() {
+
+//        if (currentQuestionIndex == totalQuestions) {
+//            Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
+//            intent.putExtra("quizScore", score);
+//            startActivity(intent);
+//            return;
+//        } else {
+//
+//            Question getCurrentQuestions = questionList.get(currentQuestionIndex);
+//
+//            questionItem.setText(getCurrentQuestions.question);
+//            choiceA.setText(getCurrentQuestions.choices.get(0));
+//            choiceB.setText(getCurrentQuestions.choices.get(1));
+//        }
+
+        Question getCurrentQuestions = questionList.get(currentQuestionIndex);
+
+//        questionItem.setText(getCurrentQuestions.question);
+//        choiceA.setText(getCurrentQuestions.choices.get(0));
+//        choiceB.setText(getCurrentQuestions.choices.get(1));
+
     }
 }
