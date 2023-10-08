@@ -69,7 +69,7 @@ public class Topic {
 
         // Create new quiz
         Quiz newQuiz = new Quiz(itemsPerLevel);
-        quizContent = quizContent.replaceAll("\\n", " ");
+        quizContent = quizContent.replaceAll("\\n", " ").replaceAll("\\s+", " ");
 
         System.out.println(quizContent);
 
