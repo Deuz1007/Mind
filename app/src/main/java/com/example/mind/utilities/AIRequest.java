@@ -3,6 +3,7 @@ package com.example.mind.utilities;
 import androidx.annotation.NonNull;
 
 import com.example.mind.BuildConfig;
+import com.example.mind.exceptions.QuizGenerationFailedException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Question;
 
@@ -97,11 +98,11 @@ public class AIRequest {
                         catch (Exception e) {
                             callback.Failed(e);
                         }
+                    else callback.Failed(new QuizGenerationFailedException());
                 }
 
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    System.out.println(e.getMessage());
                     callback.Failed(e);
                 }
             });
