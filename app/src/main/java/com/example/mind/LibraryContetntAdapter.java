@@ -53,7 +53,6 @@ public class LibraryContetntAdapter extends RecyclerView.Adapter<LibraryContetnt
 
     @Override
     public int getItemCount() {
-        System.out.println(items.size());
         return items.size();
     }
 

@@ -29,8 +29,9 @@ public class BooleanQuizPage extends AppCompatActivity {
     int currentQuestionIndex = 0;
     String selectedAnswer = "";
 
-    private Topic topic;
-    private Quiz quiz;
+    Topic topic;
+    public Quiz quiz;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         quiz = topic.quizzes.get(quizId);
 
         totalQuestions = quiz.itemsPerLevel;
-        questionList = Quiz.getGroupedQuestions(quiz).get(Question.QuestionType.TRUE_OR_FALSE); // get list of true of false items
+        questionList = Quiz.getQuestionsByType(quiz, Question.QuestionType.TRUE_OR_FALSE); // get list of true of false items
 //
 //        choiceA.setOnClickListener(this::btnClick);
 //        choiceB.setOnClickListener(this::btnClick);

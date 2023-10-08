@@ -57,6 +57,8 @@ public class AIRequest {
         // Mapping for the generated questions per question type
         Map<Question.QuestionType, List<Question>> generatedQuestions = new HashMap<>();
 
+        System.out.println("Sending request...");
+
         // Loop through each question request
         for (QuestionRequest questionRequest : requests)
             // Initiate the request
@@ -65,6 +67,8 @@ public class AIRequest {
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     // Get the response body
                     String responseBody = response.body().string();
+
+                    System.out.println(responseBody);
 
                     // Create a matcher for the response body
                     Matcher matcher = RESPONSE_PATTERN.matcher(responseBody);
@@ -93,14 +97,20 @@ public class AIRequest {
                                 // Call the success callback with the list of questions
                                 callback.Success(questions);
                             }
+                            else System.out.println("Generated questions: " + generatedQuestions.size());
                         }
                         catch (Exception e) {
+                            System.out.println(e.getMessage());
                             callback.Failed(e);
                         }
+                    else {
+                        System.out.println("No response found");
+                    }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    System.out.println(e.getMessage());
                     callback.Failed(e);
                 }
             });

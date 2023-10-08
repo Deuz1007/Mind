@@ -66,6 +66,9 @@ public class Topic {
 
         // Create new quiz
         Quiz newQuiz = new Quiz(itemsPerLevel);
+        quizContent = quizContent.replaceAll("\\n", "\\\\n");
+
+        System.out.println(quizContent);
 
         /* Create requests */
 
@@ -108,6 +111,8 @@ public class Topic {
                 new PostProcess() {
                     @Override
                     public void Success(Object... o) {
+                        System.out.println("Questions generated. Saving quiz...");
+
                         // Extract the questions
                         for (Object obj : (List<?>) o[0]) {
                             Question question = (Question) obj;
@@ -121,6 +126,7 @@ public class Topic {
 
                     @Override
                     public void Failed(Exception e) {
+                        System.out.println(e.getMessage());
                         callback.Failed(e);
                     }
                 }
