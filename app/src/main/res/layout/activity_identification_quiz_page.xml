@@ -77,6 +77,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
+            android:id="@+id/submitAnswer_btn"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="128dp"
@@ -89,7 +90,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_answer"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            android:onClick="btnClick"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

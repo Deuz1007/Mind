@@ -53,7 +53,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         questionList = Quiz.getQuestionsByType(quiz, Question.QuestionType.TRUE_OR_FALSE); // get list of true of false items
 
         // Set the number of questions per level
-        numberOfQuestions.setText(quiz.itemsPerLevel);
+        numberOfQuestions.setText(quiz.itemsPerLevel + "");
 
         // Load the question
         loadNewQuestion();
@@ -79,16 +79,16 @@ public class BooleanQuizPage extends AppCompatActivity {
             // Proceed to new question
             loadNewQuestion();
         }
-        else {
-            selectedAnswer = "";
-            // Set clicked button color to default
-        }
+//        else {
+//            selectedAnswer = "";
+//            // Set clicked button color to default
+//        }
     }
 
     public void loadNewQuestion() {
         if (currentQuestionIndex == quiz.itemsPerLevel) {
             Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
-            intent.putExtra("score", score);
+            intent.putExtra("score", score + "");
             intent.putExtra("quizId", quiz.quizId);
             intent.putExtra("topicId", topic.topicId);
 

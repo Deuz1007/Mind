@@ -94,6 +94,11 @@ public class QuizContentPage extends AppCompatActivity {
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                System.out.println("Button Clicked");
+                System.out.println(User.current.topics.get(topicId).quizzes.values());
+
+                /*
                 // Get existing quiz
                 for (Quiz quiz : User.current.topics.get(topicId).quizzes.values()) {
                     Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
@@ -103,6 +108,15 @@ public class QuizContentPage extends AppCompatActivity {
 
                     break;
                 }
+                */
+
+                Quiz quiz = User.current.topics.get(topicId).quizzes.get("Ol2RA4oBg4GqZoH0");
+                System.out.println(quiz);
+
+                Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+                intent.putExtra("quizId", quiz.quizId);
+                intent.putExtra("topicId", topicId);
+                startActivity(intent);
 
                 /*
                 // Check topic content
