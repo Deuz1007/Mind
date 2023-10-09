@@ -20,6 +20,7 @@ import com.example.mind.models.User;
 
 import org.zwobble.mammoth.internal.documents.Text;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizContentAdapter.QuizContentHolder>{
@@ -46,6 +47,8 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
     Context context;
     List<QuizItem> quizItems;
     Dialog quizAnalyticsPopup;
+
+    final DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     public TopicQuizContentAdapter(Context context, List<QuizItem> quizItems) {
         this.context = context;
@@ -90,7 +93,7 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
 
         // Set text values
         tv_itemsPerLevel.setText(quizItem.quiz.itemsPerLevel + "");
-        tv_average.setText(quizItem.quiz.average + "");
+        tv_average.setText(decimalFormat.format(quizItem.quiz.average));
         tv_retries.setText(quizItem.quiz.retries + "");
 
         // Button click listener
