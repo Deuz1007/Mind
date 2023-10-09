@@ -81,18 +81,14 @@ public class IdentificationQuizPage extends AppCompatActivity {
             // Proceed to new question
             loadNewQuestion();
         }
-//        else {
-//            selectedAnswer = "";
-//            // Set clicked button color to default
-//        }
     }
 
     public void loadNewQuestion() {
         if (currentQuestionIndex == quiz.itemsPerLevel) {
-            Intent intent = new Intent(IdentificationQuizPage.this, home_screen.class);
-//            intent.putExtra("score", score + "");
-//            intent.putExtra("quizId", quiz.quizId);
-//            intent.putExtra("topicId", topic.topicId);
+            Intent intent = new Intent(IdentificationQuizPage.this, QuizResultPage.class);
+            intent.putExtra("score", score + "");
+            intent.putExtra("quizId", quiz.quizId);
+            intent.putExtra("topicId", topic.topicId);
 
             startActivity(intent);
         }

@@ -36,6 +36,8 @@ public class BooleanQuizPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boolean_quiz_page);
 
+        System.out.println("Rendered boolean page");
+
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
         choiceA = findViewById(R.id.choice_one_button);
@@ -44,6 +46,9 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Get topic from intent from library sheet
         String quizId = getIntent().getStringExtra("quizId");
         String topicId = getIntent().getStringExtra("topicId");
+
+        System.out.println(topicId);
+        System.out.println(quizId);
 
         // Load topic and quiz from their ids
         topic = User.current.topics.get(topicId);
@@ -57,7 +62,6 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         // Load the question
         loadNewQuestion();
-
     }
 
     public void btnClick(View v) {
@@ -79,10 +83,6 @@ public class BooleanQuizPage extends AppCompatActivity {
             // Proceed to new question
             loadNewQuestion();
         }
-//        else {
-//            selectedAnswer = "";
-//            // Set clicked button color to default
-//        }
     }
 
     public void loadNewQuestion() {

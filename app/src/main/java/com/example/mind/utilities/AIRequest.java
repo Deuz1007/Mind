@@ -57,6 +57,8 @@ public class AIRequest {
     public static void send(QuestionRequest[] requests, PostProcess callback) {
         // Mapping for the generated questions per question type
         Map<Question.QuestionType, List<Question>> generatedQuestions = new HashMap<>();
+        final boolean[] isSuccess = { true };
+        final int[] requestCount = { 0 };
 
         // Loop through each question request
         for (QuestionRequest questionRequest : requests)
@@ -64,6 +66,18 @@ public class AIRequest {
             client.newCall(questionRequest.request).enqueue(new Callback() {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    // Increment request count
+                    requestCount[0]++;
+
+                    // Check if the requests are still success
+                    if (!isSuccess[0]) {
+                        // if the request count reaches 3, call the callback with exception
+                        if (requestCount[0] == 3)
+                            callback.Failed(new QuizGenerationFailedException());
+
+                        return;
+                    }
+
                     // Get the response body
                     String responseBody = response.body().string();
 
@@ -98,7 +112,8 @@ public class AIRequest {
                         catch (Exception e) {
                             callback.Failed(e);
                         }
-                    else callback.Failed(new QuizGenerationFailedException());
+                    // Set is success to false if there isn't matched <response></response>
+                    else isSuccess[0] = false;
                 }
 
                 @Override

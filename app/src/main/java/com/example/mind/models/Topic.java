@@ -64,14 +64,9 @@ public class Topic {
         if (!Quiz.isValidContent(quizContent))
             throw new MaxContentTokensReachedException();
 
-        System.out.println(quizContent);
-        System.out.println("=================================================================");
-
         // Create new quiz
         Quiz newQuiz = new Quiz(itemsPerLevel);
         quizContent = quizContent.replaceAll("\\n", " ").replaceAll("\\s+", " ");
-
-        System.out.println(quizContent);
 
         /* Create requests */
 
