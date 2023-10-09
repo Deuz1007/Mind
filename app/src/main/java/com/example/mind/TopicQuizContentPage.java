@@ -29,7 +29,6 @@ public class TopicQuizContentPage extends AppCompatActivity {
 
         // Get topic from intent from Quiz Content
         String topicId = getIntent().getStringExtra("topicId");
-
         Topic topic = User.current.topics.get(topicId);
 
         List<TopicQuizContentAdapter.QuizItem> quizItems = new ArrayList<>();

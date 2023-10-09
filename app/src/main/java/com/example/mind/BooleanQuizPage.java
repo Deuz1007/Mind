@@ -47,9 +47,6 @@ public class BooleanQuizPage extends AppCompatActivity {
         String quizId = getIntent().getStringExtra("quizId");
         String topicId = getIntent().getStringExtra("topicId");
 
-        System.out.println(topicId);
-        System.out.println(quizId);
-
         // Load topic and quiz from their ids
         topic = User.current.topics.get(topicId);
         quiz = topic.quizzes.get(quizId);
@@ -62,6 +59,13 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         // Load the question
         loadNewQuestion();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Show popup "Are you sure to end quiz the quiz? The progress won't save"
     }
 
     public void btnClick(View v) {
@@ -93,6 +97,7 @@ public class BooleanQuizPage extends AppCompatActivity {
             intent.putExtra("topicId", topic.topicId);
 
             startActivity(intent);
+            finish();
         }
         else {
             /* Reset values: */

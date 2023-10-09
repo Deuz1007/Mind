@@ -55,97 +55,62 @@ public class QuizContentPage extends AppCompatActivity {
         }
 
         // edit
-        editContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editContentField.setEnabled(true);
-                editEnabled[0] = false;
+        editContent.setOnClickListener(view -> {
+            editContentField.setEnabled(true);
+            editEnabled[0] = false;
 
-                editContent.setVisibility(View.INVISIBLE);
-                saveContent.setVisibility(View.VISIBLE);
-            }
+            editContent.setVisibility(View.INVISIBLE);
+            saveContent.setVisibility(View.VISIBLE);
         });
 
         // save
-        saveContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editContentField.setEnabled(false);
-                editEnabled[0] = true;
+        saveContent.setOnClickListener(view -> {
+            editContentField.setEnabled(false);
+            editEnabled[0] = true;
 
-                editContent.setVisibility(View.VISIBLE);
-                saveContent.setVisibility(View.INVISIBLE);
-            }
+            editContent.setVisibility(View.VISIBLE);
+            saveContent.setVisibility(View.INVISIBLE);
         });
 
         // check content of the quiz
         Button goToQuizContent = findViewById(R.id.check_content_btn);
-        goToQuizContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
-                intent.putExtra("topicId", topic.topicId);
-                startActivity(intent);
-            }
+        goToQuizContent.setOnClickListener(view -> {
+            Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
+            intent.putExtra("topicId", topic.topicId);
+            startActivity(intent);
         });
 
         // Generate Quiz
         Button generate = findViewById(R.id.generate_quiz_btn);
-        generate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*
-                // Get existing quiz
-                for (Quiz quiz : User.current.topics.get(topicId).quizzes.values()) {
-                    Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
-                    intent.putExtra("quizId", quiz.quizId);
-                    intent.putExtra("topicId", topicId);
-                    startActivity(intent);
+        generate.setOnClickListener(view -> {
+            try {
+                Topic.createQuiz(topic, topic.content, 5, new PostProcess() {
+                    @Override
+                    public void Success(Object... o) {
+                        Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
 
-                    break;
-                }
-                */
+                        try {
+                            Quiz quiz = (Quiz) o[0];
 
-//                Quiz quiz = User.current.topics.get(topicId).quizzes.get("TAAM3XnSajmd44ry");
-//                System.out.println(quiz);
-//
-//                Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
-//                intent.putExtra("quizId", quiz.quizId);
-//                intent.putExtra("topicId", topicId);
-//                startActivity(intent);
+                            Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+                            intent.putExtra("quizId", quiz.quizId);
+                            intent.putExtra("topicId", topic.topicId);
+                            startActivity(intent);
 
-                // Check topic content
-                // true if less than max
-                try {
-                    Topic.createQuiz(topic, topic.content, 5, new PostProcess() {
-                        @Override
-                        public void Success(Object... o) {
-                            Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
-
-                            try {
-                                System.out.println(o.length);
-                                Quiz quiz = (Quiz) o[0];
-
-                                Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
-                                intent.putExtra("quizId", quiz.quizId);
-                                intent.putExtra("topicId", topic.topicId);
-                                startActivity(intent);
-
-                            } catch (Exception e){
-                                System.out.println(e.getMessage());
-                            }
-                        }
-
-                        @Override
-                        public void Failed(Exception e) {
-                            Toast.makeText(QuizContentPage.this, "Quiz Generation Failed", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e){
                             System.out.println(e.getMessage());
                         }
-                    });
-                }
-                catch (MaxContentTokensReachedException e) {
-                    // Proceed to select text feature
-                }
+                    }
+
+                    @Override
+                    public void Failed(Exception e) {
+                        Toast.makeText(QuizContentPage.this, "Quiz Generation Failed", Toast.LENGTH_SHORT).show();
+                        System.out.println(e.getMessage());
+                    }
+                });
+            }
+            catch (MaxContentTokensReachedException e) {
+                // Proceed to select text feature
             }
         });
 

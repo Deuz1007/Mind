@@ -64,6 +64,12 @@ public class QuizResultPage extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        // Go to main menu
+        mainMenu();
+    }
+
     private void quizAgain() {
         Intent intent = new Intent(this, BooleanQuizPage.class);
         intent.putExtra("topicId", topicId);

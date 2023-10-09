@@ -26,7 +26,6 @@ public class library_sheet extends AppCompatActivity {
         LibraryContentAdapter contentAdapter = new LibraryContentAdapter(this, new ArrayList<>(User.current.topics.values()));
         recyclerView.setAdapter(contentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     public void buttonOpenFile(View view){

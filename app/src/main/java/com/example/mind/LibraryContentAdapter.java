@@ -15,6 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mind.models.Topic;
 
 public class LibraryContentAdapter extends RecyclerView.Adapter<LibraryContentAdapter.LibraryContentViewHolder> {
+    public static class LibraryContentViewHolder extends RecyclerView.ViewHolder  {
+        TextView contentView;
+
+        public LibraryContentViewHolder(@NonNull View itemView) {
+            super(itemView);
+            contentView = itemView.findViewById(R.id.content_title);
+        }
+    }
 
     Context context;
     List<Topic> items;
@@ -50,15 +58,5 @@ public class LibraryContentAdapter extends RecyclerView.Adapter<LibraryContentAd
     @Override
     public int getItemCount() {
         return items.size();
-    }
-
-    public static class LibraryContentViewHolder extends RecyclerView.ViewHolder  {
-
-        TextView contentView;
-
-        public LibraryContentViewHolder(@NonNull View itemView) {
-            super(itemView);
-            contentView = itemView.findViewById(R.id.content_title);
-        }
     }
 }

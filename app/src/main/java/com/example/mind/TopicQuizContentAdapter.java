@@ -99,10 +99,6 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
                 Intent intent = new Intent(context, BooleanQuizPage.class);
                 intent.putExtra("topicId", quizItem.topic.topicId);
                 intent.putExtra("quizId", quizItem.quiz.quizId);
-
-                System.out.println("Topic ID: " + quizItem.topic.topicId);
-                System.out.println("Quiz ID: " + quizItem.quiz.quizId);
-
                 context.startActivity(intent);
             } catch (Exception e) {
                 System.out.println(e.getMessage());

@@ -67,6 +67,13 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         loadNewQuestion();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // Show popup "Are you sure to end quiz the quiz? The progress won't save"
+    }
+
     public void btnClick(View v) {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
@@ -96,6 +103,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             intent.putExtra("topicId", topic.topicId);
 
             startActivity(intent);
+            finish();
         }
         else {
             /* Reset values: */
@@ -112,6 +120,5 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             choiceC.setText(current.choices.get(2));
             choiceD.setText(current.choices.get(3));
         }
-
     }
 }
