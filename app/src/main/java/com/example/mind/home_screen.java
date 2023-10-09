@@ -1,40 +1,19 @@
 package com.example.mind;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.example.mind.exceptions.FileSizeLimitException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.ExtractText;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.navigation.NavigationBarMenu;
-import com.google.android.material.navigation.NavigationView;
-
-import java.io.IOException;
 
 public class home_screen extends AppCompatActivity {
     Button libraryButton; // For Library Bottom Sheet
@@ -77,7 +56,7 @@ public class home_screen extends AppCompatActivity {
             try {
                 String mimetype = home_screen.this.getContentResolver().getType(selectedFileUri);
 
-                if (!mimetype.contains("image")) {
+                if (mimetype.contains("image")) {
                     ExtractText.Image(home_screen.this, selectedFileUri, new PostProcess() {
                         @Override
                         public void Success(Object... o) {
