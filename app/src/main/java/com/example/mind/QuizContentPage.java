@@ -80,24 +80,20 @@ public class QuizContentPage extends AppCompatActivity {
 
         // check content of the quiz
         Button goToQuizContent = findViewById(R.id.check_content_btn);
-//        goToQuizContent.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
-//                intent.putExtra("topicId", topic.topicId);
-//                startActivity(intent);
-//            }
-//        });
+        goToQuizContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
+                intent.putExtra("topicId", topic.topicId);
+                startActivity(intent);
+            }
+        });
 
         // Generate Quiz
         Button generate = findViewById(R.id.generate_quiz_btn);
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                System.out.println("Button Clicked");
-                System.out.println(User.current.topics.get(topicId).quizzes.values());
-
                 /*
                 // Get existing quiz
                 for (Quiz quiz : User.current.topics.get(topicId).quizzes.values()) {
@@ -110,15 +106,14 @@ public class QuizContentPage extends AppCompatActivity {
                 }
                 */
 
-                Quiz quiz = User.current.topics.get(topicId).quizzes.get("Ol2RA4oBg4GqZoH0");
-                System.out.println(quiz);
+//                Quiz quiz = User.current.topics.get(topicId).quizzes.get("TAAM3XnSajmd44ry");
+//                System.out.println(quiz);
+//
+//                Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+//                intent.putExtra("quizId", quiz.quizId);
+//                intent.putExtra("topicId", topicId);
+//                startActivity(intent);
 
-                Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
-                intent.putExtra("quizId", quiz.quizId);
-                intent.putExtra("topicId", topicId);
-                startActivity(intent);
-
-                /*
                 // Check topic content
                 // true if less than max
                 try {
@@ -151,20 +146,13 @@ public class QuizContentPage extends AppCompatActivity {
                 catch (MaxContentTokensReachedException e) {
                     // Proceed to select text feature
                 }
-                */
             }
         });
 
         // Go back to home screen
         Button goBack = findViewById(R.id.back_btn);
 
-        goBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(QuizContentPage.this, home_screen.class);
-                startActivity(intent);
-            }
-        });
+        goBack.setOnClickListener(view -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
 
     }
 }

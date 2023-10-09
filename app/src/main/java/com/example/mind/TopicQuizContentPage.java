@@ -18,6 +18,7 @@ import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TopicQuizContentPage extends AppCompatActivity {
 
@@ -31,7 +32,9 @@ public class TopicQuizContentPage extends AppCompatActivity {
 
         Topic topic = User.current.topics.get(topicId);
 
-        System.out.println(topic);
+        List<TopicQuizContentAdapter.QuizItem> quizItems = new ArrayList<>();
+        for (Quiz quiz : topic.quizzes.values())
+            quizItems.add(new TopicQuizContentAdapter.QuizItem(topic, quiz));
 
         // Get the title of the topic
         TextView title = findViewById(R.id.topic_title);
@@ -40,10 +43,8 @@ public class TopicQuizContentPage extends AppCompatActivity {
         // Container of the Recycleview
         RecyclerView recyclerView = findViewById(R.id.quiz_content_id);
 
-        TopicQuizContentAdapter contentAdapter = new TopicQuizContentAdapter(this, new ArrayList<>(topic.quizzes.values()));
+        TopicQuizContentAdapter contentAdapter = new TopicQuizContentAdapter(this, quizItems);
         recyclerView.setAdapter(contentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
-
 }

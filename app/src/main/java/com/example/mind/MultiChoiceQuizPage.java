@@ -86,10 +86,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             // Proceed to new question
             loadNewQuestion();
         }
-//        else {
-//            selectedAnswer = "";
-//            // Set clicked button color to default
-//        }
     }
 
     public void loadNewQuestion() {

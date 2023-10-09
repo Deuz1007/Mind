@@ -39,7 +39,7 @@ public class ParseXML {
 
             // Get question
             Element questionElement = (Element) itemElement.getElementsByTagName("question").item(0);
-            question.question = questionElement.getTextContent();
+            question.question = removeOrdering(questionElement.getTextContent());
 
             // Get answer
             Element answerElement = (Element) itemElement.getElementsByTagName("answer").item(0);
@@ -57,7 +57,7 @@ public class ParseXML {
                     // Convert CHOICE INDEX to number
                     int choiceIndex = Integer.parseInt(answerContent);
                     // Get the choice from choices by index and assign it as answer
-                    question.answer = question.choices.get(choiceIndex);
+                    question.answer = removeOrdering(question.choices.get(choiceIndex));
 
                     question.type = Question.QuestionType.MULTIPLE_CHOICE;
 
@@ -86,5 +86,9 @@ public class ParseXML {
 
         // Return all parsed questions
         return questions;
+    }
+
+    private static String removeOrdering(String str) {
+        return str.replaceAll("\\w+\\.\\s+", "");
     }
 }

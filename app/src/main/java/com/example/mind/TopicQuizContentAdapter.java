@@ -15,19 +15,41 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mind.models.Quiz;
+import com.example.mind.models.Topic;
+import com.example.mind.models.User;
+
+import org.zwobble.mammoth.internal.documents.Text;
 
 import java.util.List;
 
 public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizContentAdapter.QuizContentHolder>{
+    public static class QuizContentHolder extends RecyclerView.ViewHolder  {
+
+        TextView quizcontentView;
+
+        public QuizContentHolder(@NonNull View itemView) {
+            super(itemView);
+            quizcontentView = itemView.findViewById(R.id.quiz_content);
+        }
+    }
+
+    public static class QuizItem {
+        public Topic topic;
+        public Quiz quiz;
+
+        public QuizItem(Topic topic, Quiz quiz) {
+            this.topic = topic;
+            this.quiz = quiz;
+        }
+    }
 
     Context context;
-    List<Quiz> quizzes;
-
+    List<QuizItem> quizItems;
     Dialog quizAnalyticsPopup;
 
-    public TopicQuizContentAdapter(Context context, List<Quiz> quizzes) {
+    public TopicQuizContentAdapter(Context context, List<QuizItem> quizItems) {
         this.context = context;
-        this.quizzes = quizzes;
+        this.quizItems = quizItems;
     }
 
     @NonNull
@@ -41,43 +63,49 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
 
     @Override
     public void onBindViewHolder(@NonNull TopicQuizContentAdapter.QuizContentHolder holder, int position) {
-        holder.quizcontentView.setText(quizzes.get(position).quizId);
+        QuizItem quizItem = quizItems.get(position);
 
-        holder.quizcontentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // To display upload option popup layout
-                quizAnalyticsPopup = new Dialog(context);
-
-                ShowAnalyticsPopup();
-            }
+        holder.quizcontentView.setText(quizItem.quiz.quizId);
+        holder.quizcontentView.setOnClickListener(view -> {
+            // To display upload option popup layout
+            quizAnalyticsPopup = new Dialog(context);
+            // Show popup
+            ShowAnalyticsPopup(quizItem);
         });
     }
 
     @Override
     public int getItemCount() {
-        return quizzes.size();
+        return quizItems.size();
     }
 
-    public static class QuizContentHolder extends RecyclerView.ViewHolder  {
-
-        TextView quizcontentView;
-
-        public QuizContentHolder(@NonNull View itemView) {
-            super(itemView);
-            quizcontentView = itemView.findViewById(R.id.quiz_content);
-        }
-    }
-
-    public void ShowAnalyticsPopup(){
+    public void ShowAnalyticsPopup(QuizItem quizItem) {
         quizAnalyticsPopup.setContentView(R.layout.quiz_analytics_popup);
 
+        // Get components
         Button retryBtn = quizAnalyticsPopup.findViewById(R.id.retry_btn);
-        retryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        TextView tv_itemsPerLevel = quizAnalyticsPopup.findViewById(R.id.perlevel_text);
+        TextView tv_average = quizAnalyticsPopup.findViewById(R.id.average_score_text);
+        TextView tv_retries = quizAnalyticsPopup.findViewById(R.id.num_retires_text);
+
+        // Set text values
+        tv_itemsPerLevel.setText(quizItem.quiz.itemsPerLevel + "");
+        tv_average.setText(quizItem.quiz.average + "");
+        tv_retries.setText(quizItem.quiz.retries + "");
+
+        // Button click listener
+        retryBtn.setOnClickListener(view -> {
+            try {
                 Intent intent = new Intent(context, BooleanQuizPage.class);
+                intent.putExtra("topicId", quizItem.topic.topicId);
+                intent.putExtra("quizId", quizItem.quiz.quizId);
+
+                System.out.println("Topic ID: " + quizItem.topic.topicId);
+                System.out.println("Quiz ID: " + quizItem.quiz.quizId);
+
                 context.startActivity(intent);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         });
 
