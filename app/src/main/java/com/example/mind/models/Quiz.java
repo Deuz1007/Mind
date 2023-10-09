@@ -77,18 +77,15 @@ public class Quiz {
         int retries = quiz.retries == 0 ? 1 : quiz.retries + 1;
         double average = quiz.retries == 0 ? score : (quiz.average * retries + score) / retries;
 
-        // Enable multiple setValues in saving data
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("retries", retries);
-        updates.put("average", average);
+        quiz.retries = retries;
+        quiz.average = average;
 
         // Save updates
         getCollection(topic, quiz)
-                .setValue(updates)
+                .setValue(quiz)
                 .addOnSuccessListener(unused -> {
-                    // Update quiz data
-                    User.current.topics.get(topic.topicId).quizzes.get(quiz.quizId).retries = retries;
-                    User.current.topics.get(topic.topicId).quizzes.get(quiz.quizId).average = average;
+                    // Replace old quiz data with new data
+                    User.current.topics.get(topic.topicId).quizzes.replace(quiz.quizId, quiz);
 
                     callback.Success();
                 })
