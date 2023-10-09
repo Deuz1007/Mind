@@ -82,5 +82,6 @@ public class MainActivity extends AppCompatActivity {
     private void dashboard() {
         Intent intent = new Intent(MainActivity.this, home_screen.class);
         startActivity(intent);
+        finish();
     }
 }
