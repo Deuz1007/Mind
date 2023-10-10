@@ -57,9 +57,10 @@ public class Question {
                 int max = Integer.MIN_VALUE;
                 // Temporary letter with max value
                 char maxLetter = ' ';
+                String answerLower = question.answer.toLowerCase();
 
-                for (char letter : question.answer.toLowerCase().toCharArray()) {
                 // Traverse each letter
+                for (char letter : answerLower.toCharArray()) {
                     // If letter is not recorded yet
                     if (unique.get(letter) == null) {
                         // Get the max value between Integer.MIN_VALUE and 1
@@ -85,9 +86,8 @@ public class Question {
                     }
                 }
 
-                return new String[] { maxLetter + "" };
-
                 // Return answer as hint
+                return answerLower.replaceAll("[^" + maxLetter + "]", "_");
             default:
                 return null;
         }
