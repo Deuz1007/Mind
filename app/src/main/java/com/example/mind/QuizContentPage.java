@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.mind.exceptions.MaxContentTokensReachedException;
 import com.example.mind.interfaces.PostProcess;
+import com.example.mind.interfaces.ProcessMessage;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
@@ -84,30 +85,38 @@ public class QuizContentPage extends AppCompatActivity {
         Button generate = findViewById(R.id.generate_quiz_btn);
         generate.setOnClickListener(view -> {
             try {
-                Topic.createQuiz(topic, topic.content, 5, new PostProcess() {
-                    @Override
-                    public void Success(Object... o) {
-                        Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
+                Topic.createQuiz(
+                        topic,
+                        topic.content,
+                        5,
+                        message -> {
+                            // Show message
+                            Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show();
+                        },
+                        new PostProcess() {
+                            @Override
+                            public void Success(Object... o) {
+                                Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
 
-                        try {
-                            Quiz quiz = (Quiz) o[0];
+                                try {
+                                    Quiz quiz = (Quiz) o[0];
 
-                            Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
-                            intent.putExtra("quizId", quiz.quizId);
-                            intent.putExtra("topicId", topic.topicId);
-                            startActivity(intent);
+                                    Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+                                    intent.putExtra("quizId", quiz.quizId);
+                                    intent.putExtra("topicId", topic.topicId);
+                                    startActivity(intent);
 
-                        } catch (Exception e){
-                            System.out.println(e.getMessage());
-                        }
-                    }
+                                } catch (Exception e){
+                                    System.out.println(e.getMessage());
+                                }
+                            }
 
-                    @Override
-                    public void Failed(Exception e) {
-                        Toast.makeText(QuizContentPage.this, "Quiz Generation Failed", Toast.LENGTH_SHORT).show();
-                        System.out.println(e.getMessage());
-                    }
-                });
+                            @Override
+                            public void Failed(Exception e) {
+                                Toast.makeText(QuizContentPage.this, "Quiz Generation Failed", Toast.LENGTH_SHORT).show();
+                                System.out.println(e.getMessage());
+                            }
+                        });
             }
             catch (MaxContentTokensReachedException e) {
                 // Proceed to select text feature

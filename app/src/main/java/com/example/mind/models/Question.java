@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Question {
     public enum QuestionType {
@@ -35,46 +36,58 @@ public class Question {
         this.choices = choices;
     }
 
-    public static String[] hint(Question question) {
+    public static String hint(Question question) {
         switch (question.type) {
             case MULTIPLE_CHOICE:
-                List<String> notCorrect = new ArrayList<>();
-                String[] hints = new String[2];
+                // Get all incorrect answers from choices
+                List<String> notCorrect = question.choices
+                        .stream()
+                        .filter(choice -> !choice.equals(question.answer))
+                        .collect(Collectors.toList());
 
-                for (String choice : question.choices)
-                    if (!choice.equals(question.answer)) notCorrect.add(choice);
+                // Generate random index
+                int index = (int) (Math.random() * notCorrect.size());
 
-                for (int i = 0; i < 2; i++) {
-                    int index = (int) (Math.random() * notCorrect.size());
-                    hints[i] = notCorrect.get(index);
-                    notCorrect.remove(index);
-                }
-
-                return hints;
+                // Return the incorrect answer
+                return notCorrect.get(index);
             case IDENTIFICATION:
+                // Storage for unique letters
                 Map<Character, Integer> unique = new HashMap<>();
+                // Temporary max value
                 int max = Integer.MIN_VALUE;
+                // Temporary letter with max value
                 char maxLetter = ' ';
+                String answerLower = question.answer.toLowerCase();
 
-                for (char letter : question.answer.toLowerCase().toCharArray()) {
+                // Traverse each letter
+                for (char letter : answerLower.toCharArray()) {
+                    // If letter is not recorded yet
                     if (unique.get(letter) == null) {
+                        // Get the max value between Integer.MIN_VALUE and 1
                         max = Math.max(max, 1);
+                        // Assign new max letter
                         maxLetter = letter;
 
+                        // Add it to the HashMap with its count
                         unique.put(letter, 1);
                     }
+                    // If the letter is recorded
                     else {
+                        // Get the count of the letter and increment it
                         int count = unique.get(letter) + 1;
+                        // Overwrite the count of the letter in the map
                         unique.replace(letter, count);
 
+                        // Identify the max value
                         max = Math.max(max, count);
+                        // If the max value changed, there is a new max letter
                         if (max == count)
                             maxLetter = letter;
                     }
                 }
 
-                return new String[] { maxLetter + "" };
-
+                // Return answer as hint
+                return answerLower.replaceAll("[^" + maxLetter + "]", "_");
             default:
                 return null;
         }

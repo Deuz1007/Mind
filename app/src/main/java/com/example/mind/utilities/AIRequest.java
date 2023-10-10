@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.example.mind.BuildConfig;
 import com.example.mind.exceptions.QuizGenerationFailedException;
 import com.example.mind.interfaces.PostProcess;
+import com.example.mind.interfaces.ProcessMessage;
 import com.example.mind.models.Question;
 
 import java.io.IOException;
@@ -54,14 +55,20 @@ public class AIRequest {
                 .build();
     }
 
-    public static void send(QuestionRequest[] requests, PostProcess callback) {
+    public static void send(QuestionRequest[] requests, ProcessMessage message, PostProcess callback) {
         // Mapping for the generated questions per question type
         Map<Question.QuestionType, List<Question>> generatedQuestions = new HashMap<>();
         final boolean[] isSuccess = { true };
         final int[] requestCount = { 0 };
 
+        // Send message
+        message.Message("Generating questions");
+
         // Loop through each question request
-        for (QuestionRequest questionRequest : requests)
+        for (int i = 0; i < requests.length; i++) {
+            QuestionRequest questionRequest = requests[i];
+            int levelCounter = i + 1;
+
             // Initiate the request
             client.newCall(questionRequest.request).enqueue(new Callback() {
                 @Override
@@ -86,6 +93,9 @@ public class AIRequest {
                     // Check if there is matched with the pattern;
                     if (matcher.find())
                         try {
+                            // Send message
+                            message.Message("Level " + (levelCounter + 1) + " question generated");
+
                             // Save the generated questions to the mapping
                             generatedQuestions.put(questionRequest.type, ParseXML.parse(questionRequest.type, matcher.group()));
 
@@ -112,7 +122,7 @@ public class AIRequest {
                         catch (Exception e) {
                             callback.Failed(e);
                         }
-                    // Set is success to false if there isn't matched <response></response>
+                        // Set is success to false if there isn't matched <response></response>
                     else isSuccess[0] = false;
                 }
 
@@ -121,5 +131,6 @@ public class AIRequest {
                     callback.Failed(e);
                 }
             });
+        }
     }
 }

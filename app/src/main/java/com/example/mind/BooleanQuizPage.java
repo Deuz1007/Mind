@@ -17,6 +17,7 @@ import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BooleanQuizPage extends AppCompatActivity {
 
@@ -59,7 +60,11 @@ public class BooleanQuizPage extends AppCompatActivity {
         quiz = topic.quizzes.get(quizId);
 
         // Get the true or false questions
-        questionList = Quiz.getQuestionsByType(quiz, Question.QuestionType.TRUE_OR_FALSE); // get list of true of false items
+        questionList = quiz.questions
+                .values()
+                .stream()
+                .filter(question -> question.type == Question.QuestionType.TRUE_OR_FALSE)
+                .collect(Collectors.toList());
 
         // Set the number of questions per level
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
