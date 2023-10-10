@@ -107,6 +107,7 @@
             android:id="@+id/user_answer"
             android:layout_width="match_parent"
             android:layout_height="80dp"
+            android:layout_marginBottom="168dp"
             android:background="@color/white"
             android:fontFamily="@font/work_sans_medium"
             android:padding="10dp"

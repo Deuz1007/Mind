@@ -9,7 +9,7 @@
 
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/laoding_progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="140dp"
         android:layout_height="140dp"
@@ -22,9 +22,23 @@
         android:id="@+id/imageView3"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/laoding_progressBar"
+        app:layout_constraintEnd_toEndOf="@+id/laoding_progressBar"
+        app:layout_constraintStart_toStartOf="@+id/laoding_progressBar"
+        app:layout_constraintTop_toTopOf="@+id/laoding_progressBar"
+        app:srcCompat="@drawable/mind_logo_2" />
+
+    <TextView
+        android:id="@+id/loding_purpose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:fontFamily="@font/work_sans_bold"
+        android:text="Loading For"
+        android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mind_logo_2" />
+        app:layout_constraintTop_toBottomOf="@+id/laoding_progressBar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
