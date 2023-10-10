@@ -64,15 +64,6 @@ public class Quiz {
                 .child(quiz.quizId);
     }
 
-    public static List<Question> getQuestionsByType(Quiz quiz, Question.QuestionType type) {
-        List<Question> questions = new ArrayList<>();
-
-        for (Question question : quiz.questions.values())
-            if (question.type == type) questions.add(question);
-
-        return questions;
-    }
-
     public static void saveScore(Quiz quiz, int score, Topic topic, PostProcess callback) {
         int retries = quiz.retries == 0 ? 1 : quiz.retries + 1;
         double average = quiz.retries == 0 ? score : (quiz.average * retries + score) / retries;

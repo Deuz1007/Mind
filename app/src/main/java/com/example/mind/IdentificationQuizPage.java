@@ -18,6 +18,7 @@ import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class IdentificationQuizPage extends AppCompatActivity {
 
@@ -61,8 +62,12 @@ public class IdentificationQuizPage extends AppCompatActivity {
         topic = User.current.topics.get(topicId);
         quiz = topic.quizzes.get(quizId);
 
-        // Get the true or false questions
-        questionList = Quiz.getQuestionsByType(quiz, Question.QuestionType.IDENTIFICATION); // get list of Multiple Choice items
+        // Get the identification questions
+        questionList = quiz.questions
+                .values()
+                .stream()
+                .filter(question -> question.type == Question.QuestionType.IDENTIFICATION)
+                .collect(Collectors.toList());
 
         // Set the number of questions per level
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
