@@ -35,7 +35,7 @@ public class Question {
         this.choices = choices;
     }
 
-    public static String[] hint(Question question) {
+    public static String hint(Question question) {
         switch (question.type) {
             case MULTIPLE_CHOICE:
                 List<String> notCorrect = new ArrayList<>();
