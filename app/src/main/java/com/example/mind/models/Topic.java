@@ -2,6 +2,7 @@ package com.example.mind.models;
 
 import com.example.mind.exceptions.MaxContentTokensReachedException;
 import com.example.mind.interfaces.PostProcess;
+import com.example.mind.interfaces.ProcessMessage;
 import com.example.mind.utilities.AIRequest;
 import com.example.mind.utilities.UniqueID;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,14 +60,16 @@ public class Topic {
                 .addOnFailureListener(callback::Failed);
     }
 
-    public static void createQuiz(Topic topic, String quizContent, int itemsPerLevel, PostProcess callback) throws MaxContentTokensReachedException {
+    public static void createQuiz(Topic topic, String quizContent, int itemsPerLevel, ProcessMessage message, PostProcess callback) throws MaxContentTokensReachedException {
         // Check if the quizContent exceeds token max length
         if (!Quiz.isValidContent(quizContent))
             throw new MaxContentTokensReachedException();
 
         // Create new quiz
         Quiz newQuiz = new Quiz(itemsPerLevel);
-        quizContent = quizContent.replaceAll("\\n", " ").replaceAll("\\s+", " ");
+        quizContent = quizContent
+                .replaceAll("\\n", " ")
+                .replaceAll("\\s+", " ");
 
         /* Create requests */
 
@@ -105,10 +108,13 @@ public class Topic {
 
         // Send requests
         AIRequest.send(
-                new AIRequest.QuestionRequest[]{ level1, level2, level3 },
+                new AIRequest.QuestionRequest[]{level1, level2, level3},
+                message,
                 new PostProcess() {
                     @Override
                     public void Success(Object... o) {
+                        message.Message("Saving quiz");
+
                         // Extract the questions
                         for (Object obj : (List<?>) o[0]) {
                             Question question = (Question) obj;
