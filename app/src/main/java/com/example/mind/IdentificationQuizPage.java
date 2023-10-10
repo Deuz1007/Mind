@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mind.models.Question;
@@ -23,6 +25,8 @@ public class IdentificationQuizPage extends AppCompatActivity {
     TextView numberOfQuestions;
     TextView questionItem;
 
+    Button hint;
+
     List<Question> questionList;
 
     Topic topic;
@@ -32,6 +36,9 @@ public class IdentificationQuizPage extends AppCompatActivity {
     int currentQuestionIndex = 0;
     String selectedAnswer = "";
 
+    private ProgressBar progressBar; // UI For Timer
+    private CountDownTimer countDownTimer; // Timer
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +46,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
+        hint = findViewById(R.id.hint_btn);
 
         answer = findViewById(R.id.user_answer);
 
@@ -59,8 +67,14 @@ public class IdentificationQuizPage extends AppCompatActivity {
         // Set the number of questions per level
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
 
+        // Hint Button set to invinsible (Default)
+        hint.setVisibility(View.INVISIBLE);
+
         // Load the question
         loadNewQuestion();
+
+        progressBar = findViewById(R.id.timerprogressBar);
+        startTimer();
     }
 
     @Override
@@ -112,5 +126,38 @@ public class IdentificationQuizPage extends AppCompatActivity {
             questionItem.setText(current.question);
         }
 
+    }
+
+    private void startTimer() {
+        // Set the total time in milliseconds (e.g., 30 seconds)
+        long totalTimeInMillis = 30000; // 30 seconds
+
+        // Set the interval for updating the progress bar (e.g., every second)
+        long intervalInMillis = 1000; // 1 second
+
+        countDownTimer = new CountDownTimer(totalTimeInMillis, intervalInMillis) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Update the progress bar with the remaining time
+                int progress = (int) (millisUntilFinished / intervalInMillis);
+                progressBar.setProgress(progress);
+            }
+
+            @Override
+            public void onFinish() {
+                // Handle what happens when the timer finishes
+                // For example, display a message or end the quiz
+            }
+        };
+
+        countDownTimer.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }
