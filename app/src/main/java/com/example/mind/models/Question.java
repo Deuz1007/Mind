@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Question {
     public enum QuestionType {
@@ -38,22 +39,17 @@ public class Question {
     public static String hint(Question question) {
         switch (question.type) {
             case MULTIPLE_CHOICE:
-                List<String> notCorrect = new ArrayList<>();
-                String[] hints = new String[2];
                 // Get all incorrect answers from choices
+                List<String> notCorrect = question.choices
+                        .stream()
+                        .filter(choice -> !choice.equals(question.answer))
+                        .collect(Collectors.toList());
 
-                for (String choice : question.choices)
-                    if (!choice.equals(question.answer)) notCorrect.add(choice);
                 // Generate random index
+                int index = (int) (Math.random() * notCorrect.size());
 
-                for (int i = 0; i < 2; i++) {
-                    int index = (int) (Math.random() * notCorrect.size());
-                    hints[i] = notCorrect.get(index);
-                    notCorrect.remove(index);
-                }
-
-                return hints;
                 // Return the incorrect answer
+                return notCorrect.get(index);
             case IDENTIFICATION:
                 // Storage for unique letters
                 Map<Character, Integer> unique = new HashMap<>();
