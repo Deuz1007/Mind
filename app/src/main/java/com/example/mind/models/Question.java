@@ -51,43 +51,33 @@ public class Question {
                 // Return the incorrect answer
                 return notCorrect.get(index);
             case IDENTIFICATION:
-                // Storage for unique letters
-                Map<Character, Integer> unique = new HashMap<>();
-                // Temporary max value
-                int max = Integer.MIN_VALUE;
-                // Temporary letter with max value
-                char maxLetter = ' ';
                 String answerLower = question.answer.toLowerCase();
 
-                // Traverse each letter
-                for (char letter : answerLower.toCharArray()) {
-                    // If letter is not recorded yet
-                    if (unique.get(letter) == null) {
-                        // Get the max value between Integer.MIN_VALUE and 1
-                        max = Math.max(max, 1);
-                        // Assign new max letter
-                        maxLetter = letter;
+                // Create a HashMap to store the frequency of each character.
+                Map<Character, Integer> charCountMap = new HashMap<>();
 
-                        // Add it to the HashMap with its count
-                        unique.put(letter, 1);
+                // Iterate over the string and count the frequency of each character.
+                for (char c : answerLower.toCharArray()) {
+                    if (charCountMap.containsKey(c)) {
+                        charCountMap.put(c, charCountMap.get(c) + 1);
+                    } else {
+                        charCountMap.put(c, 1);
                     }
-                    // If the letter is recorded
-                    else {
-                        // Get the count of the letter and increment it
-                        int count = unique.get(letter) + 1;
-                        // Overwrite the count of the letter in the map
-                        unique.replace(letter, count);
+                }
 
-                        // Identify the max value
-                        max = Math.max(max, count);
-                        // If the max value changed, there is a new max letter
-                        if (max == count)
-                            maxLetter = letter;
+                // Find the character with the highest frequency.
+                int maxCount = 0;
+                char maxChar = ' ';
+
+                for (Map.Entry<Character, Integer> entry : charCountMap.entrySet()) {
+                    if (entry.getValue() > maxCount) {
+                        maxCount = entry.getValue();
+                        maxChar = entry.getKey();
                     }
                 }
 
                 // Return answer as hint
-                return answerLower.replaceAll("[^" + maxLetter + "]", "_");
+                return answerLower.replaceAll("[^" + maxChar + "\\s]", "_");
             default:
                 return null;
         }

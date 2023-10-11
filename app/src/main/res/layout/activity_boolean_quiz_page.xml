@@ -82,7 +82,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Score Streak"
+                    android:text="Correct Streak"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:fontFamily="@font/work_sans_medium"/>

@@ -24,6 +24,7 @@ public class BooleanQuizPage extends AppCompatActivity {
 
     TextView numberOfQuestions;
     TextView questionItem;
+    TextView tv_hint, tv_streak;
     Button choiceA, choiceB, hint;
 
     List<Question> questionList;
@@ -41,8 +42,10 @@ public class BooleanQuizPage extends AppCompatActivity {
     ProgressBar progressBar; // UI For Timer
     CountDownTimer countDownTimer; // Timer
 
-    long totalTimeInMillis = 20000; // Timer time
-    long intervalInMillis = 1000; // Timer interval
+    final long totalTimeInMillis = 20000; // Timer time
+    final long intervalInMillis = 1000; // Timer interval
+    final long bonusTime = 5000;
+    long timerTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,9 @@ public class BooleanQuizPage extends AppCompatActivity {
         choiceA = findViewById(R.id.choice_one_button);
         choiceB = findViewById(R.id.choice_two_button);
         hint = findViewById(R.id.hint_btn);
+
+        tv_hint = findViewById(R.id.hint_count);
+        tv_streak = findViewById(R.id.streak_count);
 
         // Get topic from intent from library sheet
         String quizId = getIntent().getStringExtra("quizId");
@@ -73,8 +79,18 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Set the number of questions per level
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
 
+        updateCounterText();
+
         // Hint Button set to invisible (Default)
-        hint.setVisibility(View.INVISIBLE);
+        hint.setOnClickListener(v -> {
+            if (hintCounter < 1) return;
+
+            hintCounter--;
+            updateCounterText();
+
+            countDownTimer.cancel();
+            startTimer(timerTime + bonusTime);
+        });
 
         // Load the question
         loadNewQuestion();
@@ -85,6 +101,7 @@ public class BooleanQuizPage extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Show popup "Are you sure to end quiz the quiz? The progress won't save"
+        // Implement popup here
 
         startActivity(new Intent(this, home_screen.class));
         finish();
@@ -97,21 +114,20 @@ public class BooleanQuizPage extends AppCompatActivity {
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button) {
             // Change button design
             selectedAnswer = clickedButton.getText().toString();
-            clickedButton.setBackgroundColor(Color.DKGRAY);
 
             // Check if selected answer is correct
             if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
                 score++;    // Add score
                 streakCounter++;    // Add streak
 
-                // Check if streak counter got same as items per level
-                if (streakCounter == quiz.itemsPerLevel) {
-                    streakCounter = 0;  // Reset streak count
+                // Check if streak counter is divisible by items per level
+                if (streakCounter % quiz.itemsPerLevel == 0)
                     hintCounter++;  // Add hint
-                }
             }
             // If incorrect, reset streak to 0
             else streakCounter = 0;
+
+            updateCounterText();
 
             // Increment current question index
             currentQuestionIndex++;
@@ -138,8 +154,7 @@ public class BooleanQuizPage extends AppCompatActivity {
             // Timer
             if (countDownTimer != null)
                 countDownTimer.cancel();
-            countDownTimer = null;
-            startTimer();
+            startTimer(totalTimeInMillis);
 
             selectedAnswer = ""; // Selected answer
             // Selected button color
@@ -158,13 +173,13 @@ public class BooleanQuizPage extends AppCompatActivity {
         }
     }
 
-    private void startTimer() {
-        countDownTimer = new CountDownTimer(totalTimeInMillis, intervalInMillis) {
+    private void startTimer(long totalTime) {
+        countDownTimer = new CountDownTimer(totalTime, intervalInMillis) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // Update the progress bar with the remaining time
-                int progress = (int) (millisUntilFinished / intervalInMillis);
-                progressBar.setProgress(progress);
+                timerTime = millisUntilFinished;
+                progressBar.setProgress((int) (millisUntilFinished / intervalInMillis));
             }
 
             @Override
@@ -185,5 +200,11 @@ public class BooleanQuizPage extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+    }
+
+    private void updateCounterText() {
+        // Set counters text
+        tv_hint.setText(hintCounter + "");
+        tv_streak.setText(streakCounter + "");
     }
 }

@@ -43,10 +43,10 @@ public class QuizResultPage extends AppCompatActivity {
         int score = Integer.parseInt(scoreStr);
 
         // Compute wrong score
-        int wrongScore = quiz.itemsPerLevel * 3 - score;
+        int wrongScore = quiz.questions.size() - score;
 
         // Get grade messages
-        String[] messages = letterGrade(score / quiz.itemsPerLevel * 100);
+        String[] messages = letterGrade(score / quiz.questions.size() * 100);
 
         // Set text values
         tv_correctScore.setText(scoreStr);

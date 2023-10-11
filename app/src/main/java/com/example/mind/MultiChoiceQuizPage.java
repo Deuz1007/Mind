@@ -17,8 +17,6 @@ import com.example.mind.models.User;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,11 +25,13 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     Button choiceA, choiceB, choiceC, choiceD, hint;
     TextView numberOfQuestions;
     TextView questionItem;
+    TextView tv_hint, tv_streak;
 
     List<Question> questionList;
 
     Topic topic;
     Quiz quiz;
+    Question currentQuestion;
 
     int streakCounter;
     int hintCounter;
@@ -41,6 +41,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
     ProgressBar progressBar; // UI For Timer
     CountDownTimer countDownTimer; // Timer
+    int hintChoiceBtnId = -1;
 
     long totalTimeInMillis = 20000; // Timer time
     long intervalInMillis = 1000; // Timer interval
@@ -53,6 +54,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         // TextView
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
+        tv_hint = findViewById(R.id.hint_count);
+        tv_streak = findViewById(R.id.streak_count);
         // Button
         choiceA = findViewById(R.id.choice_one_button);
         choiceB = findViewById(R.id.choice_two_button);
@@ -88,8 +91,30 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         // Set the number of questions per level
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
 
+        Button[] choiceButtons = new Button[] { choiceA, choiceB, choiceC, choiceD };
+
         // Hint Button set to invisible (Default)
-        hint.setVisibility(View.INVISIBLE);
+        hint.setOnClickListener(v -> {
+            if (hintCounter < 1) return;
+            if (hintChoiceBtnId != -1) return;
+
+            hintCounter--;
+            updateCounterText();
+
+            String hintChoice = Question.hint(currentQuestion);
+            for (int i = 0; i < 4; i++) {
+                if (hintChoice.equals(currentQuestion.choices.get(i))) {
+                    Button hintChoiceBtn = choiceButtons[i];
+
+                    hintChoiceBtn.setBackgroundColor(Color.DKGRAY);
+                    hintChoiceBtnId = hintChoiceBtn.getId();
+
+                    break;
+                }
+            }
+        });
+
+        updateCounterText();
 
         // Load the question
         loadNewQuestion();
@@ -98,6 +123,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Show popup "Are you sure to end quiz the quiz? The progress won't save"
+        // Implement popup here
 
         startActivity(new Intent(this, home_screen.class));
         finish();
@@ -108,6 +134,9 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         int btnId = clickedButton.getId();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button || btnId == R.id.choice_three_button || btnId == R.id.choice_four_button) {
+            // Disable button action if choice is hint
+            if (btnId == hintChoiceBtnId) return;
+
             // Change button design
             selectedAnswer = clickedButton.getText().toString();
             clickedButton.setBackgroundColor(Color.DKGRAY);
@@ -117,14 +146,14 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
                 score++;    // Add score
                 streakCounter++;    // Add streak
 
-                // Check if streak counter got same as items per level
-                if (streakCounter == quiz.itemsPerLevel) {
-                    streakCounter = 0;  // Reset streak count
+                // Check if streak counter is divisible by items per level
+                if (streakCounter % quiz.itemsPerLevel == 0)
                     hintCounter++;  // Add hint
-                }
             }
             // If incorrect, reset streak to 0
             else streakCounter = 0;
+
+            updateCounterText();
 
             // Increment current question index
             currentQuestionIndex++;
@@ -155,16 +184,16 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             startTimer();
 
             selectedAnswer = ""; // Selected answer
-            // Selected button color
+            hintChoiceBtnId = -1; // Hint
 
-            Question current = questionList.get(currentQuestionIndex);
+            currentQuestion = questionList.get(currentQuestionIndex);
 
             // Reset UI texts
-            questionItem.setText(current.question);
-            choiceA.setText(current.choices.get(0));
-            choiceB.setText(current.choices.get(1));
-            choiceC.setText(current.choices.get(2));
-            choiceD.setText(current.choices.get(3));
+            questionItem.setText(currentQuestion.question);
+            choiceA.setText(currentQuestion.choices.get(0));
+            choiceB.setText(currentQuestion.choices.get(1));
+            choiceC.setText(currentQuestion.choices.get(2));
+            choiceD.setText(currentQuestion.choices.get(3));
 
             // Reset Color of the Buttons
             int color = ContextCompat.getColor(this, R.color.cool);
@@ -200,5 +229,11 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+    }
+
+    private void updateCounterText() {
+        // Set counters text
+        tv_hint.setText(hintCounter + "");
+        tv_streak.setText(streakCounter + "");
     }
 }

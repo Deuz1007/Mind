@@ -25,6 +25,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
     EditText answer;
     TextView numberOfQuestions;
     TextView questionItem;
+    TextView tv_hint, tv_streak, tv_hintText;
 
     Button hint;
 
@@ -32,6 +33,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
     Topic topic;
     Quiz quiz;
+    Question currentQuestion;
 
     int streakCounter;
     int hintCounter;
@@ -52,6 +54,10 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
+        tv_hint = findViewById(R.id.hint_count);
+        tv_streak = findViewById(R.id.streak_count);
+        tv_hintText = findViewById(R.id.show_hint_text);
+
         hint = findViewById(R.id.hint_btn);
 
         answer = findViewById(R.id.user_answer);
@@ -85,7 +91,18 @@ public class IdentificationQuizPage extends AppCompatActivity {
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
 
         // Hint Button set to invisible (Default)
-        hint.setVisibility(View.INVISIBLE);
+        hint.setOnClickListener(v -> {
+            if (hintCounter < 1) return;
+            if (!tv_hintText.getText().toString().equals("")) return;
+
+            hintCounter--;
+            updateCounterText();
+
+            String hintChoice = Question.hint(currentQuestion);
+            tv_hintText.setText(hintChoice);
+        });
+
+        updateCounterText();
 
         // Load the question
         loadNewQuestion();
@@ -94,6 +111,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Show popup "Are you sure to end quiz the quiz? The progress won't save"
+        // Implement popup here
 
         startActivity(new Intent(this, home_screen.class));
         finish();
@@ -105,18 +123,16 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         if (btnId == R.id.submitAnswer_btn) {
             // Get the user input in EditText
-            selectedAnswer = answer.getText().toString();
+            selectedAnswer = answer.getText().toString().toLowerCase();
 
             // Check if selected answer is correct
-            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
+            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer.toLowerCase())) {
                 score++;    // Add score
                 streakCounter++;    // Add streak
 
-                // Check if streak counter got same as items per level
-                if (streakCounter == quiz.itemsPerLevel) {
-                    streakCounter = 0;  // Reset streak count
+                // Check if streak counter is divisible by items per level
+                if (streakCounter % quiz.itemsPerLevel == 0)
                     hintCounter++;  // Add hint
-                }
             }
             // If incorrect, reset streak to 0
             else streakCounter = 0;
@@ -148,12 +164,12 @@ public class IdentificationQuizPage extends AppCompatActivity {
             startTimer();
 
             selectedAnswer = ""; // Selected answer
-            // Selected button color
+            tv_hintText.setText(""); // Hint
 
-            Question current = questionList.get(currentQuestionIndex);
+            currentQuestion = questionList.get(currentQuestionIndex);
 
             // Reset UI texts
-            questionItem.setText(current.question);
+            questionItem.setText(currentQuestion.question);
         }
     }
 
@@ -182,5 +198,11 @@ public class IdentificationQuizPage extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+    }
+
+    private void updateCounterText() {
+        // Set counters text
+        tv_hint.setText(hintCounter + "");
+        tv_streak.setText(streakCounter + "");
     }
 }
