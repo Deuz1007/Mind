@@ -32,37 +32,50 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     Topic topic;
     Quiz quiz;
 
+    int streakCounter;
+    int hintCounter;
     int score;
     int currentQuestionIndex = 0;
     String selectedAnswer = "";
 
-    private ProgressBar progressBar; // UI For Timer
-    private CountDownTimer countDownTimer; // Timer
+    ProgressBar progressBar; // UI For Timer
+    CountDownTimer countDownTimer; // Timer
+
+    long totalTimeInMillis = 20000; // Timer time
+    long intervalInMillis = 1000; // Timer interval
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_page);
 
+        // TextView
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
-
+        // Button
         choiceA = findViewById(R.id.choice_one_button);
         choiceB = findViewById(R.id.choice_two_button);
         choiceC = findViewById(R.id.choice_three_button);
         choiceD = findViewById(R.id.choice_four_button);
         hint = findViewById(R.id.hint_btn);
+        // Progress Bar
+        progressBar = findViewById(R.id.timerprogressBar);
 
-        // Get topic from intent from library sheet
+        // Get strings from intent
         String quizId = getIntent().getStringExtra("quizId");
         String topicId = getIntent().getStringExtra("topicId");
+        String scoreStr = getIntent().getStringExtra("score");
+        String streakStr = getIntent().getStringExtra("streak");
+        String hintStr = getIntent().getStringExtra("hints");
 
-        score = Integer.parseInt(getIntent().getStringExtra("score"));
-
-        System.out.println(score);
-
+        // Set topic and quiz
         topic = User.current.topics.get(topicId);
         quiz = topic.quizzes.get(quizId);
+
+        // Set counters
+        score = Integer.parseInt(scoreStr);
+        streakCounter = Integer.parseInt(streakStr);
+        hintCounter = Integer.parseInt(hintStr);
 
         // Get the multiple choice questions
         questionList = quiz.questions
@@ -74,21 +87,19 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         // Set the number of questions per level
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
 
-        // Hint Button set to invinsible (Default)
+        // Hint Button set to invisible (Default)
         hint.setVisibility(View.INVISIBLE);
 
         // Load the question
         loadNewQuestion();
-
-        progressBar = findViewById(R.id.timerprogressBar);
-        startTimer();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
         // Show popup "Are you sure to end quiz the quiz? The progress won't save"
+
+        startActivity(new Intent(this, home_screen.class));
+        finish();
     }
 
     public void btnClick(View v) {
@@ -100,9 +111,19 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             selectedAnswer = clickedButton.getText().toString();
             clickedButton.setBackgroundColor(Color.DKGRAY);
 
-            // Increment score if answer is correct
-            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer))
-                score++;
+            // Check if selected answer is correct
+            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
+                score++;    // Add score
+                streakCounter++;    // Add streak
+
+                // Check if streak counter got same as items per level
+                if (streakCounter == quiz.itemsPerLevel) {
+                    streakCounter = 0;  // Reset streak count
+                    hintCounter++;  // Add hint
+                }
+            }
+            // If incorrect, reset streak to 0
+            else streakCounter = 0;
 
             // Increment current question index
             currentQuestionIndex++;
@@ -116,6 +137,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         if (currentQuestionIndex == quiz.itemsPerLevel) {
             Intent intent = new Intent(MultiChoiceQuizPage.this, IdentificationQuizPage.class);
             intent.putExtra("score", score + "");
+            intent.putExtra("streak", streakCounter + "");
+            intent.putExtra("hints", hintCounter + "");
             intent.putExtra("quizId", quiz.quizId);
             intent.putExtra("topicId", topic.topicId);
 
@@ -125,6 +148,11 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         else {
             /* Reset values: */
             // Timer
+            if (countDownTimer != null)
+                countDownTimer.cancel();
+            countDownTimer = null;
+            startTimer();
+
             selectedAnswer = ""; // Selected answer
             // Selected button color
 
@@ -140,12 +168,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     }
 
     private void startTimer() {
-        // Set the total time in milliseconds (e.g., 30 seconds)
-        long totalTimeInMillis = 30000; // 30 seconds
-
-        // Set the interval for updating the progress bar (e.g., every second)
-        long intervalInMillis = 1000; // 1 second
-
         countDownTimer = new CountDownTimer(totalTimeInMillis, intervalInMillis) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -156,8 +178,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                // Handle what happens when the timer finishes
-                // For example, display a message or end the quiz
+                currentQuestionIndex++;
+                loadNewQuestion();
             }
         };
 
