@@ -66,7 +66,7 @@ public class Quiz {
 
     public static void saveScore(Quiz quiz, int score, Topic topic, PostProcess callback) {
         int retries = quiz.retries == 0 ? 1 : quiz.retries + 1;
-        double average = quiz.retries == 0 ? score : (quiz.average * retries + score) / retries;
+        double average = quiz.retries == 0 ? score : (quiz.average * quiz.retries + score) / retries;
 
         quiz.retries = retries;
         quiz.average = average;
