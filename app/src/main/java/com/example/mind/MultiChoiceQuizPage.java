@@ -3,12 +3,20 @@ package com.example.mind;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -45,6 +53,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
     long totalTimeInMillis = 20000; // Timer time
     long intervalInMillis = 1000; // Timer interval
+
+    Dialog popupDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +128,9 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
         // Load the question
         loadNewQuestion();
+
+        // To display upload option popup layout
+//        popupDialog = new Dialog(this);
     }
 
     @Override
@@ -125,8 +138,27 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         // Show popup "Are you sure to end quiz the quiz? The progress won't save"
         // Implement popup here
 
-        startActivity(new Intent(this, home_screen.class));
-        finish();
+        AlertDialog.Builder builder = new AlertDialog.Builder(MultiChoiceQuizPage.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(MultiChoiceQuizPage.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
+
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.quit_comment)).setText("Exiting Already?");
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
+            finish();
+            System.exit(0);
+        });
+
+        view.findViewById(R.id.no_btn).setOnClickListener(View -> {
+            alertDialog.dismiss();
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 
     public void btnClick(View v) {

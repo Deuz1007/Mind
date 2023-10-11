@@ -3,12 +3,20 @@ package com.example.mind;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -46,6 +54,8 @@ public class BooleanQuizPage extends AppCompatActivity {
     final long intervalInMillis = 1000; // Timer interval
     final long bonusTime = 5000;
     long timerTime;
+
+    Dialog popupDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +106,9 @@ public class BooleanQuizPage extends AppCompatActivity {
         loadNewQuestion();
 
         progressBar = findViewById(R.id.timerprogressBar);
+
+        // To display upload option popup layout
+//        popupDialog = new Dialog(this);
     }
 
     @Override
@@ -103,8 +116,27 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Show popup "Are you sure to end quiz the quiz? The progress won't save"
         // Implement popup here
 
-        startActivity(new Intent(this, home_screen.class));
-        finish();
+      AlertDialog.Builder builder = new AlertDialog.Builder(BooleanQuizPage.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(BooleanQuizPage.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
+
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.quit_comment)).setText("Exiting Already?");
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
+            finish();
+            System.exit(0);
+        });
+
+        view.findViewById(R.id.no_btn).setOnClickListener(View -> {
+            alertDialog.dismiss();
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 
     public void btnClick(View v) {
@@ -206,5 +238,32 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Set counters text
         tv_hint.setText(hintCounter + "");
         tv_streak.setText(streakCounter + "");
+    }
+
+    public void showExitPopup(Activity context) {
+        // Create a View that contains your layout
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.exit_quiz_popup, null);
+
+        // Create a PopupWindow
+        int width = (int) 1100;
+        int height = (int) 2000;
+        PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+
+        // Initialize UI elements in the popup layout
+        Button yesButton = popupView.findViewById(R.id.yes_btn);
+        Button noButton = popupView.findViewById(R.id.no_btn);
+
+        // Exiting the quiz and closing the progress
+        yesButton.setOnClickListener(view -> {
+            startActivity(new Intent(this, home_screen.class));
+            finish();
+        });
+
+        // dismissing the popup
+        noButton.setOnClickListener(view -> popupWindow.dismiss());
+
+        // Show the popup at the center of the screen
+        popupWindow.showAtLocation(context.getWindow().getDecorView(), 0, 0, 0);
     }
 }

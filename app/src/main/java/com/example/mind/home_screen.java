@@ -1,15 +1,24 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mind.interfaces.PostProcess;
@@ -17,8 +26,12 @@ import com.example.mind.models.User;
 import com.example.mind.utilities.ExtractText;
 
 public class home_screen extends AppCompatActivity {
+
+    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM & sound effect
     Button libraryButton; // For Library Bottom Sheet
     Dialog popupDialog;
+
+    Dialog exitPopup;
 
     final int FILE_PICKER_REQUEST_CODE = 1;
     final int CAMERA_REQUEST_CODE = 2;
@@ -27,6 +40,10 @@ public class home_screen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
+        // BGM
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
+        backgroundMusicPlayer.start();
 
         // To Open the library bottom sheet
         libraryButton = findViewById(R.id.library_btn);
@@ -47,6 +64,9 @@ public class home_screen extends AppCompatActivity {
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
+
+        // To display upload option popup layout
+        exitPopup = new Dialog(this);
     }
 
     @Override
@@ -98,8 +118,30 @@ public class home_screen extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
-        System.exit(0);
+        // Show popup "Are you sure to end quiz the quiz? The progress won't save"
+        // Implement popup here
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(home_screen.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(home_screen.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
+
+        builder.setView(view);
+        ((TextView) view.findViewById(R.id.quit_comment)).setText("Exiting Already?");
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
+            finish();
+            System.exit(0);
+        });
+
+        view.findViewById(R.id.no_btn).setOnClickListener(View -> {
+            alertDialog.dismiss();
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 
     public void ShowUploadOption(View view){
@@ -132,5 +174,10 @@ public class home_screen extends AppCompatActivity {
 
         popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
