@@ -131,7 +131,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Topics Generated"
+                        android:text="Topics Saved"
                         android:textColor="@color/white"
                         android:textSize="25dp"
                         android:fontFamily="@font/work_sans_medium"/>
@@ -299,7 +299,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Accuracy of Given \nAnswers"
+                        android:text="Accuracy"
                         android:gravity="center"
                         android:textColor="@color/white"
                         android:textSize="20dp"

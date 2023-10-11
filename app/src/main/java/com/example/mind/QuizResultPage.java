@@ -26,6 +26,8 @@ public class QuizResultPage extends AppCompatActivity {
 
         TextView tv_correctScore = findViewById(R.id.txt_correct_answers);
         TextView tv_wrongScore = findViewById(R.id.txt_wrong_answers);
+        TextView tv_letterGrade = findViewById(R.id.view_text_grade);
+        TextView tv_compliment = findViewById(R.id.grade_compliment);
 
         Button btn_mainMenu = findViewById(R.id.main_menu_btn);
         Button btn_quizAgain = findViewById(R.id.again_btn);
@@ -43,15 +45,19 @@ public class QuizResultPage extends AppCompatActivity {
         // Compute wrong score
         int wrongScore = quiz.itemsPerLevel * 3 - score;
 
+        // Get grade messages
+        String[] messages = letterGrade(score / quiz.itemsPerLevel * 100);
+
         // Set text values
         tv_correctScore.setText(scoreStr);
         tv_wrongScore.setText(wrongScore + "");
+        tv_letterGrade.setText(messages[0]);
+        tv_compliment.setText(messages[1]);
 
         // Save score
         Quiz.saveScore(quiz, score, topic, new PostProcess() {
             @Override
             public void Success(Object... o) {
-
                 // Set onclick listeners
                 btn_mainMenu.setOnClickListener(v -> mainMenu());
                 btn_quizAgain.setOnClickListener(v -> quizAgain());
@@ -82,5 +88,13 @@ public class QuizResultPage extends AppCompatActivity {
         Intent intent = new Intent(QuizResultPage.this, home_screen.class);
         startActivity(intent);
         finish();
+    }
+
+    private String[] letterGrade(double grade) {
+        if (grade >= 90) return new String[] {"A", "Outstanding!"};
+        if (grade >= 80) return new String[] {"B", "Well done!"};
+        if (grade >= 70) return new String[] {"C", "Try harder"};
+        if (grade >= 60) return new String[] {"D", "Failing"};
+        return new String[] {"F", "Unsatisfactory"};
     }
 }
