@@ -1,6 +1,7 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -87,6 +88,11 @@ public class BooleanQuizPage extends AppCompatActivity {
     }
 
     public void btnClick(View v) {
+        int color = ContextCompat.getColor(this, R.color.cool);
+
+        choiceA.setBackgroundColor(color);
+        choiceB.setBackgroundColor(color);
+
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
 
