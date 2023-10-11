@@ -1,6 +1,7 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -164,6 +165,13 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             choiceB.setText(current.choices.get(1));
             choiceC.setText(current.choices.get(2));
             choiceD.setText(current.choices.get(3));
+
+            // Reset Color of the Buttons
+            int color = ContextCompat.getColor(this, R.color.cool);
+            choiceA.setBackgroundColor(color);
+            choiceB.setBackgroundColor(color);
+            choiceC.setBackgroundColor(color);
+            choiceD.setBackgroundColor(color);
         }
     }
 

@@ -26,21 +26,80 @@
         android:layout_height="400dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/timerprogressBar"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="0dp"
+        android:layout_marginTop="15dp">
 
-        <TextView
-            android:id="@+id/question_num"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/round_button"
-            android:fontFamily="@font/roboto_slab"
-            android:paddingTop="15dp"
-            android:text="@string/number"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginRight="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Hint Remaining"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/work_sans_medium"/>
+
+                <TextView
+                    android:id="@+id/hint_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/work_sans_medium"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/question_num"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/round_button"
+                android:fontFamily="@font/roboto_slab"
+                android:paddingTop="15dp"
+                android:text="@string/number"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Score Streak"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/work_sans_medium"/>
+
+                <TextView
+                    android:id="@+id/streak_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/work_sans_medium"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"

@@ -91,11 +91,6 @@ public class BooleanQuizPage extends AppCompatActivity {
     }
 
     public void btnClick(View v) {
-        int color = ContextCompat.getColor(this, R.color.cool);
-
-        choiceA.setBackgroundColor(color);
-        choiceB.setBackgroundColor(color);
-
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
 
@@ -155,6 +150,11 @@ public class BooleanQuizPage extends AppCompatActivity {
             questionItem.setText(current.question);
             choiceA.setText(current.choices.get(0));
             choiceB.setText(current.choices.get(1));
+
+            // Reset Color of the Buttons
+            int color = ContextCompat.getColor(this, R.color.cool);
+            choiceA.setBackgroundColor(color);
+            choiceB.setBackgroundColor(color);
         }
     }
 
