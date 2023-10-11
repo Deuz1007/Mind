@@ -16,7 +16,7 @@ public class SettingsPage extends AppCompatActivity {
 
     private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
 
-    SeekBar volumeSeekBar;
+    SeekBar volumeSeekBar; // to control music volume
     AudioManager audioManager;
 
     @Override
@@ -29,7 +29,7 @@ public class SettingsPage extends AppCompatActivity {
         backgroundMusicPlayer.start();
 
         // Volume Control
-        volumeSeekBar = findViewById(R.id.volume);
+        volumeSeekBar = findViewById(R.id.music);
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         // Get Max Volume
@@ -60,14 +60,15 @@ public class SettingsPage extends AppCompatActivity {
 
         // Go back to Home Screen
         Button goBackToHomeScreen = findViewById(R.id.go_back_btn);
-
-        goBackToHomeScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        goBackToHomeScreen.setOnClickListener(view ->  {
                 Intent intent = new Intent(SettingsPage.this, home_screen.class);
                 startActivity(intent);
-            }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
 }

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -29,6 +30,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class IdentificationQuizPage extends AppCompatActivity {
+
+    MediaPlayer buttonClickSound; // For Button Sound Effect
 
     EditText answer;
     TextView numberOfQuestions;
@@ -61,6 +64,9 @@ public class IdentificationQuizPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identification_quiz_page);
+
+        // Button Sound Effect
+        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
 
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
@@ -117,8 +123,6 @@ public class IdentificationQuizPage extends AppCompatActivity {
         // Load the question
         loadNewQuestion();
 
-        // To display upload option popup layout
-//        popupDialog = new Dialog(this);
     }
 
     @Override
@@ -154,6 +158,8 @@ public class IdentificationQuizPage extends AppCompatActivity {
         int btnId = clickedButton.getId();
 
         if (btnId == R.id.submitAnswer_btn) {
+            buttonClickSound.start();
+
             // Get the user input in EditText
             selectedAnswer = answer.getText().toString().toLowerCase();
 
@@ -227,8 +233,16 @@ public class IdentificationQuizPage extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // Timer
         if (countDownTimer != null) {
             countDownTimer.cancel();
+        }
+
+        // Button Sound
+        if (buttonClickSound != null) {
+            buttonClickSound.release();
+            buttonClickSound = null;
         }
     }
 

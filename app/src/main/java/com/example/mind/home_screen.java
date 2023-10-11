@@ -28,6 +28,7 @@ import com.example.mind.utilities.ExtractText;
 public class home_screen extends AppCompatActivity {
 
     private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM & sound effect
+
     Button libraryButton; // For Library Bottom Sheet
     Dialog popupDialog;
 
@@ -47,20 +48,35 @@ public class home_screen extends AppCompatActivity {
 
         // To Open the library bottom sheet
         libraryButton = findViewById(R.id.library_btn);
-        libraryButton.setOnClickListener(view -> startActivity(new Intent(this, library_sheet.class)));
+        libraryButton.setOnClickListener(view -> {
+            startActivity(new Intent(this, library_sheet.class));
+        });
 
         // Go to Profile Page
         Button goToProfile = findViewById(R.id.userprofile_btn);
         goToProfile.setText(User.current.username);
-        goToProfile.setOnClickListener(view -> startActivity(new Intent(this, UserProfilePage.class)));
+        goToProfile.setOnClickListener(view -> {
+            startActivity(new Intent(this, UserProfilePage.class));
+        });
 
         // Go to Settings Page
         Button gotoSettings = findViewById(R.id.settings_btn);
-        gotoSettings.setOnClickListener(view -> startActivity(new Intent(this, SettingsPage.class)));
+        gotoSettings.setOnClickListener(view -> {
+            startActivity(new Intent(this, SettingsPage.class));
+        });
 
         // Go to Analytics Page
         Button gotoAnalytics = findViewById(R.id.analytics_btn);
-        gotoAnalytics.setOnClickListener(view -> startActivity(new Intent(this, AnalyticsPage.class)));
+        gotoAnalytics.setOnClickListener(view -> {
+            startActivity(new Intent(this, AnalyticsPage.class));
+        });
+        gotoAnalytics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(home_screen.this, QuizContentPage.class));
+            }
+        });
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
@@ -92,11 +108,10 @@ public class home_screen extends AppCompatActivity {
                             Toast.makeText(home_screen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }
-                else {
+                } else {
                     String extractedText = null;
 
-                    switch(mimetype) {
+                    switch (mimetype) {
                         case "application/pdf":
                             extractedText = ExtractText.PDF(this, selectedFileUri);
                             break;
@@ -109,8 +124,7 @@ public class home_screen extends AppCompatActivity {
                     intent.putExtra("extractedText", extractedText);
                     startActivity(intent);
                 }
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
@@ -122,7 +136,7 @@ public class home_screen extends AppCompatActivity {
         // Implement popup here
 
         AlertDialog.Builder builder = new AlertDialog.Builder(home_screen.this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(home_screen.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
+        View view = LayoutInflater.from(home_screen.this).inflate(R.layout.exit_quiz_popup, (LinearLayout) findViewById(R.id.exit_popup));
 
         builder.setView(view);
         ((TextView) view.findViewById(R.id.quit_comment)).setText("Exiting Already?");
@@ -138,13 +152,13 @@ public class home_screen extends AppCompatActivity {
             alertDialog.dismiss();
         });
 
-        if (alertDialog.getWindow() != null){
+        if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
     }
 
-    public void ShowUploadOption(View view){
+    public void ShowUploadOption(View view) {
         popupDialog.setContentView(R.layout.upload_option_popup);
 
         // Uploading File

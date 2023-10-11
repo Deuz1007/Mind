@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -29,6 +30,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BooleanQuizPage extends AppCompatActivity {
+
+    MediaPlayer buttonClickSound;
 
     TextView numberOfQuestions;
     TextView questionItem;
@@ -61,6 +64,9 @@ public class BooleanQuizPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boolean_quiz_page);
+
+        // Button Sound Effect
+        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
 
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
@@ -107,8 +113,6 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         progressBar = findViewById(R.id.timerprogressBar);
 
-        // To display upload option popup layout
-//        popupDialog = new Dialog(this);
     }
 
     @Override
@@ -125,11 +129,13 @@ public class BooleanQuizPage extends AppCompatActivity {
         final AlertDialog alertDialog = builder.create();
 
         view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
+            buttonClickSound.start();
             finish();
             System.exit(0);
         });
 
         view.findViewById(R.id.no_btn).setOnClickListener(View -> {
+            buttonClickSound.start();
             alertDialog.dismiss();
         });
 
@@ -144,7 +150,9 @@ public class BooleanQuizPage extends AppCompatActivity {
         int btnId = clickedButton.getId();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button) {
-            // Change button design
+            buttonClickSound.start();
+
+            // Get the string inside the button
             selectedAnswer = clickedButton.getText().toString();
 
             // Check if selected answer is correct
@@ -229,8 +237,16 @@ public class BooleanQuizPage extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // Timer
         if (countDownTimer != null) {
             countDownTimer.cancel();
+        }
+
+        // Button
+        if (buttonClickSound != null) {
+            buttonClickSound.release();
+            buttonClickSound = null;
         }
     }
 
@@ -240,30 +256,4 @@ public class BooleanQuizPage extends AppCompatActivity {
         tv_streak.setText(streakCounter + "");
     }
 
-    public void showExitPopup(Activity context) {
-        // Create a View that contains your layout
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.exit_quiz_popup, null);
-
-        // Create a PopupWindow
-        int width = (int) 1100;
-        int height = (int) 2000;
-        PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
-
-        // Initialize UI elements in the popup layout
-        Button yesButton = popupView.findViewById(R.id.yes_btn);
-        Button noButton = popupView.findViewById(R.id.no_btn);
-
-        // Exiting the quiz and closing the progress
-        yesButton.setOnClickListener(view -> {
-            startActivity(new Intent(this, home_screen.class));
-            finish();
-        });
-
-        // dismissing the popup
-        noButton.setOnClickListener(view -> popupWindow.dismiss());
-
-        // Show the popup at the center of the screen
-        popupWindow.showAtLocation(context.getWindow().getDecorView(), 0, 0, 0);
-    }
 }
