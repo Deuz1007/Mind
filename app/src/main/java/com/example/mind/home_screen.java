@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.mind.interfaces.PostProcess;
+import com.example.mind.models.User;
 import com.example.mind.utilities.ExtractText;
 
 public class home_screen extends AppCompatActivity {
@@ -33,6 +34,7 @@ public class home_screen extends AppCompatActivity {
 
         // Go to Profile Page
         Button goToProfile = findViewById(R.id.userprofile_btn);
+        goToProfile.setText(User.current.username);
         goToProfile.setOnClickListener(view -> startActivity(new Intent(this, UserProfilePage.class)));
 
         // Go to Settings Page

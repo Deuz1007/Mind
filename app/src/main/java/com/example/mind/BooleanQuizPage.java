@@ -28,6 +28,9 @@ public class BooleanQuizPage extends AppCompatActivity {
 
     List<Question> questionList;
 
+    int streakCounter = 0;
+    int hintCounter = 0;
+
     int score = 0;
     int currentQuestionIndex = 0;
     String selectedAnswer = "";
@@ -35,16 +38,16 @@ public class BooleanQuizPage extends AppCompatActivity {
     Topic topic;
     Quiz quiz;
 
-    private ProgressBar progressBar; // UI For Timer
-    private CountDownTimer countDownTimer; // Timer
+    ProgressBar progressBar; // UI For Timer
+    CountDownTimer countDownTimer; // Timer
 
+    long totalTimeInMillis = 20000; // Timer time
+    long intervalInMillis = 1000; // Timer interval
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boolean_quiz_page);
-
-        System.out.println("Rendered boolean page");
 
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
@@ -70,21 +73,21 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Set the number of questions per level
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
 
-        // Hint Button set to invinsible (Default)
+        // Hint Button set to invisible (Default)
         hint.setVisibility(View.INVISIBLE);
 
         // Load the question
         loadNewQuestion();
 
         progressBar = findViewById(R.id.timerprogressBar);
-        startTimer();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
         // Show popup "Are you sure to end quiz the quiz? The progress won't save"
+
+        startActivity(new Intent(this, home_screen.class));
+        finish();
     }
 
     public void btnClick(View v) {
@@ -101,9 +104,19 @@ public class BooleanQuizPage extends AppCompatActivity {
             selectedAnswer = clickedButton.getText().toString();
             clickedButton.setBackgroundColor(Color.DKGRAY);
 
-            // Increment score if answer is correct
-            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer))
-                score++;
+            // Check if selected answer is correct
+            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
+                score++;    // Add score
+                streakCounter++;    // Add streak
+
+                // Check if streak counter got same as items per level
+                if (streakCounter == quiz.itemsPerLevel) {
+                    streakCounter = 0;  // Reset streak count
+                    hintCounter++;  // Add hint
+                }
+            }
+            // If incorrect, reset streak to 0
+            else streakCounter = 0;
 
             // Increment current question index
             currentQuestionIndex++;
@@ -117,6 +130,8 @@ public class BooleanQuizPage extends AppCompatActivity {
         if (currentQuestionIndex == quiz.itemsPerLevel) {
             Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
             intent.putExtra("score", score + "");
+            intent.putExtra("streak", streakCounter + "");
+            intent.putExtra("hints", hintCounter + "");
             intent.putExtra("quizId", quiz.quizId);
             intent.putExtra("topicId", topic.topicId);
 
@@ -126,6 +141,11 @@ public class BooleanQuizPage extends AppCompatActivity {
         else {
             /* Reset values: */
             // Timer
+            if (countDownTimer != null)
+                countDownTimer.cancel();
+            countDownTimer = null;
+            startTimer();
+
             selectedAnswer = ""; // Selected answer
             // Selected button color
 
@@ -136,16 +156,9 @@ public class BooleanQuizPage extends AppCompatActivity {
             choiceA.setText(current.choices.get(0));
             choiceB.setText(current.choices.get(1));
         }
-
     }
 
     private void startTimer() {
-        // Set the total time in milliseconds (e.g., 30 seconds)
-        long totalTimeInMillis = 30000; // 30 seconds
-
-        // Set the interval for updating the progress bar (e.g., every second)
-        long intervalInMillis = 1000; // 1 second
-
         countDownTimer = new CountDownTimer(totalTimeInMillis, intervalInMillis) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -156,8 +169,10 @@ public class BooleanQuizPage extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                // Handle what happens when the timer finishes
-                // For example, display a message or end the quiz
+                // Increase question index
+                currentQuestionIndex++;
+                // Load new question
+                loadNewQuestion();
             }
         };
 

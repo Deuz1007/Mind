@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.mind.models.User;
 
@@ -16,27 +17,24 @@ public class UserProfilePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile_page);
 
-        // Go back to Home Screen
-        Button goBackToHomeScreen = findViewById(R.id.go_back_btn);
+        TextView tv_username = findViewById(R.id.display_username);
+        TextView tv_email = findViewById(R.id.display_email);
 
-        goBackToHomeScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(UserProfilePage.this, home_screen.class);
-                startActivity(intent);
-            }
-        });
+        Button btn_logout = findViewById(R.id.signout_btn);
+        Button btn_home = findViewById(R.id.go_back_btn);
 
-        // Logging out, going to Login Page
-        Button signingOut = findViewById(R.id.signout_btn);
+        tv_username.setText(User.current.username);
+        tv_email.setText(User.current.email);
 
-        signingOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                User.logout();
-                Intent intent = new Intent(UserProfilePage.this, MainActivity.class);
-                startActivity(intent);
-            }
+        btn_home.setOnClickListener(view -> startActivity(new Intent(UserProfilePage.this, home_screen.class)));
+
+        btn_logout.setOnClickListener(view -> {
+            // Logout user
+            User.logout();
+
+            Intent intent = new Intent(UserProfilePage.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
 
     }
