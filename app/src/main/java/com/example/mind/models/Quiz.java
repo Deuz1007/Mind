@@ -43,7 +43,7 @@ public class Quiz {
     public static class Description {
         public static final String MULTIPLE_CHOICE = "multiple choice questions with 4 choices for each question";
         public static final String TRUE_OR_FALSE = "true or false questions";
-        public static final String IDENTIFICATION =  "identification questions with a 1 to 3 words answer";
+        public static final String IDENTIFICATION =  "identification questions strictly with only 1 to 3 words as an answer";
     }
 
     public static class XML {

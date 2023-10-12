@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_slab_bold"
-            android:text="A"
+            android:text="-"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="80sp" />
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/work_sans_bold"
-            android:text="Well Done Sir!!!"
+            android:text="-"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="30sp" />
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:fontFamily="@font/work_sans_medium"
-            android:text="0"
+            android:text="-"
             android:textColor="@color/white"
             android:textSize="15sp" />
 
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:fontFamily="@font/work_sans_medium"
-            android:text="0"
+            android:text="-"
             android:textColor="@color/white"
             android:textSize="15sp" />
 

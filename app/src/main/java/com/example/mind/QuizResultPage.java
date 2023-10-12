@@ -15,59 +15,53 @@ import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 public class QuizResultPage extends AppCompatActivity {
-
-    String topicId;
-    String quizId;
+    TextView tv_correctScore, tv_wrongScore, tv_letterGrade, tv_compliment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_result_page);
 
-        TextView tv_correctScore = findViewById(R.id.txt_correct_answers);
-        TextView tv_wrongScore = findViewById(R.id.txt_wrong_answers);
-        TextView tv_letterGrade = findViewById(R.id.view_text_grade);
-        TextView tv_compliment = findViewById(R.id.grade_compliment);
+        tv_correctScore = findViewById(R.id.txt_correct_answers);
+        tv_wrongScore = findViewById(R.id.txt_wrong_answers);
+        tv_letterGrade = findViewById(R.id.view_text_grade);
+        tv_compliment = findViewById(R.id.grade_compliment);
 
         Button btn_mainMenu = findViewById(R.id.main_menu_btn);
         Button btn_quizAgain = findViewById(R.id.again_btn);
 
-        // Get intent extras
-        topicId = getIntent().getStringExtra("topicId");
-        quizId = getIntent().getStringExtra("quizId");
-        String scoreStr = getIntent().getStringExtra("score");
+        // Set onclick listeners
+        btn_mainMenu.setOnClickListener(v -> mainMenu());
+        btn_quizAgain.setOnClickListener(v -> quizAgain());
 
-        // Initialize objects
-        Topic topic = User.current.topics.get(topicId);
-        Quiz quiz = topic.quizzes.get(quizId);
-        int score = Integer.parseInt(scoreStr);
+        if (BooleanQuizPage.isFromCode) setTexts();
+        else
+            // Save score
+            Quiz.saveScore(BooleanQuizPage.quiz, BooleanQuizPage.score, BooleanQuizPage.topic, new PostProcess() {
+                @Override
+                public void Success(Object... o) {
+                    setTexts();
+                }
 
-        // Compute wrong score
-        int wrongScore = quiz.questions.size() - score;
+                @Override
+                public void Failed(Exception e) {
+                    Toast.makeText(QuizResultPage.this, "Quiz result not saved", Toast.LENGTH_LONG).show();
+                }
+            });
+    }
+
+    private void setTexts() {
+        int score = BooleanQuizPage.score;
+        int items = BooleanQuizPage.quiz.questions.size();
 
         // Get grade messages
-        String[] messages = letterGrade(score / quiz.questions.size() * 100);
+        String[] messages = letterGrade(score / items * 100);
 
         // Set text values
-        tv_correctScore.setText(scoreStr);
-        tv_wrongScore.setText(wrongScore + "");
+        tv_correctScore.setText(score + "");
+        tv_wrongScore.setText((items - score) + "");
         tv_letterGrade.setText(messages[0]);
         tv_compliment.setText(messages[1]);
-
-        // Save score
-        Quiz.saveScore(quiz, score, topic, new PostProcess() {
-            @Override
-            public void Success(Object... o) {
-                // Set onclick listeners
-                btn_mainMenu.setOnClickListener(v -> mainMenu());
-                btn_quizAgain.setOnClickListener(v -> quizAgain());
-            }
-
-            @Override
-            public void Failed(Exception e) {
-                Toast.makeText(QuizResultPage.this, "Network failed", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     @Override
@@ -78,13 +72,14 @@ public class QuizResultPage extends AppCompatActivity {
 
     private void quizAgain() {
         Intent intent = new Intent(this, BooleanQuizPage.class);
-        intent.putExtra("topicId", topicId);
-        intent.putExtra("quizId", quizId);
         startActivity(intent);
         finish();
     }
 
     private void mainMenu() {
+        BooleanQuizPage.quiz = null;
+        BooleanQuizPage.topic = null;
+
         Intent intent = new Intent(QuizResultPage.this, home_screen.class);
         startActivity(intent);
         finish();

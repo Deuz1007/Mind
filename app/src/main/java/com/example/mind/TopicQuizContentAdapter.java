@@ -48,7 +48,7 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
     List<QuizItem> quizItems;
     Dialog quizAnalyticsPopup;
 
-    final DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     public TopicQuizContentAdapter(Context context, List<QuizItem> quizItems) {
         this.context = context;

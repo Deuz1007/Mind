@@ -89,6 +89,8 @@ public class QuizContentPage extends AppCompatActivity {
         // Generate Quiz
         Button generate = findViewById(R.id.generate_quiz_btn);
         generate.setOnClickListener(view -> {
+            // Disable generate button
+
             try {
                 Topic.createQuiz(
                         topic,
@@ -96,30 +98,25 @@ public class QuizContentPage extends AppCompatActivity {
                         5,
                         message -> {
                             // Show message
-                            Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show();
+                            QuizContentPage.this.runOnUiThread(() -> Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show());
                         },
                         new PostProcess() {
                             @Override
                             public void Success(Object... o) {
                                 Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
 
-                                try {
-                                    Quiz quiz = (Quiz) o[0];
+                                Quiz quiz = (Quiz) o[0];
 
-                                    Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
-                                    intent.putExtra("quizId", quiz.quizId);
-                                    intent.putExtra("topicId", topic.topicId);
-                                    startActivity(intent);
-
-                                } catch (Exception e){
-                                    System.out.println(e.getMessage());
-                                }
+                                Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+                                intent.putExtra("quizId", quiz.quizId);
+                                intent.putExtra("topicId", topic.topicId);
+                                startActivity(intent);
                             }
 
                             @Override
                             public void Failed(Exception e) {
-                                Toast.makeText(QuizContentPage.this, "Quiz Generation Failed", Toast.LENGTH_SHORT).show();
-                                System.out.println(e.getMessage());
+                                Toast.makeText(QuizContentPage.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(QuizContentPage.this, library_sheet.class));
                             }
                         });
             }

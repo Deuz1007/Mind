@@ -94,7 +94,7 @@ public class AIRequest {
                     if (matcher.find())
                         try {
                             // Send message
-                            message.Message("Level " + (levelCounter + 1) + " question generated");
+                            message.Message("Level " + levelCounter + " question generated");
 
                             // Save the generated questions to the mapping
                             generatedQuestions.put(questionRequest.type, ParseXML.parse(questionRequest.type, matcher.group()));

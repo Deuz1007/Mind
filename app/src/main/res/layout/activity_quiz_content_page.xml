@@ -82,7 +82,7 @@
         android:background="@drawable/nofill_button"
         android:fontFamily="@font/work_sans_medium"
         android:padding="5dp"
-        android:text="Check Content"
+        android:text="Quizzes"
         android:textColor="@color/white"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
