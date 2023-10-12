@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class QuizResultPage extends AppCompatActivity {
     TextView tv_correctScore, tv_wrongScore, tv_letterGrade, tv_compliment;
@@ -40,10 +42,12 @@ public class QuizResultPage extends AppCompatActivity {
         Button btn_quizAgain = findViewById(R.id.again_btn);
         Button btn_showResult = findViewById(R.id.show_details);
 
+        setPopupDialog();
+
         // Set onclick listeners
         btn_mainMenu.setOnClickListener(v -> mainMenu());
         btn_quizAgain.setOnClickListener(v -> quizAgain());
-        btn_showResult.setOnClickListener(v -> showDetails());
+        btn_showResult.setOnClickListener(v -> popupDialog.show());
 
         if (BooleanQuizPage.isFromCode) setTexts();
         else
@@ -59,6 +63,32 @@ public class QuizResultPage extends AppCompatActivity {
                     Toast.makeText(QuizResultPage.this, "Quiz result not saved", Toast.LENGTH_LONG).show();
                 }
             });
+    }
+
+    private void setPopupDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.activity_quiz_result_detail_popup, null);
+
+        // Container of the RecycleView
+        RecyclerView correctRecyclerView = view.findViewById(R.id.correct_items);
+        RecyclerView incorrectRecyclerView = view.findViewById(R.id.incorrect_items);
+
+        List<QuizResultAdapter.QuizItemInfo> correctItems = new ArrayList<>();
+        List<QuizResultAdapter.QuizItemInfo> wrongItems = new ArrayList<>();
+
+        for (QuizResultAdapter.QuizItemInfo item : BooleanQuizPage.quizItems)
+            (item.answer.equals(item.response) ? correctItems : wrongItems).add(item);
+
+        // RecycleView of Correct Items
+        correctRecyclerView.setAdapter(new QuizResultAdapter(this, correctItems));
+        correctRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // RecycleView of Incorrect Items
+        incorrectRecyclerView.setAdapter(new QuizResultAdapter(this, wrongItems));
+        incorrectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        popupDialog = new Dialog(this);
+        popupDialog.setContentView(view);
+        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     private void setTexts() {
@@ -97,14 +127,7 @@ public class QuizResultPage extends AppCompatActivity {
         finish();
     }
 
-    private void showDetails(){
-        popupDialog.setContentView(R.layout.activity_quiz_result_detail_popup);
-        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupDialog.show();
-    }
-
     private String[] letterGrade(double grade) {
-        System.out.println(grade);
         if (grade >= 90) return new String[] {"A", "Outstanding!"};
         if (grade >= 80) return new String[] {"B", "Well done!"};
         if (grade >= 70) return new String[] {"C", "Try harder"};

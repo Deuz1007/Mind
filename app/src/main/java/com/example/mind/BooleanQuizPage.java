@@ -27,6 +27,7 @@ import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,12 +54,12 @@ public class BooleanQuizPage extends AppCompatActivity {
     public static int hintCounter;
     public static int score;
 
+    public static List<QuizResultAdapter.QuizItemInfo> quizItems;
+
     public static final long TIMER_TOTAL_TIME = 20000; // Timer time
     public static final long TIMER_INTERVAL_TIME = 1000; // Timer interval
     final long BONUS_TIME = 5000;
     long currentTimerTime;
-
-    Dialog popupDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +128,8 @@ public class BooleanQuizPage extends AppCompatActivity {
         hintCounter = 50;
         score = 0;
 
+        quizItems = new ArrayList<>();
+
         // Get the true or false questions
         questionList = quiz.questions
                 .values()
@@ -173,7 +176,6 @@ public class BooleanQuizPage extends AppCompatActivity {
         final AlertDialog alertDialog = builder.create();
 
         view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
-//            buttonClickSound.start();
             startActivity(new Intent(this, home_screen.class));
             finish();
         });
@@ -198,8 +200,9 @@ public class BooleanQuizPage extends AppCompatActivity {
 
             // Get the string inside the button
             selectedAnswer = clickedButton.getText().toString();
+            Question current = questionList.get(currentQuestionIndex);
 
-            updateScore(selectedAnswer, questionList.get(currentQuestionIndex).answer);
+            updateScore(selectedAnswer, current.answer, current.question);
             updateCounterText();
 
             // Increment current question index
@@ -266,9 +269,11 @@ public class BooleanQuizPage extends AppCompatActivity {
         tv_streak.setText(streakCounter + "");
     }
 
-    public static void updateScore(String userAnswer, String correctAnswer) {
+    public static void updateScore(String userAnswer, String correctAnswer, String question) {
         userAnswer = userAnswer.toLowerCase();
         correctAnswer = correctAnswer.toLowerCase();
+
+        quizItems.add(new QuizResultAdapter.QuizItemInfo(question, correctAnswer, userAnswer));
 
         // Check if selected answer is correct
         if (userAnswer.equals(correctAnswer)) {

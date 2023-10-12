@@ -9,28 +9,38 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class IncorrectResultAdapter extends RecyclerView.Adapter<IncorrectResultAdapter.DetailHolder>{
+import java.util.List;
 
+public class QuizResultAdapter extends RecyclerView.Adapter<QuizResultAdapter.DetailHolder>{
     Context context;
+    List<QuizItemInfo> quizItems;
+
+    public QuizResultAdapter(Context context, List<QuizItemInfo> quizItems) {
+        this.context = context;
+        this.quizItems = quizItems;
+    }
 
     @NonNull
     @Override
-    public IncorrectResultAdapter.DetailHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public QuizResultAdapter.DetailHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.quiz_result_details_view, parent, false);
 
-        return new IncorrectResultAdapter.DetailHolder(view);
+        return new QuizResultAdapter.DetailHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DetailHolder holder, int position) {
-        // Set Text inside the CardView
+        QuizItemInfo item = quizItems.get(position);
 
+        holder.correctView.setText(item.answer);
+        holder.userAnswerView.setText(item.response);
+        holder.questionView.setText(item.question);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return quizItems.size();
     }
 
     public static class DetailHolder extends RecyclerView.ViewHolder  {
@@ -47,4 +57,15 @@ public class IncorrectResultAdapter extends RecyclerView.Adapter<IncorrectResult
         }
     }
 
+    public static class QuizItemInfo {
+        public String question;
+        public String answer;
+        public String response;
+
+        public QuizItemInfo(String question, String answer, String response) {
+            this.question = question;
+            this.answer = answer;
+            this.response = response;
+        }
+    }
 }

@@ -147,8 +147,13 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
             // Get the user input in EditText
             selectedAnswer = answer.getText().toString();
+            Question current = questionList.get(currentQuestionIndex);
 
-            BooleanQuizPage.updateScore(selectedAnswer, questionList.get(currentQuestionIndex).answer);
+            BooleanQuizPage.updateScore(
+                    selectedAnswer,
+                    current.answer,
+                    current.question
+            );
             updateCounterText();
 
             // Increment current question index
