@@ -43,10 +43,10 @@ public class IdentificationQuizPage extends AppCompatActivity {
     Question currentQuestion;
     String selectedAnswer = "";
 
+    boolean isHinted;
+
     ProgressBar progressBar; // UI For Timer
     CountDownTimer timer; // Timer
-
-    Dialog popupDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +91,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
             buttonClickSound.start();
 
             if (BooleanQuizPage.hintCounter < 1) return;
-            if (!tv_hintText.getText().toString().equals("")) return;
+            if (isHinted) return;
 
             BooleanQuizPage.hintCounter--;
             updateCounterText();
@@ -104,7 +104,6 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         // Load the question
         loadNewQuestion();
-
     }
 
     @Override
@@ -176,7 +175,8 @@ public class IdentificationQuizPage extends AppCompatActivity {
             startTimer();
             selectedAnswer = ""; // Selected answer
             tv_hintText.setText(""); // Hint
-            answer.setText("");
+            answer.setText(""); // Answer
+            isHinted = false;
 
             currentQuestion = questionList.get(currentQuestionIndex);
 

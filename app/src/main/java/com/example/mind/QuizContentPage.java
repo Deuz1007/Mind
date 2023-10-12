@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -26,8 +28,10 @@ import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 public class QuizContentPage extends AppCompatActivity {
+    EditText et_contentField;
+    Button btn_edit, btn_save, btn_generate;
 
-    private Topic topic;
+    Topic topic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,149 +39,131 @@ public class QuizContentPage extends AppCompatActivity {
         setContentView(R.layout.activity_quiz_content_page);
 
         // Edit Text
-        EditText editContentField = findViewById(R.id.edit_content_field);
+        et_contentField = findViewById(R.id.edit_content_field);
+
+        // Button
+        Button btn_quizzes = findViewById(R.id.check_content_btn);
+        Button btn_back = findViewById(R.id.back_btn);
+        btn_generate = findViewById(R.id.generate_quiz_btn);
+        btn_edit = findViewById(R.id.edit_btn);
+        btn_save = findViewById(R.id.save_btn);
 
         // Get topic from intent from library sheet
         String topicId = getIntent().getStringExtra("topicId");
         topic = User.current.topics.get(topicId);
 
-        editContentField.setText(topic.content); // display the intent text in the editText
+        // Assign topic content to content field
+        et_contentField.setText(topic.content);
 
-        boolean[] editEnabled = {false};
-        editContentField.setEnabled(editEnabled[0]);
+        // Set text container and button visibility
+        toggleContentContainer(false, View.VISIBLE, View.INVISIBLE);
 
-        Button editContent = findViewById(R.id.edit_btn);
+        // Set onclick listener to edit and save buttons
+        btn_edit.setOnClickListener(v -> toggleContentContainer(true, View.INVISIBLE, View.VISIBLE));
+        btn_save.setOnClickListener(v -> toggleContentContainer(false, View.VISIBLE, View.INVISIBLE));
 
-        Button saveContent = findViewById(R.id.save_btn);
-        saveContent.setVisibility(View.INVISIBLE);
-
-        // Get the selected text
-        Editable editable = editContentField.getText();
-        int selectionStart = editContentField.getSelectionStart();
-        int selectionEnd = editContentField.getSelectionEnd();
-
-        if (selectionStart != -1 && selectionEnd != -1 && selectionStart != selectionEnd) {
-            String selectedText = editable.subSequence(selectionStart, selectionEnd).toString();
-
-            // Display the selected text in a Toast
-            Toast.makeText(QuizContentPage.this, "Selected Text: " + selectedText, Toast.LENGTH_SHORT).show();
-        }
-
-        // edit
-        editContent.setOnClickListener(view -> {
-            editContentField.setEnabled(true);
-            editEnabled[0] = false;
-
-            editContent.setVisibility(View.INVISIBLE);
-            saveContent.setVisibility(View.VISIBLE);
-        });
-
-        // save
-        saveContent.setOnClickListener(view -> {
-            editContentField.setEnabled(false);
-            editEnabled[0] = true;
-
-            editContent.setVisibility(View.VISIBLE);
-            saveContent.setVisibility(View.INVISIBLE);
-        });
-
-        // check content of the quiz
-        Button goToQuizContent = findViewById(R.id.check_content_btn);
-        goToQuizContent.setOnClickListener(view -> {
+        // Set onclick listener for list of quizzes
+        btn_quizzes.setOnClickListener(v -> {
             Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
-            intent.putExtra("topicId", topic.topicId);
+            intent.putExtra("topicId", topicId);
             startActivity(intent);
         });
 
         // Generate Quiz
-        Button generate = findViewById(R.id.generate_quiz_btn);
-        generate.setOnClickListener(view -> {
-
+        btn_generate.setOnClickListener(v -> {
             // Disable generate button
-            generate.setEnabled(false);
+            btn_generate.setEnabled(false);
 
             // Show Choosing Number of Items
             showPopup();
         });
 
         // Go back to home screen
-        Button goBack = findViewById(R.id.back_btn);
-
-        goBack.setOnClickListener(view -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
-
+        btn_back.setOnClickListener(v -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
     }
 
-    public void showPopup(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(QuizContentPage.this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.number_of_items_popup, null);
+    private void showPopup() {
+        // Setup dialog view and builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(this).inflate(R.layout.number_of_items_popup, null);
 
-        try {
-            builder.setView(view);
+        // Set view and build dialog
+        builder.setView(view);
+        AlertDialog ad_itemsDialog = builder.create();
 
-            RadioGroup radioGroup = view.findViewById(R.id.items_to_gen); // Find the RadioGroup inside the inflated view
-            System.out.println(radioGroup);
+        // Get the radio group
+        RadioGroup radioGroup = view.findViewById(R.id.items_to_gen); // Find the RadioGroup inside the inflated view
+
+        // Get the confirm button and assign onclick listener
+        Button btn_confirm = view.findViewById(R.id.confirm_item);
+        btn_confirm.setOnClickListener(v -> {
+            // Get the id selection radio button
             int selectedItem = radioGroup.getCheckedRadioButtonId();
 
-            final AlertDialog alertDialog = builder.create();
+            // Check if there isn't selected option
+            if (selectedItem == -1) return;
 
-            view.findViewById(R.id.confirm_item).setOnClickListener(View -> {
-                if (selectedItem != -1){
-                    RadioButton selectedRadioBtn = view.findViewById(selectedItem); // Find the RadioButton inside the inflated view
-                    String selectedTxt = selectedRadioBtn.getText().toString();
+            // Get the radio button from the id
+            RadioButton selectedRadioBtn = radioGroup.findViewById(selectedItem);
+            // Extract the text
+            String selectedTxt = selectedRadioBtn.getText().toString();
 
-                    int itemValue = Integer.parseInt(selectedTxt) / 3;
+            try {
+                // Generate new quiz
+                generate(Integer.parseInt(selectedTxt) / 3);
 
-                    try {
-                        Topic.createQuiz(
-                                topic,
-                                topic.content,
-                                itemValue,
-                                message -> {
-                                    // Show message
-                                    QuizContentPage.this.runOnUiThread(() -> Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show());
-                                },
-                                new PostProcess() {
-                                    @Override
-                                    public void Success(Object... o) {
-                                        Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
-
-                                        // Check if First time to take quiz
-                                        // Show Instructions_Popup
-                                        // else direct to quiz page
-
-                                        Quiz quiz = (Quiz) o[0];
-
-                                        Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
-                                        intent.putExtra("quizId", quiz.quizId);
-                                        intent.putExtra("topicId", topic.topicId);
-                                        startActivity(intent);
-                                    }
-
-                                    @Override
-                                    public void Failed(Exception e) {
-                                        Toast.makeText(QuizContentPage.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(QuizContentPage.this, library_sheet.class));
-                                    }
-                                });
-                    }
-                    catch (MaxContentTokensReachedException e) {
-                        // Proceed to select text feature
-                    }
-                }
-
-            });
-
-//        view.findViewById(R.id.no_btn).setOnClickListener(View -> {
-//            alertDialog.dismiss();
-//        });
-
-            if (alertDialog.getWindow() != null) {
-                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                // Dismiss items dialog
+                if (ad_itemsDialog.isShowing()) ad_itemsDialog.dismiss();
+            } catch (MaxContentTokensReachedException e) {
+                // Make a toast and dismiss the dialog
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                if (ad_itemsDialog.isShowing()) ad_itemsDialog.dismiss();
             }
-            alertDialog.show();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        });
 
+        // Set darker window
+        Window window = ad_itemsDialog.getWindow();
+        if (window != null) window.setBackgroundDrawable(new ColorDrawable(0));
+
+        // Show dialog
+        ad_itemsDialog.show();
+    }
+
+    private void toggleContentContainer(boolean contentFieldEnabled, int editVisibility, int saveVisibility) {
+        et_contentField.setEnabled(contentFieldEnabled);
+
+        btn_edit.setVisibility(editVisibility);
+        btn_save.setVisibility(saveVisibility);
+    }
+
+    private void generate(int itemsPerLevel) throws MaxContentTokensReachedException {
+        Topic.createQuiz(
+                topic,
+                topic.content,
+                itemsPerLevel,
+                message -> {
+                    // Show message
+                    QuizContentPage.this.runOnUiThread(() -> Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show());
+                },
+                new PostProcess() {
+                    @Override
+                    public void Success(Object... o) {
+                        Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
+
+                        Quiz quiz = (Quiz) o[0];
+                        Class<?> targetClass = topic.quizzes.size() - 1 == 0 ? Instructions_Popup.class : BooleanQuizPage.class;
+
+                        Intent intent = new Intent(QuizContentPage.this, targetClass);
+                        intent.putExtra("quizId", quiz.quizId);
+                        intent.putExtra("topicId", topic.topicId);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void Failed(Exception e) {
+                        Toast.makeText(QuizContentPage.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(QuizContentPage.this, library_sheet.class));
+                    }
+                });
     }
 }

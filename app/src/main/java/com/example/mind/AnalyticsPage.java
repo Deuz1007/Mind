@@ -13,9 +13,6 @@ import com.example.mind.models.User;
 import java.text.DecimalFormat;
 
 public class AnalyticsPage extends AppCompatActivity {
-
-    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
-
     int totalTopics;
     int totalQuizzes;
     int totalRetries;
@@ -28,10 +25,6 @@ public class AnalyticsPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytics_page);
-
-        // BGM
-        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
-        backgroundMusicPlayer.start();
 
         TextView tv_username = findViewById(R.id.display_username);
         TextView tv_email = findViewById(R.id.display_email);
@@ -53,7 +46,7 @@ public class AnalyticsPage extends AppCompatActivity {
 
         // Go back to Home Screen
         Button goBackToHomeScreen = findViewById(R.id.go_back_btn);
-        goBackToHomeScreen.setOnClickListener(view -> onBackPressed());
+//        goBackToHomeScreen.setOnClickListener(view -> onBackPressed());
     }
 
     private void calculateAnalytics() {
@@ -87,10 +80,5 @@ public class AnalyticsPage extends AppCompatActivity {
         // To get the accuracy, divide the total accuracy by the total quiz size
         // You'll get the decimal value. Multiply it by 100 to get the percentage
         accuracy = totalAccuracy / totalQuizzes * 100;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

@@ -124,7 +124,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         topic = topicInstance;
 
         streakCounter = 0;
-        hintCounter = 0;
+        hintCounter = 50;
         score = 0;
 
         // Get the true or false questions

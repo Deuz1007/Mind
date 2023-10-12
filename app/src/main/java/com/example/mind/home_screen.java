@@ -65,7 +65,9 @@ public class home_screen extends AppCompatActivity {
 
         // Go to Analytics Page
         Button gotoAnalytics = findViewById(R.id.analytics_btn);
+        System.out.println(gotoAnalytics);
         gotoAnalytics.setOnClickListener(view -> {
+            System.out.println("pressed");
             startActivity(new Intent(this, AnalyticsPage.class));
         });
         gotoAnalytics.setOnClickListener(new View.OnClickListener() {

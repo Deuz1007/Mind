@@ -52,14 +52,15 @@ public class QuizResultPage extends AppCompatActivity {
 
     private void setTexts() {
         int score = BooleanQuizPage.score;
-        int items = BooleanQuizPage.quiz.questions.size();
+        double items = BooleanQuizPage.quiz.questions.size();
+        int wrong = (int) (items - score);
 
         // Get grade messages
         String[] messages = letterGrade(score / items * 100);
 
         // Set text values
         tv_correctScore.setText(score + "");
-        tv_wrongScore.setText((items - score) + "");
+        tv_wrongScore.setText(wrong + "");
         tv_letterGrade.setText(messages[0]);
         tv_compliment.setText(messages[1]);
     }
@@ -86,6 +87,7 @@ public class QuizResultPage extends AppCompatActivity {
     }
 
     private String[] letterGrade(double grade) {
+        System.out.println(grade);
         if (grade >= 90) return new String[] {"A", "Outstanding!"};
         if (grade >= 80) return new String[] {"B", "Well done!"};
         if (grade >= 70) return new String[] {"C", "Try harder"};

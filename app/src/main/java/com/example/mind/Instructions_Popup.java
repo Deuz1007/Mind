@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class Instructions_Popup extends AppCompatActivity {
-
     ViewPager instructions_slider;
     LinearLayout pageDotIndicator;
     Button confirm_next;
@@ -27,33 +26,41 @@ public class Instructions_Popup extends AppCompatActivity {
 
         confirm_next = findViewById(R.id.next_btn);
 
-        confirm_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getItem(0) < 4)
-                    instructions_slider.setCurrentItem(getItem(1), true);
-                else {
-                    Intent i = new Intent(Instructions_Popup.this, BooleanQuizPage.class);
-                    startActivity(i);
-                    finish();
-                }
+        String topicId = getIntent().getStringExtra("topicId");
+        String quizId = getIntent().getStringExtra("quizId");
+
+        confirm_next.setOnClickListener(view -> {
+            int nextItem = instructions_slider.getCurrentItem() + 1;
+
+            if (nextItem < 4) {
+                instructions_slider.setCurrentItem(nextItem, true);
+                return;
+            }
+
+            if (topicId != null && quizId != null) {
+                Intent intent = new Intent(Instructions_Popup.this, BooleanQuizPage.class);
+                intent.putExtra("topicId", topicId);
+                intent.putExtra("quizId", quizId);
+
+                startActivity(intent);
+                finish();
             }
         });
 
-        instructions_slider = (ViewPager) findViewById(R.id.viewPagerInstruction);
-        pageDotIndicator = (LinearLayout) findViewById(R.id.page_indicator);
+        instructions_slider = findViewById(R.id.viewPagerInstruction);
+        pageDotIndicator = findViewById(R.id.page_indicator);
 
         instructionViewAdapter = new Instruction_view_adapter(this);
 
         instructions_slider.setAdapter(instructionViewAdapter);
 
-        setUpindicator(0);
+        setUpIndicator(0);
         instructions_slider.addOnPageChangeListener(viewListener);
 
     }
 
     // Page Indicator
-    public void setUpindicator(int position){
+    public void setUpIndicator(int position){
         dots = new TextView[4];
         pageDotIndicator.removeAllViews();
 
@@ -77,9 +84,7 @@ public class Instructions_Popup extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-
-            setUpindicator(position);
-
+            setUpIndicator(position);
         }
 
         @Override
@@ -87,10 +92,4 @@ public class Instructions_Popup extends AppCompatActivity {
 
         }
     };
-
-    private int getItem(int i){
-
-        return instructions_slider.getCurrentItem() + i;
-
-    }
 }
