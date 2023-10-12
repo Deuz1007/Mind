@@ -33,6 +33,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
     MediaPlayer buttonClickSound; // For Button Sound Effect
 
+    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
+
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
     Button choiceA, choiceB, choiceC, choiceD, hint;
 
@@ -54,6 +56,10 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
         // Button Sound Effect
         buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+
+        // BGM
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
+        backgroundMusicPlayer.start();
 
         // TextView
         numberOfQuestions = findViewById(R.id.question_num);

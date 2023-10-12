@@ -57,6 +57,8 @@ public class RegisterPage extends AppCompatActivity {
                     @Override
                     public void Failed(Exception e) {
                         Toast.makeText(RegisterPage.this, "Register Failed", Toast.LENGTH_SHORT).show();
+
+                        System.out.println(e.getMessage());
                     }
                 });
             }
@@ -66,17 +68,6 @@ public class RegisterPage extends AppCompatActivity {
         Button goToLoginPage = findViewById(R.id.goinglogin_btn);
 
         goToLoginPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RegisterPage.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // Go to Login Page
-        Button loggingIn = findViewById(R.id.goinglogin_btn);
-
-        loggingIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RegisterPage.this, MainActivity.class);

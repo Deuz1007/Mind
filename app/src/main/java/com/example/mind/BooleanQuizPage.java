@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BooleanQuizPage extends AppCompatActivity {
-    MediaPlayer buttonClickSound;
+
+    MediaPlayer buttonClickSound; // For Button Sound Effect
+    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
 
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
     Button choiceA, choiceB, hint;
@@ -65,6 +67,10 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         // Button Sound Effect
         buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+
+        // BGM
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
+        backgroundMusicPlayer.start();
 
         // TextView
         numberOfQuestions = findViewById(R.id.question_num);
