@@ -21,6 +21,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Question;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
@@ -30,33 +31,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BooleanQuizPage extends AppCompatActivity {
-
     MediaPlayer buttonClickSound;
 
-    TextView numberOfQuestions;
-    TextView questionItem;
-    TextView tv_hint, tv_streak;
+    TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
     Button choiceA, choiceB, hint;
 
     List<Question> questionList;
-
-    int streakCounter = 0;
-    int hintCounter = 0;
-
-    int score = 0;
     int currentQuestionIndex = 0;
     String selectedAnswer = "";
 
-    Topic topic;
-    Quiz quiz;
-
     ProgressBar progressBar; // UI For Timer
-    CountDownTimer countDownTimer; // Timer
+    CountDownTimer timer; // Timer
 
-    final long totalTimeInMillis = 20000; // Timer time
-    final long intervalInMillis = 1000; // Timer interval
-    final long bonusTime = 5000;
-    long timerTime;
+    public static Topic topic;
+    public static Quiz quiz;
+    public static boolean isFromCode;
+
+    public static int streakCounter;
+    public static int hintCounter;
+    public static int score;
+
+    public static final long TIMER_TOTAL_TIME = 20000; // Timer time
+    public static final long TIMER_INTERVAL_TIME = 1000; // Timer interval
+    final long BONUS_TIME = 5000;
+    long currentTimerTime;
 
     Dialog popupDialog;
 
@@ -68,22 +66,60 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Button Sound Effect
         buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
 
+        // TextView
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
+        tv_hint = findViewById(R.id.hint_count);
+        tv_streak = findViewById(R.id.streak_count);
+
+        // Button
         choiceA = findViewById(R.id.choice_one_button);
         choiceB = findViewById(R.id.choice_two_button);
         hint = findViewById(R.id.hint_btn);
 
-        tv_hint = findViewById(R.id.hint_count);
-        tv_streak = findViewById(R.id.streak_count);
+        // ProgressBar
+        progressBar = findViewById(R.id.timerprogressBar);
 
         // Get topic from intent from library sheet
-        String quizId = getIntent().getStringExtra("quizId");
-        String topicId = getIntent().getStringExtra("topicId");
+        String code = getIntent().getStringExtra("code");
 
-        // Load topic and quiz from their ids
-        topic = User.current.topics.get(topicId);
-        quiz = topic.quizzes.get(quizId);
+        if (quiz == null) {
+            if (code == null) {
+                isFromCode = false;
+
+                String quizId = getIntent().getStringExtra("quizId");
+                String topicId = getIntent().getStringExtra("topicId");
+
+                Topic topic = User.current.topics.get(topicId);
+                Quiz quiz = topic.quizzes.get(quizId);
+
+                initialize(quiz, topic);
+            }
+            else {
+                isFromCode = true;
+                User.getUser(code, new PostProcess() {
+                    @Override
+                    public void Success(Object... o) {
+                        initialize((Quiz) o[0], (Topic) o[1]);
+                    }
+
+                    @Override
+                    public void Failed(Exception e) {
+                        // Invalid code
+                    }
+                });
+            }
+        }
+        else initialize(quiz, topic);
+    }
+
+    private void initialize(Quiz quizInstance,  Topic topicInstance) {
+        quiz = quizInstance;
+        topic = topicInstance;
+
+        streakCounter = 0;
+        hintCounter = 50;
+        score = 0;
 
         // Get the true or false questions
         questionList = quiz.questions
@@ -95,32 +131,34 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Set the number of questions per level
         numberOfQuestions.setText(quiz.itemsPerLevel + "");
 
+        // Update texts
         updateCounterText();
 
-        // Hint Button set to invisible (Default)
+        // Set onclick listener to hint button
         hint.setOnClickListener(v -> {
             if (hintCounter < 1) return;
 
             hintCounter--;
             updateCounterText();
 
-            countDownTimer.cancel();
-            startTimer(timerTime + bonusTime);
+            timer.cancel();
+            startTimer(TIMER_TOTAL_TIME + BONUS_TIME);
         });
 
         // Load the question
         loadNewQuestion();
-
-        progressBar = findViewById(R.id.timerprogressBar);
-
     }
 
     @Override
     public void onBackPressed() {
         // Show popup "Are you sure to end quiz the quiz? The progress won't save"
         // Implement popup here
+        quiz = null;
+        topic = null;
+        timer.cancel();
+        buttonClickSound.release();
 
-      AlertDialog.Builder builder = new AlertDialog.Builder(BooleanQuizPage.this, R.style.AlertDialogTheme);
+        AlertDialog.Builder builder = new AlertDialog.Builder(BooleanQuizPage.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(BooleanQuizPage.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
 
         builder.setView(view);
@@ -129,9 +167,9 @@ public class BooleanQuizPage extends AppCompatActivity {
         final AlertDialog alertDialog = builder.create();
 
         view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
-            buttonClickSound.start();
+//            buttonClickSound.start();
+            startActivity(new Intent(this, home_screen.class));
             finish();
-            System.exit(0);
         });
 
         view.findViewById(R.id.no_btn).setOnClickListener(View -> {
@@ -155,18 +193,7 @@ public class BooleanQuizPage extends AppCompatActivity {
             // Get the string inside the button
             selectedAnswer = clickedButton.getText().toString();
 
-            // Check if selected answer is correct
-            if (selectedAnswer.equals(questionList.get(currentQuestionIndex).answer)) {
-                score++;    // Add score
-                streakCounter++;    // Add streak
-
-                // Check if streak counter is divisible by items per level
-                if (streakCounter % quiz.itemsPerLevel == 0)
-                    hintCounter++;  // Add hint
-            }
-            // If incorrect, reset streak to 0
-            else streakCounter = 0;
-
+            updateScore(selectedAnswer, questionList.get(currentQuestionIndex).answer);
             updateCounterText();
 
             // Increment current question index
@@ -179,25 +206,18 @@ public class BooleanQuizPage extends AppCompatActivity {
 
     public void loadNewQuestion() {
         if (currentQuestionIndex == quiz.itemsPerLevel) {
-            Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
-            intent.putExtra("score", score + "");
-            intent.putExtra("streak", streakCounter + "");
-            intent.putExtra("hints", hintCounter + "");
-            intent.putExtra("quizId", quiz.quizId);
-            intent.putExtra("topicId", topic.topicId);
+            timer.cancel();
 
+            Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
             startActivity(intent);
             finish();
         }
         else {
             /* Reset values: */
             // Timer
-            if (countDownTimer != null)
-                countDownTimer.cancel();
-            startTimer(totalTimeInMillis);
-
+            if (timer != null) timer.cancel();
+            startTimer(TIMER_TOTAL_TIME);
             selectedAnswer = ""; // Selected answer
-            // Selected button color
 
             Question current = questionList.get(currentQuestionIndex);
 
@@ -214,12 +234,12 @@ public class BooleanQuizPage extends AppCompatActivity {
     }
 
     private void startTimer(long totalTime) {
-        countDownTimer = new CountDownTimer(totalTime, intervalInMillis) {
+        timer = new CountDownTimer(totalTime, TIMER_INTERVAL_TIME) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // Update the progress bar with the remaining time
-                timerTime = millisUntilFinished;
-                progressBar.setProgress((int) (millisUntilFinished / intervalInMillis));
+                currentTimerTime = millisUntilFinished;
+                progressBar.setProgress((int) (millisUntilFinished / TIMER_INTERVAL_TIME));
             }
 
             @Override
@@ -231,23 +251,7 @@ public class BooleanQuizPage extends AppCompatActivity {
             }
         };
 
-        countDownTimer.start();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // Timer
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-
-        // Button
-        if (buttonClickSound != null) {
-            buttonClickSound.release();
-            buttonClickSound = null;
-        }
+        timer.start();
     }
 
     private void updateCounterText() {
@@ -256,4 +260,20 @@ public class BooleanQuizPage extends AppCompatActivity {
         tv_streak.setText(streakCounter + "");
     }
 
+    public static void updateScore(String userAnswer, String correctAnswer) {
+        userAnswer = userAnswer.toLowerCase();
+        correctAnswer = correctAnswer.toLowerCase();
+
+        // Check if selected answer is correct
+        if (userAnswer.equals(correctAnswer)) {
+            score++;    // Add score
+            streakCounter++;    // Add streak
+
+            // Check if streak counter is divisible by items per level
+            if (streakCounter % quiz.itemsPerLevel == 0)
+                hintCounter++;  // Add hint
+        }
+        // If incorrect, reset streak to 0
+        else streakCounter = 0;
+    }
 }

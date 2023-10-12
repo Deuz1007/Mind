@@ -128,7 +128,6 @@ public class Topic {
 
                     @Override
                     public void Failed(Exception e) {
-                        System.out.println(e.getMessage());
                         callback.Failed(e);
                     }
                 }

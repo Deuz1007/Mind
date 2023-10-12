@@ -1,7 +1,7 @@
 package com.example.mind.utilities;
 
 public class UniqueID {
-    private static final int BYTES_LENGTH = 16;
+    public static final int BYTES_LENGTH = 16;
     private static final char[] ALPHABET = new char[] {
             'u', 's', 'e', 'a', 'n', 'd', 'o', 'm',
             '-', '2', '6', 'T', '1', '9', '8', '3',

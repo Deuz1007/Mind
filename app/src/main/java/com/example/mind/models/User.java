@@ -1,6 +1,8 @@
 package com.example.mind.models;
 
+import com.example.mind.interfaces.InvalidQuizCodeException;
 import com.example.mind.interfaces.PostProcess;
+import com.example.mind.utilities.UniqueID;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -113,5 +115,31 @@ public class User {
 
         // Reset values
         setStatics();
+    }
+
+    public static void getUser(String code, PostProcess callback) {
+        int quizStart = code.length() - UniqueID.BYTES_LENGTH;
+        int topicStart = quizStart - UniqueID.BYTES_LENGTH;
+        String userId = code.substring(0, topicStart);
+
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(userId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    User user = new User(snapshot);
+                    Topic topic = user.topics.get(code.substring(topicStart, quizStart));
+
+                    if (topic != null) {
+                        Quiz quiz = topic.quizzes.get(code.substring(quizStart));
+
+                        if (quiz != null) {
+                            callback.Success(quiz, topic);
+                            return;
+                        }
+                    }
+
+                    callback.Failed(new InvalidQuizCodeException());
+                })
+                .addOnFailureListener(callback::Failed);
     }
 }
