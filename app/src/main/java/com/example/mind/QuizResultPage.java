@@ -1,8 +1,13 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +19,12 @@ import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
+import java.util.ArrayList;
+
 public class QuizResultPage extends AppCompatActivity {
     TextView tv_correctScore, tv_wrongScore, tv_letterGrade, tv_compliment;
+
+    Dialog popupDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +38,12 @@ public class QuizResultPage extends AppCompatActivity {
 
         Button btn_mainMenu = findViewById(R.id.main_menu_btn);
         Button btn_quizAgain = findViewById(R.id.again_btn);
+        Button btn_showResult = findViewById(R.id.show_details);
 
         // Set onclick listeners
         btn_mainMenu.setOnClickListener(v -> mainMenu());
         btn_quizAgain.setOnClickListener(v -> quizAgain());
+        btn_showResult.setOnClickListener(v -> showDetails());
 
         if (BooleanQuizPage.isFromCode) setTexts();
         else
@@ -83,6 +94,12 @@ public class QuizResultPage extends AppCompatActivity {
         Intent intent = new Intent(QuizResultPage.this, home_screen.class);
         startActivity(intent);
         finish();
+    }
+
+    private void showDetails(){
+        popupDialog.setContentView(R.layout.activity_quiz_result_detail_popup);
+        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupDialog.show();
     }
 
     private String[] letterGrade(double grade) {
