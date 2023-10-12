@@ -90,7 +90,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
         hint.setOnClickListener(v -> {
             buttonClickSound.start();
 
-            if (hintCounter < 1) return;
+            if (BooleanQuizPage.hintCounter < 1) return;
             if (!tv_hintText.getText().toString().equals("")) return;
 
             BooleanQuizPage.hintCounter--;

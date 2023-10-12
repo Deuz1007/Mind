@@ -22,17 +22,23 @@ public class Instruction_view_adapter extends PagerAdapter {
     };
 
     public Instruction_view_adapter(Context context){
+
         this.context = context;
+
     }
 
     @Override
     public int getCount() {
+
         return images.length;
+
     }
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+
         return view == (LinearLayout) object;
+
     }
 
     @NonNull
@@ -42,6 +48,7 @@ public class Instruction_view_adapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.instruction_slider, container, false);
 
         ImageView instruction_image = (ImageView) view.findViewById(R.id.instruction_image);
+
         instruction_image.setImageResource(images[position]);
 
         container.addView(view);

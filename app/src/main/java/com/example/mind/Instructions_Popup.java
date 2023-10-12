@@ -26,6 +26,7 @@ public class Instructions_Popup extends AppCompatActivity {
         setContentView(R.layout.activity_instructions_popup);
 
         confirm_next = findViewById(R.id.next_btn);
+
         confirm_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,6 +44,7 @@ public class Instructions_Popup extends AppCompatActivity {
         pageDotIndicator = (LinearLayout) findViewById(R.id.page_indicator);
 
         instructionViewAdapter = new Instruction_view_adapter(this);
+
         instructions_slider.setAdapter(instructionViewAdapter);
 
         setUpindicator(0);
@@ -75,7 +77,9 @@ public class Instructions_Popup extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
+
             setUpindicator(position);
+
         }
 
         @Override
@@ -85,6 +89,8 @@ public class Instructions_Popup extends AppCompatActivity {
     };
 
     private int getItem(int i){
+
         return instructions_slider.getCurrentItem() + i;
+
     }
 }

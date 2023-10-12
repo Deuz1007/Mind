@@ -32,8 +32,6 @@ public class home_screen extends AppCompatActivity {
     Button libraryButton; // For Library Bottom Sheet
     Dialog popupDialog;
 
-    Dialog exitPopup;
-
     final int FILE_PICKER_REQUEST_CODE = 1;
     final int CAMERA_REQUEST_CODE = 2;
 
@@ -80,9 +78,6 @@ public class home_screen extends AppCompatActivity {
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
-
-        // To display upload option popup layout
-        exitPopup = new Dialog(this);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,46 +92,92 @@ public class QuizContentPage extends AppCompatActivity {
         // Generate Quiz
         Button generate = findViewById(R.id.generate_quiz_btn);
         generate.setOnClickListener(view -> {
+
             // Disable generate button
+            generate.setEnabled(false);
 
-            try {
-                Topic.createQuiz(
-                        topic,
-                        topic.content,
-                        5,
-                        message -> {
-                            // Show message
-                            QuizContentPage.this.runOnUiThread(() -> Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show());
-                        },
-                        new PostProcess() {
-                            @Override
-                            public void Success(Object... o) {
-                                Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
-
-                                Quiz quiz = (Quiz) o[0];
-
-                                Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
-                                intent.putExtra("quizId", quiz.quizId);
-                                intent.putExtra("topicId", topic.topicId);
-                                startActivity(intent);
-                            }
-
-                            @Override
-                            public void Failed(Exception e) {
-                                Toast.makeText(QuizContentPage.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(QuizContentPage.this, library_sheet.class));
-                            }
-                        });
-            }
-            catch (MaxContentTokensReachedException e) {
-                // Proceed to select text feature
-            }
+            // Show Choosing Number of Items
+            showPopup();
         });
 
         // Go back to home screen
         Button goBack = findViewById(R.id.back_btn);
 
         goBack.setOnClickListener(view -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
+
+    }
+
+    public void showPopup(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(QuizContentPage.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.number_of_items_popup, null);
+
+        try {
+            builder.setView(view);
+
+            RadioGroup radioGroup = view.findViewById(R.id.items_to_gen); // Find the RadioGroup inside the inflated view
+            System.out.println(radioGroup);
+            int selectedItem = radioGroup.getCheckedRadioButtonId();
+
+            final AlertDialog alertDialog = builder.create();
+
+            view.findViewById(R.id.confirm_item).setOnClickListener(View -> {
+                if (selectedItem != -1){
+                    RadioButton selectedRadioBtn = view.findViewById(selectedItem); // Find the RadioButton inside the inflated view
+                    String selectedTxt = selectedRadioBtn.getText().toString();
+
+                    int itemValue = Integer.parseInt(selectedTxt) / 3;
+
+                    try {
+                        Topic.createQuiz(
+                                topic,
+                                topic.content,
+                                itemValue,
+                                message -> {
+                                    // Show message
+                                    QuizContentPage.this.runOnUiThread(() -> Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show());
+                                },
+                                new PostProcess() {
+                                    @Override
+                                    public void Success(Object... o) {
+                                        Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
+
+                                        // Check if First time to take quiz
+                                        // Show Instructions_Popup
+                                        // else direct to quiz page
+
+                                        Quiz quiz = (Quiz) o[0];
+
+                                        Intent intent = new Intent(QuizContentPage.this, BooleanQuizPage.class);
+                                        intent.putExtra("quizId", quiz.quizId);
+                                        intent.putExtra("topicId", topic.topicId);
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void Failed(Exception e) {
+                                        Toast.makeText(QuizContentPage.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(QuizContentPage.this, library_sheet.class));
+                                    }
+                                });
+                    }
+                    catch (MaxContentTokensReachedException e) {
+                        // Proceed to select text feature
+                    }
+                }
+
+            });
+
+//        view.findViewById(R.id.no_btn).setOnClickListener(View -> {
+//            alertDialog.dismiss();
+//        });
+
+            if (alertDialog.getWindow() != null) {
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+            alertDialog.show();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 }
