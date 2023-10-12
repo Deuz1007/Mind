@@ -15,10 +15,16 @@ import java.util.ArrayList;
 
 public class library_sheet extends AppCompatActivity {
 
+    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library_sheet);
+
+        // BGM
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
+        backgroundMusicPlayer.start();
 
         // Container of the Recycleview
         RecyclerView recyclerView = findViewById(R.id.content_items_container);
@@ -35,5 +41,10 @@ public class library_sheet extends AppCompatActivity {
         }
         intent.setType("*/*");
         this.startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

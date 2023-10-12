@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 public class IdentificationQuizPage extends AppCompatActivity {
 
     MediaPlayer buttonClickSound; // For Button Sound Effect
+    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
 
     EditText answer;
     TextView numberOfQuestions;
@@ -67,6 +68,10 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         // Button Sound Effect
         buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+
+        // BGM
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
+        backgroundMusicPlayer.start();
 
         numberOfQuestions = findViewById(R.id.question_num);
         questionItem = findViewById(R.id.display_question);
@@ -108,6 +113,8 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         // Hint Button set to invisible (Default)
         hint.setOnClickListener(v -> {
+            buttonClickSound.start();
+
             if (hintCounter < 1) return;
             if (!tv_hintText.getText().toString().equals("")) return;
 
@@ -191,6 +198,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
             intent.putExtra("topicId", topic.topicId);
 
             startActivity(intent);
+            backgroundMusicPlayer.stop();
             finish();
         }
         else {
