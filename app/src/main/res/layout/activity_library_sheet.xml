@@ -11,16 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="15dp">
-
-        <Button
-            android:id="@+id/add_content"
-            android:onClick="buttonOpenFile"
-            android:layout_marginLeft="20dp"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/baseline_add_24"
-            android:layout_gravity="center"/>
+        android:layout_marginTop="15dp"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/textView3"
