@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="800dp"
         android:background="@drawable/library_gradient_bg"
         android:orientation="vertical">
 
