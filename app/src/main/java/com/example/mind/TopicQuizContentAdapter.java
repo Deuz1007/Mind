@@ -87,6 +87,7 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
 
         // Get components
         Button retryBtn = quizAnalyticsPopup.findViewById(R.id.retry_btn);
+        Button shareBtn = quizAnalyticsPopup.findViewById(R.id.share_btn);
         TextView tv_itemsPerLevel = quizAnalyticsPopup.findViewById(R.id.perlevel_text);
         TextView tv_average = quizAnalyticsPopup.findViewById(R.id.average_score_text);
         TextView tv_retries = quizAnalyticsPopup.findViewById(R.id.num_retires_text);
@@ -106,6 +107,10 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+        });
+
+        shareBtn.setOnClickListener(view -> {
+            // Function of the Share Quiz
         });
 
         quizAnalyticsPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
