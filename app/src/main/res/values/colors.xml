@@ -17,4 +17,6 @@
     <color name="seekbar_bg">#AFB1B6</color>
     <color name="seekbar_progress">#949494</color>
 
+    <color name="wrong_bg_color">#FF7373</color>
+
 </resources>

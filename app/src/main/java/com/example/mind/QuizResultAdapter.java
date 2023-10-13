@@ -4,9 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -36,6 +39,8 @@ public class QuizResultAdapter extends RecyclerView.Adapter<QuizResultAdapter.De
         holder.correctView.setText(item.answer);
         holder.userAnswerView.setText(item.response);
         holder.questionView.setText(item.question);
+
+        holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.wrong_bg_color));
     }
 
     @Override
@@ -49,11 +54,15 @@ public class QuizResultAdapter extends RecyclerView.Adapter<QuizResultAdapter.De
         TextView correctView;
         TextView userAnswerView;
 
+        CardView cardView;
+
         public DetailHolder(@NonNull View itemView) {
             super(itemView);
             questionView = itemView.findViewById(R.id.question_item);
             correctView = itemView.findViewById(R.id.correct_items);
             userAnswerView = itemView.findViewById(R.id.user_answer_item);
+
+            cardView = itemView.findViewById(R.id.cardView);
         }
     }
 
