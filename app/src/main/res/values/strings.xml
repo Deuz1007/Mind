@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Mind</string>
 
-    <string name="username">Username</string>
+    <string name="username">Email</string>
 
     <string name="link">
         New Here? <a> Create Account </a>

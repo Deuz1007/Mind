@@ -61,11 +61,13 @@ public class QuizResultAdapter extends RecyclerView.Adapter<QuizResultAdapter.De
         public String question;
         public String answer;
         public String response;
+        public boolean isCorrect;
 
-        public QuizItemInfo(String question, String answer, String response) {
+        public QuizItemInfo(String question, String answer, String response, boolean isCorrect) {
             this.question = question;
             this.answer = answer;
             this.response = response;
+            this.isCorrect = isCorrect;
         }
     }
 }

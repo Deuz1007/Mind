@@ -64,6 +64,9 @@ public class SettingsPage extends AppCompatActivity {
                 Intent intent = new Intent(SettingsPage.this, home_screen.class);
                 startActivity(intent);
         });
+
+        Button btn_guide = findViewById(R.id.support_btn);
+        btn_guide.setOnClickListener(v -> startActivity(new Intent(this, Instructions_Popup.class)));
     }
 
     @Override
