@@ -23,11 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mind.interfaces.PostProcess;
+import com.example.mind.models.Quiz;
+import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 import com.example.mind.utilities.ExtractText;
 
 public class home_screen extends AppCompatActivity {
-
+    public static User quizUser;
 //    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM & sound effect
     Dialog popupDialog;
 
@@ -37,6 +39,8 @@ public class home_screen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
+        quizUser = User.current;
 
         // BGM
 //        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
@@ -167,12 +171,17 @@ public class home_screen extends AppCompatActivity {
         popupDialog.setContentView(R.layout.quiz_code_popup);
 
         // EditText of the Quiz Code
-        EditText quizCode = popupDialog.findViewById(R.id.quiz_code);
+        EditText et_quizCode = popupDialog.findViewById(R.id.quiz_code);
 
         // Identify the Code
         Button enterCode = popupDialog.findViewById(R.id.enter_code);
-        enterCode.setOnClickListener(view13 -> {
-            // function of identifying the code
+        enterCode.setOnClickListener(v -> {
+            String quizCode = et_quizCode.getText().toString();
+
+            Intent intent = new Intent(home_screen.this, BooleanQuizPage.class);
+            intent.putExtra("code", quizCode);
+            startActivity(intent);
+            finish();
         });
 
         popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

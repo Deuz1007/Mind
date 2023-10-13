@@ -1,6 +1,8 @@
 package com.example.mind;
 
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.zwobble.mammoth.internal.documents.Text;
 
@@ -110,7 +115,16 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
         });
 
         shareBtn.setOnClickListener(view -> {
-            // Function of the Share Quiz
+            // Create quiz code
+            String quizCode = FirebaseAuth.getInstance().getUid() + quizItem.topic.topicId + quizItem.quiz.quizId;
+
+            // Past code to clipboard
+            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("quizCode", quizCode);
+            clipboardManager.setPrimaryClip(clipData);
+
+            // Show toast
+            Toast.makeText(context, "Quiz code copied!", Toast.LENGTH_LONG).show();
         });
 
         quizAnalyticsPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

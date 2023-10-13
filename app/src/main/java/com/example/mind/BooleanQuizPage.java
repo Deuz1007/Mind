@@ -104,6 +104,9 @@ public class BooleanQuizPage extends AppCompatActivity {
             }
             else {
                 isFromCode = true;
+
+                // Show loading screen
+
                 User.getUser(code, new PostProcess() {
                     @Override
                     public void Success(Object... o) {
