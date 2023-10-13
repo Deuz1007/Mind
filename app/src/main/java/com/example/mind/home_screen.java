@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -160,5 +161,26 @@ public class home_screen extends AppCompatActivity {
 
         popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupDialog.show();
+    }
+
+    public void ShowEnterQuizCode(View view) {
+        popupDialog.setContentView(R.layout.quiz_code_popup);
+
+        // EditText of the Quiz Code
+        EditText quizCode = popupDialog.findViewById(R.id.quiz_code);
+
+        // Identify the Code
+        Button enterCode = popupDialog.findViewById(R.id.enter_code);
+        enterCode.setOnClickListener(view13 -> {
+            // function of identifying the code
+        });
+
+        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
