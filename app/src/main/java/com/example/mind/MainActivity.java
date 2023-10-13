@@ -9,13 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mind.interfaces.PostProcess;
-import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Setup user defaults
         User.setStatics();
 
         // Check if there is saved user log in information
@@ -34,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
                 public void Success(Object... o) {
                     // Proceed to dashboard
                     dashboard();
-//                    Intent intent = new Intent(MainActivity.this, LoadingDialog.class);
-//                    startActivity(intent);
                 }
 
                 @Override
@@ -68,20 +62,11 @@ public class MainActivity extends AppCompatActivity {
         // Go to Register Page
         Button goToRegister = findViewById(R.id.create_account_btn);
 
-        goToRegister.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, RegisterPage.class);
-            startActivity(intent);
-        });
-
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                Manifest.permission.READ_EXTERNAL_STORAGE},
-//                PackageManager.PERMISSION_GRANTED);
+        goToRegister.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RegisterPage.class)));
     }
 
     private void dashboard() {
-        Intent intent = new Intent(MainActivity.this, home_screen.class);
-        startActivity(intent);
+        startActivity(new Intent(MainActivity.this, home_screen.class));
         finish();
     }
 }

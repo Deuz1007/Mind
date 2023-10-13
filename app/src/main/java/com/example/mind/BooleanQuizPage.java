@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
 
 public class BooleanQuizPage extends AppCompatActivity {
 
-    MediaPlayer buttonClickSound; // For Button Sound Effect
-    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
+//    MediaPlayer buttonClickSound; // For Button Sound Effect
+//    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
 
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
     Button choiceA, choiceB, hint;
@@ -67,11 +67,11 @@ public class BooleanQuizPage extends AppCompatActivity {
         setContentView(R.layout.activity_boolean_quiz_page);
 
         // Button Sound Effect
-        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+//        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
 
         // BGM
-        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
-        backgroundMusicPlayer.start();
+//        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
+//        backgroundMusicPlayer.start();
 
         // TextView
         numberOfQuestions = findViewById(R.id.question_num);
@@ -165,7 +165,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         quiz = null;
         topic = null;
         timer.cancel();
-        buttonClickSound.release();
+//        buttonClickSound.release();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(BooleanQuizPage.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(BooleanQuizPage.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
@@ -181,7 +181,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         });
 
         view.findViewById(R.id.no_btn).setOnClickListener(View -> {
-            buttonClickSound.start();
+//            buttonClickSound.start();
             alertDialog.dismiss();
         });
 
@@ -196,7 +196,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         int btnId = clickedButton.getId();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button) {
-            buttonClickSound.start();
+//            buttonClickSound.start();
 
             // Get the string inside the button
             selectedAnswer = clickedButton.getText().toString();

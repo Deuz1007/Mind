@@ -7,6 +7,8 @@ public class BackgroundMusicPlayer {
     private static BackgroundMusicPlayer instance;
     private MediaPlayer mediaPlayer;
 
+
+
     private BackgroundMusicPlayer(Context context, int rawResourceId) {
         mediaPlayer = MediaPlayer.create(context, rawResourceId);
     }
@@ -36,5 +38,13 @@ public class BackgroundMusicPlayer {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+    }
+
+    public static void playBGM() {
+
+    }
+
+    public static void playButtonSFX() {
+
     }
 }

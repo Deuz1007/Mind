@@ -27,13 +27,10 @@ import com.example.mind.utilities.ExtractText;
 
 public class home_screen extends AppCompatActivity {
 
-    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM & sound effect
-
-    Button libraryButton; // For Library Bottom Sheet
+//    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM & sound effect
     Dialog popupDialog;
 
     final int FILE_PICKER_REQUEST_CODE = 1;
-    final int CAMERA_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,42 +38,20 @@ public class home_screen extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
 
         // BGM
-        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
-        backgroundMusicPlayer.start();
+//        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
+//        backgroundMusicPlayer.start();
 
-        // To Open the library bottom sheet
-        libraryButton = findViewById(R.id.library_btn);
-        libraryButton.setOnClickListener(view -> {
-            startActivity(new Intent(this, library_sheet.class));
-        });
+        Button btn_library = findViewById(R.id.library_btn);
+        Button btn_profile = findViewById(R.id.userprofile_btn);
+        Button btn_settings = findViewById(R.id.settings_btn);
+        Button btn_analytics = findViewById(R.id.analytics_btn);
 
-        // Go to Profile Page
-        Button goToProfile = findViewById(R.id.userprofile_btn);
-        goToProfile.setText(User.current.username);
-        goToProfile.setOnClickListener(view -> {
-            startActivity(new Intent(this, UserProfilePage.class));
-        });
+        btn_profile.setText(User.current.username);
 
-        // Go to Settings Page
-        Button gotoSettings = findViewById(R.id.settings_btn);
-        gotoSettings.setOnClickListener(view -> {
-            startActivity(new Intent(this, SettingsPage.class));
-        });
-
-        // Go to Analytics Page
-        Button gotoAnalytics = findViewById(R.id.analytics_btn);
-        System.out.println(gotoAnalytics);
-        gotoAnalytics.setOnClickListener(view -> {
-            System.out.println("pressed");
-            startActivity(new Intent(this, AnalyticsPage.class));
-        });
-        gotoAnalytics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                startActivity(new Intent(home_screen.this, QuizContentPage.class));
-            }
-        });
+        btn_profile.setOnClickListener(view -> startActivity(new Intent(this, UserProfilePage.class)));
+        btn_library.setOnClickListener(view -> startActivity(new Intent(this, library_sheet.class)));
+        btn_settings.setOnClickListener(view -> startActivity(new Intent(this, SettingsPage.class)));
+        btn_analytics.setOnClickListener(view -> startActivity(new Intent(this, AnalyticsPage.class)));
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
@@ -185,10 +160,5 @@ public class home_screen extends AppCompatActivity {
 
         popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupDialog.show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

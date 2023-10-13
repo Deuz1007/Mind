@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 
 public class IdentificationQuizPage extends AppCompatActivity {
 
-    MediaPlayer buttonClickSound; // For Button Sound Effect
-    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
+//    MediaPlayer buttonClickSound; // For Button Sound Effect
+//    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
 
     EditText answer;
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak, tv_hintText;
@@ -54,11 +54,11 @@ public class IdentificationQuizPage extends AppCompatActivity {
         setContentView(R.layout.activity_identification_quiz_page);
 
         // Button Sound Effect
-        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+//        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
 
         // BGM
-        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
-        backgroundMusicPlayer.start();
+//        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
+//        backgroundMusicPlayer.start();
 
         // TextView
         numberOfQuestions = findViewById(R.id.question_num);
@@ -88,7 +88,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         // Hint Button set to invisible (Default)
         hint.setOnClickListener(v -> {
-            buttonClickSound.start();
+//            buttonClickSound.start();
 
             if (BooleanQuizPage.hintCounter < 1) return;
             if (isHinted) return;
@@ -113,7 +113,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
         BooleanQuizPage.quiz = null;
         BooleanQuizPage.topic = null;
         timer.cancel();
-        buttonClickSound.release();
+//        buttonClickSound.release();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(IdentificationQuizPage.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(IdentificationQuizPage.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
@@ -143,7 +143,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
         int btnId = clickedButton.getId();
 
         if (btnId == R.id.submitAnswer_btn) {
-            buttonClickSound.start();
+//            buttonClickSound.start();
 
             // Get the user input in EditText
             selectedAnswer = answer.getText().toString();
@@ -170,7 +170,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
             Intent intent = new Intent(IdentificationQuizPage.this, QuizResultPage.class);
             startActivity(intent);
-            backgroundMusicPlayer.stop();
+//            backgroundMusicPlayer.stop();
             finish();
         }
         else {
