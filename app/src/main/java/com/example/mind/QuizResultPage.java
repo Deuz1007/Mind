@@ -24,6 +24,7 @@ import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class QuizResultPage extends AppCompatActivity {
@@ -79,15 +80,11 @@ public class QuizResultPage extends AppCompatActivity {
         // Container of the RecycleView
         RecyclerView rv_quizItems = view.findViewById(R.id.content_items_container);
 
-        List<QuizResultAdapter.QuizItemInfo> correctItems = new ArrayList<>();
-        List<QuizResultAdapter.QuizItemInfo> wrongItems = new ArrayList<>();
+        // Sort list
+        Collections.sort(BooleanQuizPage.quizItems, (qi1, qi2) -> Boolean.compare(qi1.isCorrect, qi2.isCorrect));
 
-        for (QuizResultAdapter.QuizItemInfo item : BooleanQuizPage.quizItems)
-            (item.answer.equals(item.response) ? correctItems : wrongItems).add(item);
-
-        wrongItems.addAll(correctItems);
-
-        rv_quizItems.setAdapter(new QuizResultAdapter(this, wrongItems));
+        // Set recycler view config
+        rv_quizItems.setAdapter(new QuizResultAdapter(this, BooleanQuizPage.quizItems));
         rv_quizItems.setLayoutManager(new LinearLayoutManager(this));
 
         builder.setView(view);

@@ -276,10 +276,12 @@ public class BooleanQuizPage extends AppCompatActivity {
         userAnswer = userAnswer.toLowerCase();
         correctAnswer = correctAnswer.toLowerCase();
 
-        quizItems.add(new QuizResultAdapter.QuizItemInfo(question, correctAnswer, userAnswer));
+        boolean isCorrect = userAnswer.equals(correctAnswer);
+
+        quizItems.add(new QuizResultAdapter.QuizItemInfo(question, correctAnswer, userAnswer, isCorrect));
 
         // Check if selected answer is correct
-        if (userAnswer.equals(correctAnswer)) {
+        if (isCorrect) {
             score++;    // Add score
             streakCounter++;    // Add streak
 
