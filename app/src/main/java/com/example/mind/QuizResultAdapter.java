@@ -40,10 +40,8 @@ public class QuizResultAdapter extends RecyclerView.Adapter<QuizResultAdapter.De
         holder.userAnswerView.setText(item.response);
         holder.questionView.setText(item.question);
 
-        if (item.isCorrect == true) {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.wrong_bg_color));
-        }
-
+        int color = item.isCorrect ? R.color.saturated : R.color.wrong_bg_color;
+        holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, color));
     }
 
     @Override
