@@ -119,8 +119,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Show popup "Are you sure to end quiz the quiz? The progress won't save"
-        // Implement popup here
         BooleanQuizPage.quiz = null;
         BooleanQuizPage.topic = null;
         timer.cancel();
@@ -161,8 +159,13 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
             // Change button design
             selectedAnswer = clickedButton.getText().toString();
+            Question current = questionList.get(currentQuestionIndex);
 
-            BooleanQuizPage.updateScore(selectedAnswer, questionList.get(currentQuestionIndex).answer);
+            BooleanQuizPage.updateScore(
+                    selectedAnswer,
+                    current.answer,
+                    current.question
+            );
             updateCounterText();
 
             // Increment current question index
