@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,7 +12,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +29,7 @@ import java.util.List;
 public class QuizResultPage extends AppCompatActivity {
     TextView tv_correctScore, tv_wrongScore, tv_letterGrade, tv_compliment;
 
-    Dialog popupDialog;
+    AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +45,16 @@ public class QuizResultPage extends AppCompatActivity {
         Button btn_quizAgain = findViewById(R.id.again_btn);
         Button btn_showResult = findViewById(R.id.show_details);
 
-        setPopupDialog();
+        try {
+            setPopupDialog();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         // Set onclick listeners
         btn_mainMenu.setOnClickListener(v -> mainMenu());
         btn_quizAgain.setOnClickListener(v -> quizAgain());
-        btn_showResult.setOnClickListener(v -> popupDialog.show());
+        btn_showResult.setOnClickListener(v -> alertDialog.show());
 
         if (BooleanQuizPage.isFromCode) setTexts();
         else
@@ -66,11 +73,11 @@ public class QuizResultPage extends AppCompatActivity {
     }
 
     private void setPopupDialog() {
-        View view = LayoutInflater.from(this).inflate(R.layout.activity_quiz_result_detail_popup, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.quiz_result_details_popup, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(QuizResultPage.this, R.style.AlertDialogTheme);
 
         // Container of the RecycleView
-        RecyclerView correctRecyclerView = view.findViewById(R.id.correct_items);
-        RecyclerView incorrectRecyclerView = view.findViewById(R.id.incorrect_items);
+        RecyclerView rv_quizItems = view.findViewById(R.id.content_items_container);
 
         List<QuizResultAdapter.QuizItemInfo> correctItems = new ArrayList<>();
         List<QuizResultAdapter.QuizItemInfo> wrongItems = new ArrayList<>();
@@ -78,17 +85,17 @@ public class QuizResultPage extends AppCompatActivity {
         for (QuizResultAdapter.QuizItemInfo item : BooleanQuizPage.quizItems)
             (item.answer.equals(item.response) ? correctItems : wrongItems).add(item);
 
-        // RecycleView of Correct Items
-        correctRecyclerView.setAdapter(new QuizResultAdapter(this, correctItems));
-        correctRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        wrongItems.addAll(correctItems);
 
-        // RecycleView of Incorrect Items
-        incorrectRecyclerView.setAdapter(new QuizResultAdapter(this, wrongItems));
-        incorrectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rv_quizItems.setAdapter(new QuizResultAdapter(this, wrongItems));
+        rv_quizItems.setLayoutManager(new LinearLayoutManager(this));
 
-        popupDialog = new Dialog(this);
-        popupDialog.setContentView(view);
-        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        builder.setView(view);
+        alertDialog = builder.create();
+
+        Window window = alertDialog.getWindow();
+        if (window != null)
+            window.setBackgroundDrawable(new ColorDrawable(0));
     }
 
     private void setTexts() {

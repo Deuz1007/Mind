@@ -34,7 +34,11 @@ public class AnalyticsPage extends AppCompatActivity {
         TextView tv_average = findViewById(R.id.total_average_score);
         TextView tv_accuracy = findViewById(R.id.answers_accuracy);
 
-        calculateAnalytics();
+        try {
+            calculateAnalytics();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         tv_username.setText(User.current.username);
         tv_email.setText(User.current.email);
@@ -46,7 +50,7 @@ public class AnalyticsPage extends AppCompatActivity {
 
         // Go back to Home Screen
         Button goBackToHomeScreen = findViewById(R.id.go_back_btn);
-//        goBackToHomeScreen.setOnClickListener(view -> onBackPressed());
+        goBackToHomeScreen.setOnClickListener(view -> onBackPressed());
     }
 
     private void calculateAnalytics() {
@@ -57,6 +61,12 @@ public class AnalyticsPage extends AppCompatActivity {
         totalQuizzes = 0;
         totalRetries = 0;
         average = 0;
+
+        if (totalTopics == 0) {
+            accuracy = 0;
+            return;
+        }
+
         double totalAccuracy = 0;
 
         // Traverse to each topic
@@ -72,6 +82,11 @@ public class AnalyticsPage extends AppCompatActivity {
                 // Accuracy = average / no. of items
                 totalAccuracy += quiz.average / quiz.questions.size();
             }
+        }
+
+        if (totalTopics == 0) {
+            accuracy = 0;
+            return;
         }
 
         // The temporary value of average is the sum of each quiz's average
