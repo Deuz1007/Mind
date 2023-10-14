@@ -41,7 +41,7 @@ public class UserProfilePage extends AppCompatActivity {
         btn_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShowChangePass();
+                ShowVerifyUser();
             }
         });
 
@@ -54,6 +54,28 @@ public class UserProfilePage extends AppCompatActivity {
             finish();
         });
 
+    }
+
+    public void ShowVerifyUser() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfilePage.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(UserProfilePage.this).inflate(R.layout.verify_user_page, (LinearLayout) findViewById(R.id.verify_userview));
+
+        builder.setView(view);
+        EditText useremail = view.findViewById(R.id.email);
+        EditText oldpassword = view.findViewById(R.id.oldpass);
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.verify_btn).setOnClickListener(View -> {
+            // Verfiy user function
+
+            // If verified call ShowChangePass()
+        });
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 
     public void ShowChangePass() {
