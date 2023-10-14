@@ -26,13 +26,14 @@
 
             <TextView
                 android:id="@+id/question_item"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Quuestions"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="left"
+                android:text="Question"
                 android:textColor="@color/black"
-                android:layout_gravity="center"/>
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_marginTop="10dp"
@@ -44,20 +45,20 @@
                     android:id="@+id/correct_ans_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Correct Answer:"
+                    android:text="Answer:"
                     android:textSize="16sp"
                     android:textColor="@color/white"
                     android:fontFamily="@font/work_sans_bold"/>
 
                 <TextView
-                    android:id="@+id/correct_items"
-                    android:layout_marginLeft="15dp"
+                    android:id="@+id/user_answer_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:fontFamily="@font/work_sans_bold"
                     android:text="Correct Item"
-                    android:textSize="16sp"
                     android:textColor="@color/black"
-                    android:fontFamily="@font/work_sans_bold"/>
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -71,14 +72,14 @@
                     android:id="@+id/user_ans_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="User Answer:"
+                    android:text="Correct:"
                     android:textSize="16sp"
                     android:textColor="@color/white"
                     android:fontFamily="@font/work_sans_bold"/>
 
                 <TextView
-                    android:id="@+id/user_answer_item"
-                    android:layout_marginLeft="39dp"
+                    android:id="@+id/correct_items"
+                    android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="User Anser Item"
@@ -90,5 +91,4 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
