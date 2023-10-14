@@ -30,6 +30,7 @@ import com.example.mind.models.User;
 public class QuizContentPage extends AppCompatActivity {
     EditText et_contentField;
     Button btn_edit, btn_save, btn_generate;
+    AlertDialog ad_itemsDialog;
 
     Topic topic;
 
@@ -47,6 +48,9 @@ public class QuizContentPage extends AppCompatActivity {
         btn_generate = findViewById(R.id.generate_quiz_btn);
         btn_edit = findViewById(R.id.edit_btn);
         btn_save = findViewById(R.id.save_btn);
+
+        // Setup popop
+        setPopup();
 
         // Get topic from intent from library sheet
         String topicId = getIntent().getStringExtra("topicId");
@@ -71,25 +75,22 @@ public class QuizContentPage extends AppCompatActivity {
 
         // Generate Quiz
         btn_generate.setOnClickListener(v -> {
-            // Disable generate button
-            btn_generate.setEnabled(false);
-
             // Show Choosing Number of Items
-            showPopup();
+            ad_itemsDialog.show();
         });
 
         // Go back to home screen
         btn_back.setOnClickListener(v -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
     }
 
-    private void showPopup() {
+    private void setPopup() {
         // Setup dialog view and builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(this).inflate(R.layout.number_of_items_popup, null);
 
         // Set view and build dialog
         builder.setView(view);
-        AlertDialog ad_itemsDialog = builder.create();
+        ad_itemsDialog = builder.create();
 
         // Get the radio group
         RadioGroup radioGroup = view.findViewById(R.id.items_to_gen); // Find the RadioGroup inside the inflated view
@@ -109,24 +110,23 @@ public class QuizContentPage extends AppCompatActivity {
             String selectedTxt = selectedRadioBtn.getText().toString();
 
             try {
+                // Disable generate button
+                btn_generate.setEnabled(false);
+
                 // Generate new quiz
                 generate(Integer.parseInt(selectedTxt) / 3);
-
-                // Dismiss items dialog
-                if (ad_itemsDialog.isShowing()) ad_itemsDialog.dismiss();
             } catch (MaxContentTokensReachedException e) {
-                // Make a toast and dismiss the dialog
+                // Display toast on error
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                if (ad_itemsDialog.isShowing()) ad_itemsDialog.dismiss();
             }
+
+            // Dismiss items dialog
+            if (ad_itemsDialog.isShowing()) ad_itemsDialog.dismiss();
         });
 
         // Set darker window
         Window window = ad_itemsDialog.getWindow();
         if (window != null) window.setBackgroundDrawable(new ColorDrawable(0));
-
-        // Show dialog
-        ad_itemsDialog.show();
     }
 
     private void toggleContentContainer(boolean contentFieldEnabled, int editVisibility, int saveVisibility) {
