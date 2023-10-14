@@ -40,13 +40,13 @@
                 android:id="@+id/username_input"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="96dp"
+                android:layout_marginTop="60dp"
                 android:background="@drawable/white_button_round"
                 android:ems="10"
                 android:inputType="text"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintHorizontal_bias="0.511"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
@@ -54,7 +54,7 @@
                 android:id="@+id/fullname_input"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="36dp"
                 android:background="@drawable/white_button_round"
                 android:ems="10"
                 android:inputType="text"
@@ -68,7 +68,7 @@
                 android:id="@+id/email_input"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="36dp"
                 android:background="@drawable/white_button_round"
                 android:ems="10"
                 android:inputType="text"
@@ -82,7 +82,7 @@
                 android:id="@+id/birth_input"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="36dp"
                 android:background="@drawable/white_button_round"
                 android:ems="10"
                 android:text="JAN 01 2023"
@@ -93,67 +93,98 @@
                 app:layout_constraintTop_toBottomOf="@+id/email_input"
                 android:onClick="openDatePicker"/>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints"
+                app:passwordToggleEnabled="true"
+                android:layout_marginTop="36dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.511"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/birth_input">
+
             <EditText
                 android:id="@+id/password_input"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="50dp"
                 android:background="@drawable/white_button_round"
                 android:ems="10"
                 android:inputType="text"
-                android:textSize="20sp"
+                android:textSize="20sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_reEnterPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints"
+                app:passwordToggleEnabled="true"
+                android:layout_marginTop="36dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.495"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/birth_input" />
+                app:layout_constraintTop_toBottomOf="@+id/input_password">
+
+            <EditText
+                android:id="@+id/re_enterpassword_input"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:background="@drawable/white_button_round"
+                android:inputType="text"
+                android:textSize="20sp"
+                android:ems="10"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/username_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="Username"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/username_input"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.159"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintHorizontal_bias="0.158"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/fullName_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="4dp"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="@string/fullname"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/fullname_input"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.159"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintHorizontal_bias="0.158"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/email_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="4dp"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="@string/email"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/email_input"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.159"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintHorizontal_bias="0.137"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/birth_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="@string/birthdate"
                 android:textColor="@color/white"
@@ -161,40 +192,53 @@
                 app:layout_constraintBottom_toTopOf="@+id/birth_input"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.159"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/password_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="4dp"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="@string/password"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/password_input"
+                app:layout_constraintBottom_toTopOf="@+id/input_password"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.159"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintHorizontal_bias="0.155"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/re_enterpassword_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/work_sans_medium"
+                android:text="Re-Enter Password"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/input_reEnterPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.248"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
                 android:id="@+id/createAccount_btn"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="64dp"
                 android:background="@drawable/round_button_blue"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="@string/new_register"
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/password_input" />
+                app:layout_constraintTop_toBottomOf="@+id/input_reEnterPassword" />
 
             <Button
                 android:id="@+id/goinglogin_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="12dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:fontFamily="@font/roboto_slab_bold"
                 android:text="@string/loginhere"
