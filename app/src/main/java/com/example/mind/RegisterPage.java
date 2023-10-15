@@ -29,50 +29,52 @@ public class RegisterPage extends AppCompatActivity {
         initDatePicker(); // For Date Picker
 
         // Getting user input in edit text
-        EditText usernameEditText = (EditText) findViewById(R.id.username_input);
-        EditText fullnameEditText = (EditText) findViewById(R.id.fullname_input);
-        EditText emailEditText = (EditText) findViewById(R.id.email_input);
-        datePickerButton = findViewById(R.id.birth_input); datePickerButton.setText(getTodaysDate());
-        EditText passwordEditText = (EditText) findViewById(R.id.password_input);
+        EditText usernameEditText = findViewById(R.id.username_input);
+        EditText fullnameEditText = findViewById(R.id.fullname_input);
+        EditText emailEditText = findViewById(R.id.email_input);
+        EditText passwordEditText = findViewById(R.id.password_input);
+        EditText reEnterPasswordEditText = findViewById(R.id.re_enter_newpassword);
+
+        datePickerButton = findViewById(R.id.birth_input);
+        datePickerButton.setText(getTodaysDate());
 
         Button createAccount = findViewById(R.id.createAccount_btn);
-        createAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = usernameEditText.getText().toString();
-                String fullname = fullnameEditText.getText().toString();
-                String email = emailEditText.getText().toString();
-                String birthdate = datePickerButton.getText().toString();
-                String password = passwordEditText.getText().toString();
+        createAccount.setOnClickListener(view -> {
+            String username = usernameEditText.getText().toString();
+            String fullname = fullnameEditText.getText().toString();
+            String email = emailEditText.getText().toString();
+            String birthdate = datePickerButton.getText().toString();
+            String password = passwordEditText.getText().toString();
+            String reEnterPassword = reEnterPasswordEditText.getText().toString();
 
-                User newuser = new User(fullname, username, email, birthdate);
-
-                User.register(newuser, password, new PostProcess() {
-                    @Override
-                    public void Success(Object... o) {
-                        Intent intent = new Intent(RegisterPage.this, home_screen.class);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void Failed(Exception e) {
-                        Toast.makeText(RegisterPage.this, "Register Failed", Toast.LENGTH_SHORT).show();
-
-                        System.out.println(e.getMessage());
-                    }
-                });
+            if (!password.equals(reEnterPassword)) {
+                // Show error message
+                Toast.makeText(this, "Passwords are not the same", Toast.LENGTH_LONG).show();
+                return;
             }
+
+            User newuser = new User(fullname, username, email, birthdate);
+
+            User.register(newuser, password, new PostProcess() {
+                @Override
+                public void Success(Object... o) {
+                    Intent intent = new Intent(RegisterPage.this, home_screen.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void Failed(Exception e) {
+                    Toast.makeText(RegisterPage.this, "Register Failed", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         // Go to Login Page
         Button goToLoginPage = findViewById(R.id.goinglogin_btn);
 
-        goToLoginPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RegisterPage.this, MainActivity.class);
-                startActivity(intent);
-            }
+        goToLoginPage.setOnClickListener(view -> {
+            Intent intent = new Intent(RegisterPage.this, MainActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -89,13 +91,10 @@ public class RegisterPage extends AppCompatActivity {
     }
 
     private void initDatePicker(){
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                String date = makeDateString(day, month, year);
-                datePickerButton.setText(date);
-            }
+        DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+            month = month + 1;
+            String date = makeDateString(day, month, year);
+            datePickerButton.setText(date);
         };
 
         Calendar calendar = Calendar.getInstance();

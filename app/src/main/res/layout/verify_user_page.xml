@@ -30,8 +30,10 @@
             android:hint="Email"
             android:textColor="@color/black"
             android:textSize="23sp"
+            android:maxLines="1"
+            android:inputType="text"
+            android:paddingStart="10dp"
             android:background="@color/white"
-            android:gravity="center"
             android:layout_marginTop="20dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -44,12 +46,12 @@
                 android:id="@+id/oldpass"
                 android:layout_width="280dp"
                 android:layout_height="50dp"
-                android:hint="Old Password"
+                android:hint="Password"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/black"
                 android:textSize="23sp"
+                android:paddingStart="10dp"
                 android:background="@color/white"
-                android:gravity="center"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>

@@ -116,8 +116,7 @@
                     android:paddingLeft="15dp"
                     android:paddingRight="30dp"
                     android:text="@string/change_pass"
-                    android:textColor="@color/white"
-                    android:onClick="ShowChangePass"/>
+                    android:textColor="@color/white"/>
 
                 <Button
                     android:id="@+id/signout_btn"
