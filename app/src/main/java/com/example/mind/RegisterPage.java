@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Calendar;
 
@@ -31,9 +34,14 @@ public class RegisterPage extends AppCompatActivity {
         // Getting user input in edit text
         EditText usernameEditText = findViewById(R.id.username_input);
         EditText fullnameEditText = findViewById(R.id.fullname_input);
-        EditText emailEditText = findViewById(R.id.email_input);
-        EditText passwordEditText = findViewById(R.id.password_input);
-        EditText reEnterPasswordEditText = findViewById(R.id.re_enterpassword_input);
+        TextInputEditText emailEditText = findViewById(R.id.email_input);
+        TextInputEditText passwordEditText = findViewById(R.id.password_input);
+        TextInputEditText reEnterPasswordEditText = findViewById(R.id.re_enterpassword_input);
+
+        // TextInputLayout of the email input field
+        TextInputLayout emailTextInputLayout = findViewById(R.id.emailTextInputLayout);
+        TextInputLayout passswordTextInputLayout = findViewById(R.id.input_password);
+        TextInputLayout reenterpassswordTextInputLayout = findViewById(R.id.input_reEnterPassword);
 
         datePickerButton = findViewById(R.id.birth_input);
         datePickerButton.setText(getTodaysDate());
@@ -49,8 +57,15 @@ public class RegisterPage extends AppCompatActivity {
 
             if (!password.equals(reEnterPassword)) {
                 // Show error message
-                Toast.makeText(this, "Passwords are not the same", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Passwords are not the same", Toast.LENGTH_LONG).show();
+
+                passswordTextInputLayout.setError("Passwords are not the same");
+                reenterpassswordTextInputLayout.setError("Passwords are not the same");
+
                 return;
+            }else {
+                passswordTextInputLayout.setError(null); // Clear the error
+                reenterpassswordTextInputLayout.setError(null); // Clear the error
             }
 
             User newuser = new User(fullname, username, email, birthdate);
@@ -65,6 +80,15 @@ public class RegisterPage extends AppCompatActivity {
                 @Override
                 public void Failed(Exception e) {
                     Toast.makeText(RegisterPage.this, "Register Failed", Toast.LENGTH_SHORT).show();
+
+                    String email = emailEditText.getText().toString().trim();
+                    if (TextUtils.isEmpty(email)) {
+                        emailTextInputLayout.setError("Email is required");
+                    } else if (!isValidEmail(email)) {
+                        emailTextInputLayout.setError("Invalid email address");
+                    } else {
+                        emailTextInputLayout.setError(null); // Clear the error
+                    }
                 }
             });
         });
@@ -142,5 +166,11 @@ public class RegisterPage extends AppCompatActivity {
 
     public void openDatePicker(View view) {
         datePickerDialog.show();
+    }
+
+    // Function to validate email
+    private boolean isValidEmail(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
     }
 }

@@ -49,14 +49,12 @@ public class home_screen extends AppCompatActivity {
         Button btn_library = findViewById(R.id.library_btn);
         Button btn_profile = findViewById(R.id.userprofile_btn);
         Button btn_settings = findViewById(R.id.settings_btn);
-        Button btn_analytics = findViewById(R.id.analytics_btn);
 
         btn_profile.setText(User.current.username);
 
         btn_profile.setOnClickListener(view -> startActivity(new Intent(this, UserProfilePage.class)));
         btn_library.setOnClickListener(view -> startActivity(new Intent(this, library_sheet.class)));
         btn_settings.setOnClickListener(view -> startActivity(new Intent(this, SettingsPage.class)));
-        btn_analytics.setOnClickListener(view -> startActivity(new Intent(this, AnalyticsPage.class)));
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
