@@ -33,7 +33,7 @@ public class RegisterPage extends AppCompatActivity {
         EditText fullnameEditText = findViewById(R.id.fullname_input);
         EditText emailEditText = findViewById(R.id.email_input);
         EditText passwordEditText = findViewById(R.id.password_input);
-        EditText reEnterPasswordEditText = findViewById(R.id.re_enter_newpassword);
+        EditText reEnterPasswordEditText = findViewById(R.id.re_enterpassword_input);
 
         datePickerButton = findViewById(R.id.birth_input);
         datePickerButton.setText(getTodaysDate());
