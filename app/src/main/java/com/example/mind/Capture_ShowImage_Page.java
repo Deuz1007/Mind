@@ -2,23 +2,34 @@ package com.example.mind;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.ExtractText;
 
+import java.io.File;
+
 public class Capture_ShowImage_Page extends AppCompatActivity {
 
     // To access Camera
     private ImageView imageView;
-    private Button camera_button;
+
+    Uri imageUri;
+    String imagePath;
+    File imageFile;
+
+    final int CAMERA_CAPTURE_REQUEST_CODE = 111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,36 +38,57 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
 
         // To Access Camera and Capture Photo
         imageView = findViewById(R.id.imageCaptured);
-        camera_button = findViewById(R.id.capture_button);
+        Button camera_button = findViewById(R.id.capture_button);
 
-        camera_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        camera_button.setOnClickListener(view -> {
+            try {
+                imageFile = File.createTempFile("MIND-Capture", ".jpg", getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+                imagePath = imageFile.getAbsolutePath();
+                imageUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", imageFile);
+
                 Intent open_camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(open_camera, 100);
+                open_camera.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(open_camera, CAMERA_CAPTURE_REQUEST_CODE);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (imageFile != null) imageFile.delete();
     }
 
     // To Access Camera and Capture
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bitmap photo = (Bitmap)data.getExtras().get("data");
-        imageView.setImageBitmap(photo);
 
-        ExtractText.Image(photo, new PostProcess() {
-            @Override
-            public void Success(Object... o) {
-                Intent intent = new Intent(Capture_ShowImage_Page.this, EditTextOptionPage.class);
-                intent.putExtra("extractedText", (String) o[0]);
-                startActivity(intent);
+        if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_CAPTURE_REQUEST_CODE) {
+            Bitmap photo = BitmapFactory.decodeFile(imagePath);
+            imageView.setImageBitmap(photo);
+
+            try {
+                ExtractText.Image(photo, new PostProcess() {
+                    @Override
+                    public void Success(Object... o) {
+                        Intent intent = new Intent(Capture_ShowImage_Page.this, EditTextOptionPage.class);
+                        intent.putExtra("extractedText", (String) o[0]);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void Failed(Exception e) {
+
+                    }
+                });
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-
-            @Override
-            public void Failed(Exception e) {
-
-            }
-        });
+        }
     }
 }
