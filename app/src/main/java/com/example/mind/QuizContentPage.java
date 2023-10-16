@@ -6,6 +6,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -30,7 +31,8 @@ import com.example.mind.models.User;
 public class QuizContentPage extends AppCompatActivity {
     EditText et_contentField;
     Button btn_edit, btn_save, btn_generate;
-    AlertDialog ad_itemsDialog;
+    AlertDialog ad_itemsDialog, loadingAlertDialog;
+    TextView textLoading;
 
     Topic topic;
 
@@ -81,6 +83,7 @@ public class QuizContentPage extends AppCompatActivity {
 
         // Go back to home screen
         btn_back.setOnClickListener(v -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
+
     }
 
     private void setPopup() {
@@ -143,7 +146,22 @@ public class QuizContentPage extends AppCompatActivity {
                 itemsPerLevel,
                 message -> {
                     // Show message
-                    QuizContentPage.this.runOnUiThread(() -> Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show());
+//                    QuizContentPage.this.runOnUiThread(() -> Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show());
+
+                    QuizContentPage.this.runOnUiThread(() -> {
+
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(QuizContentPage.this);
+                        LayoutInflater inflater = getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.loading_dialog, null);
+                        dialogBuilder.setView(dialogView);
+                        dialogBuilder.setCancelable(false); // Preventing user from dismissing the dialog
+                        loadingAlertDialog = dialogBuilder.create();
+                        loadingAlertDialog.show();
+
+                        textLoading = dialogView.findViewById(R.id.loding_purpose);
+                        textLoading.setText(message);
+
+                    });
                 },
                 new PostProcess() {
                     @Override

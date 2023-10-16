@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.models.Quiz;
+import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,11 +29,21 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.text.DecimalFormat;
+
 public class UserProfilePage extends AppCompatActivity {
 
     AlertDialog ad_verify, ad_changePass;
 
     FirebaseUser authUser;
+
+    int totalTopics;
+    int totalQuizzes;
+    int totalRetries;
+    double average;
+    double accuracy;
+
+    final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +52,35 @@ public class UserProfilePage extends AppCompatActivity {
 
         TextView tv_username = findViewById(R.id.display_username);
         TextView tv_email = findViewById(R.id.display_email);
+        TextView tv_topics = findViewById(R.id.total_generated_topics);
+        TextView tv_quizzes = findViewById(R.id.total_generated_quiz);
+        TextView tv_retries = findViewById(R.id.total_retry);
+        TextView tv_average = findViewById(R.id.total_average_score);
+        TextView tv_accuracy = findViewById(R.id.answers_accuracy);
 
         Button btn_logout = findViewById(R.id.signout_btn);
         Button btn_home = findViewById(R.id.go_back_btn);
-        Button btn_change = findViewById(R.id.changepass_btn);
 
         authUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        setVerifyPopup();
-        setChangePasswordPopup();
+        try {
+            calculateAnalytics();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        tv_username.setText(User.current.username);
+        tv_email.setText(User.current.email);
+        tv_topics.setText(totalTopics + "");
+        tv_quizzes.setText(totalQuizzes + "");
+        tv_retries.setText(totalRetries + "");
+        tv_average.setText(decimalFormat.format(average));
+        tv_accuracy.setText(decimalFormat.format(accuracy) + "%");
 
         tv_username.setText(User.current.username);
         tv_email.setText(User.current.email);
 
         btn_home.setOnClickListener(view -> startActivity(new Intent(UserProfilePage.this, home_screen.class)));
-        btn_change.setOnClickListener(view -> ad_verify.show());
 
         btn_logout.setOnClickListener(view -> {
             // Logout user
@@ -66,96 +92,47 @@ public class UserProfilePage extends AppCompatActivity {
         });
     }
 
-    private void setVerifyPopup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfilePage.this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(UserProfilePage.this).inflate(R.layout.verify_user_page, findViewById(R.id.verify_userview));
+    private void calculateAnalytics() {
+        // Get total topics by topics size
+        totalTopics = User.current.topics.size();
 
-        EditText et_email = view.findViewById(R.id.email);
-        EditText et_password = view.findViewById(R.id.oldpass);
-        Button btn_verify = view.findViewById(R.id.verify_btn);
+        // Initiate temporary values
+        totalQuizzes = 0;
+        totalRetries = 0;
+        average = 0;
 
-        btn_verify.setOnClickListener(v -> {
-            String email = et_email.getText().toString();
-            String password = et_password.getText().toString();
+        if (totalTopics == 0) {
+            accuracy = 0;
+            return;
+        }
 
-            AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+        double totalAccuracy = 0;
 
-            authUser.reauthenticate(credential)
-                    .addOnSuccessListener(unused -> {
-                        // Hide verify popup
-                        ad_verify.dismiss();
+        // Traverse to each topic
+        for (Topic topic : User.current.topics.values()) {
+            // Increment the total quizzes by the quizzes size
+            totalQuizzes += topic.quizzes.size();
 
-                        // Show change password popup
-                        ad_changePass.show();
-
-                    })
-                    .addOnFailureListener(e -> {
-                        // Show error message
-                        Toast.makeText(UserProfilePage.this, "Invalid user credentials", Toast.LENGTH_LONG).show();
-
-                        et_email.setText("");
-                        et_password.setText("");
-
-                        ad_verify.dismiss();
-                    });
-        });
-
-        builder.setView(view);
-        ad_verify = builder.create();
-
-        Window window = ad_verify.getWindow();
-        if (window != null)
-            window.setBackgroundDrawable(new ColorDrawable(0));
-    }
-
-    private void setChangePasswordPopup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfilePage.this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(UserProfilePage.this).inflate(R.layout.activity_change_password, findViewById(R.id.changepassview));
-
-        EditText et_newPassword = view.findViewById(R.id.newpassword);
-        EditText et_reEnterNewPassword = view.findViewById(R.id.re_enter_newpassword);
-        Button btn_changePassword = view.findViewById(R.id.changepass_button);
-
-        btn_changePassword.setOnClickListener(v -> {
-            String newPassword = et_newPassword.getText().toString();
-            String reEnterNewPassword = et_reEnterNewPassword.getText().toString();
-
-            if (!newPassword.equals(reEnterNewPassword)) {
-
-                // Show error
-                Toast.makeText(this, "Passwords are not the same", Toast.LENGTH_LONG).show();
-                return;
+            // Traverse to each quiz
+            for (Quiz quiz : topic.quizzes.values()) {
+                // Increment the values respectively
+                totalRetries += quiz.retries;
+                average += quiz.average;
+                // Accuracy = average / no. of items
+                totalAccuracy += quiz.average / quiz.questions.size();
             }
+        }
 
-            // Change password Function
-            authUser.updatePassword(newPassword)
-                    .addOnSuccessListener(unused -> {
-                        // Show success message
-                        Toast.makeText(UserProfilePage.this, "Password updated", Toast.LENGTH_LONG).show();
+        if (totalTopics == 0) {
+            accuracy = 0;
+            return;
+        }
 
-                        et_newPassword.setText("");
-                        et_reEnterNewPassword.setText("");
-
-                        // Hide change pass popup
-                        ad_changePass.dismiss();
-                    })
-                    .addOnFailureListener(e -> {
-                        // Show error
-                        Toast.makeText(this, "Passwords are not changed", Toast.LENGTH_LONG).show();
-
-                        et_newPassword.setText("");
-                        et_reEnterNewPassword.setText("");
-
-                        // Hide change pass popup
-                        ad_changePass.dismiss();
-                    });
-        });
-
-        builder.setView(view);
-        ad_changePass = builder.create();
-
-        Window window = ad_changePass.getWindow();
-        if (window != null)
-            window.setBackgroundDrawable(new ColorDrawable(0));
+        // The temporary value of average is the sum of each quiz's average
+        // To get the average, divide the total average by the total quiz size
+        average /= totalQuizzes;
+        // To get the accuracy, divide the total accuracy by the total quiz size
+        // You'll get the decimal value. Multiply it by 100 to get the percentage
+        accuracy = totalAccuracy / totalQuizzes * 100;
     }
 }

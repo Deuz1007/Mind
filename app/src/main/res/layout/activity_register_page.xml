@@ -29,7 +29,7 @@
                 android:id="@+id/imageView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
@@ -66,20 +66,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/username_input" />
 
-            <EditText
-                android:id="@+id/email_input"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="36dp"
-                android:background="@drawable/white_button_round"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:textSize="20sp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailTextInputLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.495"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fullname_input" />
+                app:layout_constraintTop_toBottomOf="@+id/fullname_input" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_input"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="36dp"
+                    android:background="@drawable/white_button_round"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textSize="20sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/birth_input"
@@ -93,7 +102,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.495"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/email_input"
+                app:layout_constraintTop_toBottomOf="@+id/emailTextInputLayout"
                 android:onClick="openDatePicker"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -108,14 +117,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/birth_input">
 
-            <EditText
-                android:id="@+id/password_input"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:background="@drawable/white_button_round"
-                android:ems="10"
-                android:inputType="text"
-                android:textSize="20sp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_input"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/white_button_round"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:textSize="20sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -130,14 +139,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/input_password">
 
-            <EditText
-                android:id="@+id/re_enterpassword_input"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:background="@drawable/white_button_round"
-                android:inputType="text"
-                android:textSize="20sp"
-                android:ems="10"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/re_enterpassword_input"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/white_button_round"
+                    android:inputType="textPassword"
+                    android:textSize="20sp"
+                    android:ems="10" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -178,7 +187,7 @@
                 android:text="@string/email"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/email_input"
+                app:layout_constraintBottom_toTopOf="@+id/emailTextInputLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.137"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -226,9 +235,9 @@
 
             <Button
                 android:id="@+id/createAccount_btn"
-                android:layout_width="200dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="24dp"
                 android:background="@drawable/round_button_blue"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="@string/new_register"
