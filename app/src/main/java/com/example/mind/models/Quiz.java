@@ -104,8 +104,12 @@ public class Quiz {
                 .addOnFailureListener(callback::Failed);
     }
 
+    private static String[] contentToTokenArray(String content) {
+        return content.split("\\W+");
+    }
+
     public static boolean isValidContent(String content) {
         // Check if the quizContent exceeds token max length
-        return content.split("\\W+").length <= MaxContentTokensReachedException.MAX_TOKEN;
+        return contentToTokenArray(content).length <= MaxContentTokensReachedException.MAX_TOKEN;
     }
 }
