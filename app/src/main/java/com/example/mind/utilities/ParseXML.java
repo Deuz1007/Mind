@@ -57,7 +57,7 @@ public class ParseXML {
                     // Convert CHOICE INDEX to number
                     int choiceIndex = Integer.parseInt(answerContent);
                     // Get the choice from choices by index and assign it as answer
-                    question.answer = removeOrdering(question.choices.get(choiceIndex));
+                    question.answer = removeOrdering(question.choices.get(choiceIndex).toLowerCase());
 
                     question.type = Question.QuestionType.MULTIPLE_CHOICE;
 
@@ -89,6 +89,6 @@ public class ParseXML {
     }
 
     private static String removeOrdering(String str) {
-        return str.replaceAll("\\w+\\.\\s+", "");
+        return str.replaceAll("^[a-z0-9]+\\.?\\s?+", "");
     }
 }
