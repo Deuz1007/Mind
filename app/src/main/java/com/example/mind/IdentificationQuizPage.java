@@ -144,6 +144,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         if (btnId == R.id.submitAnswer_btn) {
 //            buttonClickSound.start();
+            BooleanQuizPage.batchEnable(new Button[] { hint }, false);
 
             // Get the user input in EditText
             selectedAnswer = answer.getText().toString();
@@ -182,6 +183,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
             tv_hintText.setText(""); // Hint
             answer.setText(""); // Answer
             isHinted = false;
+            BooleanQuizPage.batchEnable(new Button[] { hint }, true);
 
             currentQuestion = questionList.get(currentQuestionIndex);
 
@@ -202,6 +204,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
             @Override
             public void onFinish() {
                 currentQuestionIndex++;
+                BooleanQuizPage.streakCounter = 0;
                 loadNewQuestion();
             }
         };

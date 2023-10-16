@@ -157,6 +157,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             // Disable button action if choice is hint
             if (btnId == hintChoiceBtnId) return;
 
+            BooleanQuizPage.batchEnable(new Button[] { choiceA, choiceB, choiceC, choiceD }, false);
+
             // Change button design
             selectedAnswer = clickedButton.getText().toString();
             Question current = questionList.get(currentQuestionIndex);
@@ -191,6 +193,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             startTimer();
             selectedAnswer = ""; // Selected answer
             hintChoiceBtnId = -1; // Hint
+            BooleanQuizPage.batchEnable(new Button[] { choiceA, choiceB, choiceC, choiceD }, true);
 
             currentQuestion = questionList.get(currentQuestionIndex);
 
@@ -222,6 +225,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             @Override
             public void onFinish() {
                 currentQuestionIndex++;
+                BooleanQuizPage.streakCounter = 0;
                 loadNewQuestion();
             }
         };

@@ -200,6 +200,8 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button) {
 //            buttonClickSound.start();
+            // Disable buttons
+            batchEnable(new Button[] { choiceA, choiceB }, false);
 
             // Get the string inside the button
             selectedAnswer = clickedButton.getText().toString();
@@ -230,6 +232,7 @@ public class BooleanQuizPage extends AppCompatActivity {
             if (timer != null) timer.cancel();
             startTimer(TIMER_TOTAL_TIME);
             selectedAnswer = ""; // Selected answer
+            batchEnable(new Button[] { choiceA, choiceB }, true);
 
             Question current = questionList.get(currentQuestionIndex);
 
@@ -258,6 +261,7 @@ public class BooleanQuizPage extends AppCompatActivity {
             public void onFinish() {
                 // Increase question index
                 currentQuestionIndex++;
+                streakCounter = 0;
                 // Load new question
                 loadNewQuestion();
             }
@@ -291,5 +295,10 @@ public class BooleanQuizPage extends AppCompatActivity {
         }
         // If incorrect, reset streak to 0
         else streakCounter = 0;
+    }
+
+    public static void batchEnable(Button[] buttons, boolean isEnabled) {
+        for (Button button : buttons)
+            button.setEnabled(isEnabled);
     }
 }
