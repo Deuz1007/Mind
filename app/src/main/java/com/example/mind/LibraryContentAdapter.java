@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -15,17 +17,37 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mind.models.Topic;
 
 public class LibraryContentAdapter extends RecyclerView.Adapter<LibraryContentAdapter.LibraryContentViewHolder> {
+
+    private OnItemClickListener listener;
+
+    // Interface for item click
+    public interface OnItemClickListener{
+        void onItemClick(int Position);
+    }
+
+    // Method for Click Listerer
+    public void setOnItemClickListener(OnItemClickListener clickListener){
+        listener = clickListener;
+    }
+
     public static class LibraryContentViewHolder extends RecyclerView.ViewHolder  {
         TextView contentView;
+        ImageView deleteBtn;
 
-        public LibraryContentViewHolder(@NonNull View itemView) {
+        public LibraryContentViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             contentView = itemView.findViewById(R.id.content_title);
+            deleteBtn = itemView.findViewById(R.id.delete);
+
+            deleteBtn.setOnClickListener(view -> {
+                listener.onItemClick(getAdapterPosition());
+            });
         }
     }
 
     Context context;
     List<Topic> items;
+    private List<Integer> selectedItems = new ArrayList<>();
 
     public LibraryContentAdapter(Context context, List<Topic> items) {
         this.context = context;
@@ -38,12 +60,14 @@ public class LibraryContentAdapter extends RecyclerView.Adapter<LibraryContentAd
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.library_content_view, parent, false);
 
-        return new LibraryContentAdapter.LibraryContentViewHolder(view);
+        return new LibraryContentAdapter.LibraryContentViewHolder(view, listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull LibraryContentAdapter.LibraryContentViewHolder holder, int position) {
         holder.contentView.setText(items.get(position).title);
+
+//        holder.deleteBtn.setVisibility(View.GONE);
         holder.contentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,6 +77,8 @@ public class LibraryContentAdapter extends RecyclerView.Adapter<LibraryContentAd
                 context.startActivity(intent);
             }
         });
+
+
     }
 
     @Override
