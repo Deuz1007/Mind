@@ -273,7 +273,7 @@ public class BooleanQuizPage extends AppCompatActivity {
     }
 
     public static void updateScore(String userAnswer, String correctAnswer, String question) {
-        userAnswer = userAnswer.toLowerCase();
+        userAnswer = userAnswer.toLowerCase().trim().replaceAll("\\s+", " ");
         correctAnswer = correctAnswer.toLowerCase();
 
         boolean isCorrect = userAnswer.equals(correctAnswer);
