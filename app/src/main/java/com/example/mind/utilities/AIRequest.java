@@ -3,7 +3,9 @@ package com.example.mind.utilities;
 import androidx.annotation.NonNull;
 
 import com.example.mind.BuildConfig;
+import com.example.mind.exceptions.APIErrorException;
 import com.example.mind.exceptions.QuizGenerationFailedException;
+import com.example.mind.exceptions.RateLimitException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.interfaces.ProcessMessage;
 import com.example.mind.models.Question;
@@ -60,9 +62,10 @@ public class AIRequest {
         Map<Question.QuestionType, List<Question>> generatedQuestions = new HashMap<>();
         final boolean[] isSuccess = { true };
         final int[] requestCount = { 0 };
+        final Exception[] exception = {null};
 
         // Send message
-        message.Message("Generating questions");
+        message.Message("Generating questions...");
 
         // Loop through each question request
         for (int i = 0; i < requests.length; i++) {
@@ -76,11 +79,11 @@ public class AIRequest {
                     // Increment request count
                     requestCount[0]++;
 
-                    // Check if the requests are still success
-                    if (!isSuccess[0]) {
+                    // Check if exception has a value
+                    if (exception[0] != null) {
                         // if the request count reaches 3, call the callback with exception
                         if (requestCount[0] == 3)
-                            callback.Failed(new QuizGenerationFailedException());
+                            callback.Failed(exception[0]);
 
                         return;
                     }
@@ -88,13 +91,19 @@ public class AIRequest {
                     // Get the response body
                     String responseBody = response.body().string();
 
+                    // Check if API reached rate limit
+                    if (responseBody.contains("rate_limit_exceeded")) {
+                        exception[0] = new RateLimitException();
+                        return;
+                    }
+
                     // Create a matcher for the response body
                     Matcher matcher = RESPONSE_PATTERN.matcher(responseBody);
                     // Check if there is matched with the pattern;
                     if (matcher.find())
                         try {
                             // Send message
-                            message.Message("Level " + levelCounter + " question generated");
+                            message.Message("Level " + levelCounter + " questions generated...");
 
                             // Save the generated questions to the mapping
                             generatedQuestions.put(questionRequest.type, ParseXML.parse(questionRequest.type, matcher.group()));
@@ -123,7 +132,7 @@ public class AIRequest {
                             callback.Failed(e);
                         }
                         // Set is success to false if there isn't matched <response></response>
-                    else isSuccess[0] = false;
+                    else exception[0] = new APIErrorException();
                 }
 
                 @Override

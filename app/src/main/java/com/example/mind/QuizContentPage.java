@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,8 +52,9 @@ public class QuizContentPage extends AppCompatActivity {
         btn_edit = findViewById(R.id.edit_btn);
         btn_save = findViewById(R.id.save_btn);
 
-        // Setup popop
-        setPopup();
+        // Setup popup
+        setItemsPopup();
+        setGenerationPopup();
 
         // Get topic from intent from library sheet
         String topicId = getIntent().getStringExtra("topicId");
@@ -75,18 +77,24 @@ public class QuizContentPage extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Generate Quiz
-        btn_generate.setOnClickListener(v -> {
-            // Show Choosing Number of Items
-            ad_itemsDialog.show();
-        });
+        // Set onclick listener for generate button
+        btn_generate.setOnClickListener(v -> ad_itemsDialog.show());
 
         // Go back to home screen
         btn_back.setOnClickListener(v -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
-
     }
 
-    private void setPopup() {
+    private void setGenerationPopup() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(QuizContentPage.this);
+        View dialogView = getLayoutInflater().inflate(R.layout.loading_dialog, null);
+
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false); // Preventing user from dismissing the dialog
+        loadingAlertDialog = dialogBuilder.create();
+        textLoading = dialogView.findViewById(R.id.loding_purpose);
+    }
+
+    private void setItemsPopup() {
         // Setup dialog view and builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(this).inflate(R.layout.number_of_items_popup, null);
@@ -146,41 +154,33 @@ public class QuizContentPage extends AppCompatActivity {
                 itemsPerLevel,
                 message -> {
                     // Show message
-//                    QuizContentPage.this.runOnUiThread(() -> Toast.makeText(QuizContentPage.this, message, Toast.LENGTH_SHORT).show());
-
                     QuizContentPage.this.runOnUiThread(() -> {
+                        if (!loadingAlertDialog.isShowing())
+                            loadingAlertDialog.show();
 
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(QuizContentPage.this);
-                        LayoutInflater inflater = getLayoutInflater();
-                        View dialogView = inflater.inflate(R.layout.loading_dialog, null);
-                        dialogBuilder.setView(dialogView);
-                        dialogBuilder.setCancelable(false); // Preventing user from dismissing the dialog
-                        loadingAlertDialog = dialogBuilder.create();
-                        loadingAlertDialog.show();
-
-                        textLoading = dialogView.findViewById(R.id.loding_purpose);
                         textLoading.setText(message);
-
                     });
                 },
                 new PostProcess() {
                     @Override
                     public void Success(Object... o) {
-                        Toast.makeText(QuizContentPage.this, "Quiz Generation Success", Toast.LENGTH_SHORT).show();
+                        textLoading.setText("Quiz generation success!");
 
                         Quiz quiz = (Quiz) o[0];
                         Class<?> targetClass = topic.quizzes.size() - 1 == 0 ? Instructions_Popup.class : BooleanQuizPage.class;
 
-                        Intent intent = new Intent(QuizContentPage.this, targetClass);
-                        intent.putExtra("quizId", quiz.quizId);
-                        intent.putExtra("topicId", topic.topicId);
-                        startActivity(intent);
+                        new Handler().postDelayed(() -> {
+                            Intent intent = new Intent(QuizContentPage.this, targetClass);
+                            intent.putExtra("quizId", quiz.quizId);
+                            intent.putExtra("topicId", topic.topicId);
+                            startActivity(intent);
+                        }, 3000);
                     }
 
                     @Override
                     public void Failed(Exception e) {
-                        Toast.makeText(QuizContentPage.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(QuizContentPage.this, library_sheet.class));
+                        // Hide popup
+                        loadingAlertDialog.dismiss();
                     }
                 });
     }
