@@ -39,12 +39,15 @@ public class MainActivity extends AppCompatActivity {
         User.setStatics();
 
         // Check if there is saved user log in information
-        if (FirebaseAuth.getInstance().getCurrentUser() != null)
-            // If so, use that to login user
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            // Show logging in popup
+            loggingIn();
+
+            // Login user
             User.initialize(new PostProcess() {
                 @Override
                 public void Success(Object... o) {
-                    loggingIn();
+                    dashboard();
                 }
 
                 @Override
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                     // Failed login with saved user info
                 }
             });
+        }
 
         // Going to Home Screen
         Button login = findViewById(R.id.login_button);
@@ -105,16 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
         textLoading = dialogView.findViewById(R.id.loding_purpose);
         textLoading.setText("Logging in...");
-
-        // Proceed to dashboard after 3 seconds
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dashboard();
-                alertDialog.dismiss();
-            }
-        }, 3000);
     }
 
     // Function to validate email
