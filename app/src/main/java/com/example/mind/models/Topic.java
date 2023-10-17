@@ -60,6 +60,16 @@ public class Topic {
                 .addOnFailureListener(callback::Failed);
     }
 
+    public static void removeTopic(Topic topic, PostProcess callback) {
+        getCollection(topic).removeValue()
+                .addOnSuccessListener(unused -> {
+                    User.current.topics.remove(topic.topicId);
+
+                    callback.Success();
+                })
+                .addOnFailureListener(callback::Failed);
+    }
+
     public static void createQuiz(Topic topic, String quizContent, int itemsPerLevel, ProcessMessage message, PostProcess callback) throws MaxContentTokensReachedException {
         // Check if the quizContent exceeds token max length
         if (!Quiz.isValidContent(quizContent))

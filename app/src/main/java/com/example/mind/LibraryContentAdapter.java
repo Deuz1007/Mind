@@ -68,14 +68,11 @@ public class LibraryContentAdapter extends RecyclerView.Adapter<LibraryContentAd
         holder.contentView.setText(items.get(position).title);
 
 //        holder.deleteBtn.setVisibility(View.GONE);
-        holder.contentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Navigate to the Quiz Content Page
-                Intent intent = new Intent(context, QuizContentPage.class);
-                intent.putExtra("topicId", items.get(position).topicId);
-                context.startActivity(intent);
-            }
+        holder.contentView.setOnClickListener(view -> {
+            // Navigate to the Quiz Content Page
+            Intent intent = new Intent(context, QuizContentPage.class);
+            intent.putExtra("topicId", items.get(position).topicId);
+            context.startActivity(intent);
         });
 
 

@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.mind.interfaces.PostProcess;
+import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
 import java.util.ArrayList;
@@ -38,15 +40,24 @@ public class library_sheet extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Deleting the item in the recycler view
-        contentAdapter.setOnItemClickListener(new LibraryContentAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int Position) {
-                // deleting the specific item
-                contentAdapter.items.remove(Position);
+        contentAdapter.setOnItemClickListener(Position -> {
+            Topic topic = contentAdapter.items.get(Position);
 
-                // notifying the adapter
-                contentAdapter.notifyDataSetChanged();
-            }
+            Topic.removeTopic(topic, new PostProcess() {
+                @Override
+                public void Success(Object... o) {
+                    // deleting the specific item
+                    contentAdapter.items.remove(Position);
+
+                    // notifying the adapter
+                    contentAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void Failed(Exception e) {
+                    // Show error
+                }
+            });
         });
     }
 
