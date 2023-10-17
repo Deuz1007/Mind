@@ -37,11 +37,8 @@ public class LibraryContentAdapter extends RecyclerView.Adapter<LibraryContentAd
         public LibraryContentViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             contentView = itemView.findViewById(R.id.content_title);
-            deleteBtn = itemView.findViewById(R.id.delete);
 
-            deleteBtn.setOnClickListener(view -> {
-                listener.onItemClick(getAdapterPosition());
-            });
+//            listener.onItemClick(getAdapterPosition());
         }
     }
 

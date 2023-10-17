@@ -40,25 +40,25 @@ public class library_sheet extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Deleting the item in the recycler view
-        contentAdapter.setOnItemClickListener(Position -> {
-            Topic topic = contentAdapter.items.get(Position);
-
-            Topic.removeTopic(topic, new PostProcess() {
-                @Override
-                public void Success(Object... o) {
-                    // deleting the specific item
-                    contentAdapter.items.remove(Position);
-
-                    // notifying the adapter
-                    contentAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void Failed(Exception e) {
-                    // Show error
-                }
-            });
-        });
+//        contentAdapter.setOnItemClickListener(Position -> {
+//            Topic topic = contentAdapter.items.get(Position);
+//
+//            Topic.removeTopic(topic, new PostProcess() {
+//                @Override
+//                public void Success(Object... o) {
+//                    // deleting the specific item
+//                    contentAdapter.items.remove(Position);
+//
+//                    // notifying the adapter
+//                    contentAdapter.notifyDataSetChanged();
+//                }
+//
+//                @Override
+//                public void Failed(Exception e) {
+//                    // Show error
+//                }
+//            });
+//        });
     }
 
     public void buttonOpenFile(View view){

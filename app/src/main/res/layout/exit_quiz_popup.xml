@@ -44,8 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:background="@color/light_dark_cool">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/quit_comment"
