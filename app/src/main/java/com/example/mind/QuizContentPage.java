@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +24,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.dialogs.ItemCountDialog;
+import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.exceptions.MaxContentTokensReachedException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.interfaces.ProcessMessage;
@@ -30,12 +33,16 @@ import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class QuizContentPage extends AppCompatActivity {
     EditText et_contentField;
     Button btn_back, btn_edit, btn_save, btn_generate, btn_delete, btn_quizzes;
-    AlertDialog ad_itemsDialog, loadingAlertDialog, alertDialog;;
+    AlertDialog alertDialog;
+    LoadingDialog generationDialog;
+    ItemCountDialog itemCountDialog;
 
     TextView textLoading;
 
@@ -51,6 +58,9 @@ public class QuizContentPage extends AppCompatActivity {
         // Edit Text
         et_contentField = findViewById(R.id.edit_content_field);
 
+        // TextView
+        TextView tv_tokenCount = findViewById(R.id.tokenCount_text);
+
         // Button
         btn_quizzes = findViewById(R.id.check_content_btn);
         btn_back = findViewById(R.id.back_btn);
@@ -60,15 +70,50 @@ public class QuizContentPage extends AppCompatActivity {
         btn_delete = findViewById(R.id.delete_content_btn);
 
         // Setup popup
-        setItemsPopup();
-        setGenerationPopup();
+        generationDialog = new LoadingDialog(this);
+
+        itemCountDialog = new ItemCountDialog(this);
+        itemCountDialog.setStartGeneration(objects -> {
+            int items = (int) objects[0];
+
+            try {
+                // Disable generate button
+                btn_generate.setEnabled(false);
+
+                // Generate new quiz
+                generate(items);
+            } catch (MaxContentTokensReachedException e) {
+                // Show generation error
+            }
+
+            if (itemCountDialog.isShowing()) itemCountDialog.dismiss();
+        });
 
         // Get topic from intent from library sheet
         String topicId = getIntent().getStringExtra("topicId");
         topic = User.current.topics.get(topicId);
 
+        // Assign the token count to the Textview
+        tv_tokenCount.setText(Quiz.contentToTokenArray(topic.content).length + "");
+
         // Assign topic content to content field
         et_contentField.setText(topic.content);
+        et_contentField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                tv_tokenCount.setText(Quiz.contentToTokenArray(s.toString()).length + "");
+            }
+        });
 
         // Set text container and button visibility
         toggleContentContainer(false, View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.VISIBLE);
@@ -93,66 +138,10 @@ public class QuizContentPage extends AppCompatActivity {
         });
 
         // Set onclick listener for generate button
-        btn_generate.setOnClickListener(v -> ad_itemsDialog.show());
+        btn_generate.setOnClickListener(v -> itemCountDialog.show());
 
         // Go back to home screen
         btn_back.setOnClickListener(v -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
-    }
-
-    private void setGenerationPopup() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(QuizContentPage.this);
-        View dialogView = getLayoutInflater().inflate(R.layout.loading_dialog, null);
-
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.setCancelable(false); // Preventing user from dismissing the dialog
-        loadingAlertDialog = dialogBuilder.create();
-        textLoading = dialogView.findViewById(R.id.loding_purpose);
-    }
-
-    private void setItemsPopup() {
-        // Setup dialog view and builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(this).inflate(R.layout.number_of_items_popup, null);
-
-        // Set view and build dialog
-        builder.setView(view);
-        ad_itemsDialog = builder.create();
-
-        // Get the radio group
-        RadioGroup radioGroup = view.findViewById(R.id.items_to_gen); // Find the RadioGroup inside the inflated view
-
-        // Get the confirm button and assign onclick listener
-        Button btn_confirm = view.findViewById(R.id.confirm_item);
-        btn_confirm.setOnClickListener(v -> {
-            // Get the id selection radio button
-            int selectedItem = radioGroup.getCheckedRadioButtonId();
-
-            // Check if there isn't selected option
-            if (selectedItem == -1) return;
-
-            // Get the radio button from the id
-            RadioButton selectedRadioBtn = radioGroup.findViewById(selectedItem);
-            // Extract the text
-            String selectedTxt = selectedRadioBtn.getText().toString();
-
-            try {
-                // Disable generate button
-                btn_generate.setEnabled(false);
-
-                // Generate new quiz
-                generate(Integer.parseInt(selectedTxt) / 3);
-            } catch (MaxContentTokensReachedException e) {
-                // Display toast on error
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-
-            // Dismiss items dialog
-            if (ad_itemsDialog.isShowing()) ad_itemsDialog.dismiss();
-        });
-
-        // Set darker window
-        Window window = ad_itemsDialog.getWindow();
-        if (window != null) window.setBackgroundDrawable(new ColorDrawable(0));
     }
 
     private void toggleContentContainer(boolean contentFieldEnabled, int editVisibility, int saveVisibility, int deleteVisibility, int quizVisibility) {
@@ -172,16 +161,16 @@ public class QuizContentPage extends AppCompatActivity {
                 message -> {
                     // Show message
                     QuizContentPage.this.runOnUiThread(() -> {
-                        if (!loadingAlertDialog.isShowing())
-                            loadingAlertDialog.show();
+                        if (!generationDialog.isShowing())
+                            generationDialog.show();
 
-                        textLoading.setText(message);
+                        generationDialog.setPurpose(message);
                     });
                 },
                 new PostProcess() {
                     @Override
                     public void Success(Object... o) {
-                        textLoading.setText("Quiz generation success!");
+                        generationDialog.setPurpose("Quiz generation success!");
 
                         Quiz quiz = (Quiz) o[0];
                         Class<?> targetClass = topic.quizzes.size() - 1 == 0 ? Instructions_Popup.class : BooleanQuizPage.class;
@@ -197,7 +186,7 @@ public class QuizContentPage extends AppCompatActivity {
                     @Override
                     public void Failed(Exception e) {
                         // Hide popup
-                        loadingAlertDialog.dismiss();
+                        generationDialog.dismiss();
                     }
                 });
     }
@@ -207,7 +196,7 @@ public class QuizContentPage extends AppCompatActivity {
         View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.exit_quiz_popup, (LinearLayout) findViewById(R.id.exit_popup));
 
         builder.setView(view);
-        ((TextView) view.findViewById(R.id.quit_comment)).setText("Are You Sure You wanna delete the quiz content?");
+        ((TextView) view.findViewById(R.id.quit_comment)).setText("Are You Sure You wanna delete this topic?");
         ((ImageView) view.findViewById(R.id.quit_image)).setImageResource(R.drawable.warning);
         ((LinearLayout) view.findViewById(R.id.exit_popup)).setBackgroundResource(R.drawable.library_gradient_bg);
 

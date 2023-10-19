@@ -2,14 +2,9 @@ package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -17,14 +12,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.mind.data.ActiveQuiz;
+import com.example.mind.data.ConstantValues;
+import com.example.mind.dialogs.QuitDialog;
 import com.example.mind.models.Question;
-import com.example.mind.models.Quiz;
-import com.example.mind.models.Topic;
-import com.example.mind.models.User;
+import com.example.mind.utilities.ButtonToggleEnable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +42,8 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
     ProgressBar progressBar; // UI For Timer
     CountDownTimer timer; // Timer
+
+    QuitDialog quitDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,24 +73,31 @@ public class IdentificationQuizPage extends AppCompatActivity {
         // ProgressBar
         progressBar = findViewById(R.id.timerprogressBar);
 
+        // Create new QuitDialog
+        quitDialog = new QuitDialog(this);
+        quitDialog.setDoThisOnQuit(objects -> {
+            ActiveQuiz.active = null;
+            timer.cancel();
+        });
+
         // Get the identification questions
-        questionList = BooleanQuizPage.quiz.questions
+        questionList = ActiveQuiz.active.quiz.questions
                 .values()
                 .stream()
                 .filter(question -> question.type == Question.QuestionType.IDENTIFICATION)
                 .collect(Collectors.toList());
 
         // Set the number of questions per level
-        numberOfQuestions.setText(BooleanQuizPage.quiz.itemsPerLevel + "");
+        numberOfQuestions.setText(ActiveQuiz.active.quiz.itemsPerLevel + "");
 
         // Hint Button set to invisible (Default)
         hint.setOnClickListener(v -> {
 //            buttonClickSound.start();
 
-            if (BooleanQuizPage.hintCounter < 1) return;
+            if (ActiveQuiz.active.hints < 1) return;
             if (isHinted) return;
 
-            BooleanQuizPage.hintCounter--;
+            ActiveQuiz.active.hints--;
             updateCounterText();
 
             String hintChoice = Question.hint(currentQuestion);
@@ -108,34 +112,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Show popup "Are you sure to end quiz the quiz? The progress won't save"
-        // Implement popup here
-        BooleanQuizPage.quiz = null;
-        BooleanQuizPage.topic = null;
-        timer.cancel();
-//        buttonClickSound.release();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(IdentificationQuizPage.this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(IdentificationQuizPage.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
-
-        builder.setView(view);
-        ((TextView) view.findViewById(R.id.quit_comment)).setText("Exiting Already?");
-
-        final AlertDialog alertDialog = builder.create();
-
-        view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
-            startActivity(new Intent(this, home_screen.class));
-            finish();
-        });
-
-        view.findViewById(R.id.no_btn).setOnClickListener(View -> {
-            alertDialog.dismiss();
-        });
-
-        if (alertDialog.getWindow() != null){
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        alertDialog.show();
+        quitDialog.show();
     }
 
     public void btnClick(View v) {
@@ -143,14 +120,14 @@ public class IdentificationQuizPage extends AppCompatActivity {
         int btnId = clickedButton.getId();
 
         if (btnId == R.id.submitAnswer_btn) {
-//            buttonClickSound.start();
-            BooleanQuizPage.batchEnable(new Button[] { hint }, false);
+            // Disable buttons
+            ButtonToggleEnable.setBatchEnabled(false, hint);
 
             // Get the user input in EditText
             selectedAnswer = answer.getText().toString();
             Question current = questionList.get(currentQuestionIndex);
 
-            BooleanQuizPage.updateScore(
+            ActiveQuiz.active.updateScore(
                     selectedAnswer,
                     current.answer,
                     current.question
@@ -166,45 +143,46 @@ public class IdentificationQuizPage extends AppCompatActivity {
     }
 
     public void loadNewQuestion() {
-        if (currentQuestionIndex == BooleanQuizPage.quiz.itemsPerLevel) {
+        if (currentQuestionIndex == ActiveQuiz.active.quiz.itemsPerLevel) {
             timer.cancel();
 
             Intent intent = new Intent(IdentificationQuizPage.this, QuizResultPage.class);
             startActivity(intent);
-//            backgroundMusicPlayer.stop();
             finish();
-        }
-        else {
-            /* Reset values: */
-            // Timer
-            if (timer != null) timer.cancel();
-            startTimer();
-            selectedAnswer = ""; // Selected answer
-            tv_hintText.setText(""); // Hint
-            answer.setText(""); // Answer
-            isHinted = false;
-            BooleanQuizPage.batchEnable(new Button[] { hint }, true);
 
-            currentQuestion = questionList.get(currentQuestionIndex);
-
-            // Reset UI texts
-            questionItem.setText(currentQuestion.question);
+            return;
         }
+
+        /* Reset values: */
+        // Timer
+        if (timer != null) timer.cancel();
+        startTimer();
+        selectedAnswer = ""; // Selected answer
+        tv_hintText.setText(""); // Hint
+        answer.setText(""); // Answer
+        isHinted = false;
+        // Enable buttons
+        ButtonToggleEnable.setBatchEnabled(true, hint);
+
+        currentQuestion = questionList.get(currentQuestionIndex);
+
+        // Reset UI texts
+        questionItem.setText(currentQuestion.question);
     }
 
     private void startTimer() {
-        timer = new CountDownTimer(BooleanQuizPage.TIMER_TOTAL_TIME, BooleanQuizPage.TIMER_INTERVAL_TIME) {
+        timer = new CountDownTimer(ConstantValues.TIMER_TIME, ConstantValues.INTERVAL_TIME) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // Update the progress bar with the remaining time
-                int progress = (int) (millisUntilFinished / BooleanQuizPage.TIMER_INTERVAL_TIME);
+                int progress = (int) (millisUntilFinished / ConstantValues.INTERVAL_TIME);
                 progressBar.setProgress(progress);
             }
 
             @Override
             public void onFinish() {
                 currentQuestionIndex++;
-                BooleanQuizPage.streakCounter = 0;
+                ActiveQuiz.active.streak = 0;
                 loadNewQuestion();
             }
         };
@@ -214,7 +192,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
     private void updateCounterText() {
         // Set counters text
-        tv_hint.setText(BooleanQuizPage.hintCounter + "");
-        tv_streak.setText(BooleanQuizPage.streakCounter + "");
+        tv_hint.setText(ActiveQuiz.active.hints + "");
+        tv_streak.setText(ActiveQuiz.active.streak + "");
     }
 }

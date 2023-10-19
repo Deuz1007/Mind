@@ -1,4 +1,4 @@
-package com.example.mind.interfaces;
+package com.example.mind.exceptions;
 
 public class InvalidQuizCodeException extends Exception {
     public InvalidQuizCodeException() {

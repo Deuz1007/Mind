@@ -102,8 +102,10 @@ public class AIRequest {
                     // Check if there is matched with the pattern;
                     if (matcher.find())
                         try {
+                            String statusMessage = "Level " + levelCounter + " questions generated" + (generatedQuestions.size() == 3 ? "" : "\nGenerating questions...");
+
                             // Send message
-                            message.Message("Level " + levelCounter + " questions generated...");
+                            message.Message(statusMessage);
 
                             // Save the generated questions to the mapping
                             generatedQuestions.put(questionRequest.type, ParseXML.parse(questionRequest.type, matcher.group()));
