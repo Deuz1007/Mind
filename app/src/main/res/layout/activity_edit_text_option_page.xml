@@ -45,7 +45,7 @@
         android:id="@+id/editField"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="60dp"
         android:background="@color/white"
         android:fontFamily="@font/work_sans_light"
         android:padding="10dp"
@@ -75,26 +75,26 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:text="Token Count:"
         android:textColor="@color/white"
         android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/editField"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.104"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editField" />
+        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tokenCount_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:text="0"
         android:textColor="@color/white"
         android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/editField"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.069"
-        app:layout_constraintStart_toEndOf="@+id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/editField" />
+        app:layout_constraintHorizontal_bias="0.032"
+        app:layout_constraintStart_toEndOf="@+id/textView9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

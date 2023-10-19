@@ -49,12 +49,14 @@ public class home_screen extends AppCompatActivity {
         Button btn_library = findViewById(R.id.library_btn);
         Button btn_profile = findViewById(R.id.userprofile_btn);
         Button btn_settings = findViewById(R.id.settings_btn);
+        Button btn_global = findViewById(R.id.global_btn);
 
         btn_profile.setText(User.current.username);
 
         btn_profile.setOnClickListener(view -> startActivity(new Intent(this, UserProfilePage.class)));
         btn_library.setOnClickListener(view -> startActivity(new Intent(this, library_sheet.class)));
         btn_settings.setOnClickListener(view -> startActivity(new Intent(this, SettingsPage.class)));
+        btn_global.setOnClickListener(view -> startActivity(new Intent(this, GlobalForum.class)));
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
@@ -178,6 +180,9 @@ public class home_screen extends AppCompatActivity {
 
             Intent intent = new Intent(home_screen.this, BooleanQuizPage.class);
             intent.putExtra("code", quizCode);
+
+//            backgroundMusicPlayer.stop();
+
             startActivity(intent);
             finish();
         });

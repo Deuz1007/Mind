@@ -52,11 +52,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:id="@+id/linearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
@@ -66,17 +66,27 @@
                     android:id="@+id/settings_btn"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
                     android:background="@drawable/gray_round_button"
                     android:fontFamily="@font/work_sans_medium"
                     android:padding="15dp"
                     android:text="@string/settings"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
+                    android:layout_marginRight="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.197"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/mind_logo" />
+
+                <Button
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gray_round_button"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:text="Enter Code"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:onClick="ShowEnterQuizCode"/>
 
             </LinearLayout>
 
@@ -86,7 +96,7 @@
                 android:layout_height="180dp"
                 android:background="@drawable/round_create_bg"
                 app:cardCornerRadius="20dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
@@ -162,19 +172,19 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
+                android:id="@+id/global_btn"
                 android:layout_width="200dp"
                 android:layout_height="55dp"
                 android:background="@drawable/nofill_button"
                 android:fontFamily="@font/work_sans_medium"
-                android:text="Enter Code"
+                android:text="Global Quiz"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/create_section"
-                app:layout_constraintVertical_bias="0.219"
-                android:onClick="ShowEnterQuizCode"/>
+                app:layout_constraintVertical_bias="0.219"/>
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/coordinatorLayout"
