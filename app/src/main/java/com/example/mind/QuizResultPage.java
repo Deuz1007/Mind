@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.data.ActiveQuiz;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
@@ -46,21 +47,17 @@ public class QuizResultPage extends AppCompatActivity {
         Button btn_quizAgain = findViewById(R.id.again_btn);
         Button btn_showResult = findViewById(R.id.show_details);
 
-        try {
-            setPopupDialog();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        setPopupDialog();
 
         // Set onclick listeners
         btn_mainMenu.setOnClickListener(v -> mainMenu());
         btn_quizAgain.setOnClickListener(v -> quizAgain());
         btn_showResult.setOnClickListener(v -> alertDialog.show());
 
-        if (BooleanQuizPage.isFromCode) setTexts();
+        if (ActiveQuiz.active.isFromCode) setTexts();
         else
             // Save score
-            Quiz.saveScore(BooleanQuizPage.quiz, BooleanQuizPage.score, BooleanQuizPage.topic, new PostProcess() {
+            Quiz.saveScore(ActiveQuiz.active.quiz, ActiveQuiz.active.score, ActiveQuiz.active.topic, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
                     setTexts();
@@ -81,10 +78,10 @@ public class QuizResultPage extends AppCompatActivity {
         RecyclerView rv_quizItems = view.findViewById(R.id.content_items_container);
 
         // Sort list
-        Collections.sort(BooleanQuizPage.quizItems, (qi1, qi2) -> Boolean.compare(qi1.isCorrect, qi2.isCorrect));
+        Collections.sort(ActiveQuiz.active.items, (qi1, qi2) -> Boolean.compare(qi1.isCorrect, qi2.isCorrect));
 
         // Set recycler view config
-        rv_quizItems.setAdapter(new QuizResultAdapter(this, BooleanQuizPage.quizItems));
+        rv_quizItems.setAdapter(new QuizResultAdapter(this, ActiveQuiz.active.items));
         rv_quizItems.setLayoutManager(new LinearLayoutManager(this));
 
         builder.setView(view);
@@ -96,8 +93,8 @@ public class QuizResultPage extends AppCompatActivity {
     }
 
     private void setTexts() {
-        int score = BooleanQuizPage.score;
-        double items = BooleanQuizPage.quiz.questions.size();
+        int score = ActiveQuiz.active.score;
+        double items = ActiveQuiz.active.quiz.questions.size();
         int wrong = (int) (items - score);
 
         // Get grade messages
@@ -123,8 +120,7 @@ public class QuizResultPage extends AppCompatActivity {
     }
 
     private void mainMenu() {
-        BooleanQuizPage.quiz = null;
-        BooleanQuizPage.topic = null;
+        ActiveQuiz.active = null;
 
         Intent intent = new Intent(QuizResultPage.this, home_screen.class);
         startActivity(intent);

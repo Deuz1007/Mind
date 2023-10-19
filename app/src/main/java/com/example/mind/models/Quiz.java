@@ -104,7 +104,7 @@ public class Quiz {
                 .addOnFailureListener(callback::Failed);
     }
 
-    private static String[] contentToTokenArray(String content) {
+    public static String[] contentToTokenArray(String content) {
         return content.split("\\W+");
     }
 

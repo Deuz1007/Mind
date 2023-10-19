@@ -21,11 +21,15 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.mind.data.ActiveQuiz;
+import com.example.mind.data.ConstantValues;
+import com.example.mind.dialogs.QuitDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Question;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
+import com.example.mind.utilities.ButtonToggleEnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,19 +50,8 @@ public class BooleanQuizPage extends AppCompatActivity {
     ProgressBar progressBar; // UI For Timer
     CountDownTimer timer; // Timer
 
-    public static Topic topic;
-    public static Quiz quiz;
-    public static boolean isFromCode;
+    QuitDialog quitDialog;
 
-    public static int streakCounter;
-    public static int hintCounter;
-    public static int score;
-
-    public static List<QuizResultAdapter.QuizItemInfo> quizItems;
-
-    public static final long TIMER_TOTAL_TIME = 20000; // Timer time
-    public static final long TIMER_INTERVAL_TIME = 1000; // Timer interval
-    final long BONUS_TIME = 5000;
     long currentTimerTime;
 
     @Override
@@ -87,30 +80,32 @@ public class BooleanQuizPage extends AppCompatActivity {
         // ProgressBar
         progressBar = findViewById(R.id.timerprogressBar);
 
+        // Create new QuitDialog
+        quitDialog = new QuitDialog(this);
+        quitDialog.setDoThisOnQuit(objects -> {
+            ActiveQuiz.active = null;
+            timer.cancel();
+        });
+
         // Get topic from intent from library sheet
         String code = getIntent().getStringExtra("code");
 
-        if (quiz == null) {
+        if (ActiveQuiz.active == null) {
             if (code == null) {
-                isFromCode = false;
-
                 String quizId = getIntent().getStringExtra("quizId");
                 String topicId = getIntent().getStringExtra("topicId");
 
                 Topic topic = User.current.topics.get(topicId);
                 Quiz quiz = topic.quizzes.get(quizId);
 
-                initialize(quiz, topic);
+                initialize(quiz, topic, false);
             }
             else {
-                isFromCode = true;
-
-                // Show loading screen
-
+                // Show loading
                 User.getUser(code, new PostProcess() {
                     @Override
                     public void Success(Object... o) {
-                        initialize((Quiz) o[0], (Topic) o[1]);
+                        initialize((Quiz) o[0], (Topic) o[1], true);
                     }
 
                     @Override
@@ -120,18 +115,11 @@ public class BooleanQuizPage extends AppCompatActivity {
                 });
             }
         }
-        else initialize(quiz, topic);
+        else ActiveQuiz.active.reset();
     }
 
-    private void initialize(Quiz quizInstance,  Topic topicInstance) {
-        quiz = quizInstance;
-        topic = topicInstance;
-
-        streakCounter = 0;
-        hintCounter = 50;
-        score = 0;
-
-        quizItems = new ArrayList<>();
+    private void initialize(Quiz quiz,  Topic topic, boolean isFromCode) {
+        ActiveQuiz.active = new ActiveQuiz(topic, quiz, isFromCode);
 
         // Get the true or false questions
         questionList = quiz.questions
@@ -148,13 +136,13 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         // Set onclick listener to hint button
         hint.setOnClickListener(v -> {
-            if (hintCounter < 1) return;
+            if (ActiveQuiz.active.hints < 1) return;
 
-            hintCounter--;
+            ActiveQuiz.active.hints--;
             updateCounterText();
 
             timer.cancel();
-            startTimer(TIMER_TOTAL_TIME + BONUS_TIME);
+            startTimer(ConstantValues.TIMER_TIME + ConstantValues.BONUS_TIME);
         });
 
         // Load the question
@@ -163,35 +151,7 @@ public class BooleanQuizPage extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Show popup "Are you sure to end quiz the quiz? The progress won't save"
-        // Implement popup here
-        quiz = null;
-        topic = null;
-        timer.cancel();
-//        buttonClickSound.release();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(BooleanQuizPage.this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(BooleanQuizPage.this).inflate(R.layout.exit_quiz_popup,(LinearLayout)findViewById(R.id.exit_popup));
-
-        builder.setView(view);
-        ((TextView) view.findViewById(R.id.quit_comment)).setText("Exiting Already?");
-
-        final AlertDialog alertDialog = builder.create();
-
-        view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
-            startActivity(new Intent(this, home_screen.class));
-            finish();
-        });
-
-        view.findViewById(R.id.no_btn).setOnClickListener(View -> {
-//            buttonClickSound.start();
-            alertDialog.dismiss();
-        });
-
-        if (alertDialog.getWindow() != null){
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        alertDialog.show();
+        quitDialog.show();
     }
 
     public void btnClick(View v) {
@@ -199,15 +159,14 @@ public class BooleanQuizPage extends AppCompatActivity {
         int btnId = clickedButton.getId();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button) {
-//            buttonClickSound.start();
             // Disable buttons
-            batchEnable(new Button[] { choiceA, choiceB }, false);
+            ButtonToggleEnable.setBatchEnabled(false, choiceA, choiceB);
 
             // Get the string inside the button
             selectedAnswer = clickedButton.getText().toString();
             Question current = questionList.get(currentQuestionIndex);
 
-            updateScore(selectedAnswer, current.answer, current.question);
+            ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
             updateCounterText();
 
             // Increment current question index
@@ -219,49 +178,51 @@ public class BooleanQuizPage extends AppCompatActivity {
     }
 
     public void loadNewQuestion() {
-        if (currentQuestionIndex == quiz.itemsPerLevel) {
+        if (currentQuestionIndex == ActiveQuiz.active.quiz.itemsPerLevel) {
             timer.cancel();
 
             Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);
             startActivity(intent);
             finish();
+
+            return;
         }
-        else {
-            /* Reset values: */
-            // Timer
-            if (timer != null) timer.cancel();
-            startTimer(TIMER_TOTAL_TIME);
-            selectedAnswer = ""; // Selected answer
-            batchEnable(new Button[] { choiceA, choiceB }, true);
 
-            Question current = questionList.get(currentQuestionIndex);
+        /* Reset values: */
+        // Timer
+        if (timer != null) timer.cancel();
+        startTimer(ConstantValues.TIMER_TIME);
+        selectedAnswer = ""; // Selected answer
+        // Enable buttons
+        ButtonToggleEnable.setBatchEnabled(true, choiceA, choiceB);
 
-            // Reset UI texts
-            questionItem.setText(current.question);
-            choiceA.setText(current.choices.get(0));
-            choiceB.setText(current.choices.get(1));
+        Question current = questionList.get(currentQuestionIndex);
 
-            // Reset Color of the Buttons
-            int color = ContextCompat.getColor(this, R.color.cool);
-            choiceA.setBackgroundColor(color);
-            choiceB.setBackgroundColor(color);
-        }
+        // Reset UI texts
+        questionItem.setText(current.question);
+        choiceA.setText(current.choices.get(0));
+        choiceB.setText(current.choices.get(1));
+
+        // Reset Color of the Buttons
+        int color = ContextCompat.getColor(this, R.color.cool);
+        choiceA.setBackgroundColor(color);
+        choiceB.setBackgroundColor(color);
     }
 
     private void startTimer(long totalTime) {
-        timer = new CountDownTimer(totalTime, TIMER_INTERVAL_TIME) {
+        timer = new CountDownTimer(totalTime, ConstantValues.INTERVAL_TIME) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // Update the progress bar with the remaining time
                 currentTimerTime = millisUntilFinished;
-                progressBar.setProgress((int) (millisUntilFinished / TIMER_INTERVAL_TIME));
+                progressBar.setProgress((int) (millisUntilFinished / ConstantValues.INTERVAL_TIME));
             }
 
             @Override
             public void onFinish() {
                 // Increase question index
                 currentQuestionIndex++;
-                streakCounter = 0;
+                ActiveQuiz.active.streak = 0;
                 // Load new question
                 loadNewQuestion();
             }
@@ -272,33 +233,7 @@ public class BooleanQuizPage extends AppCompatActivity {
 
     private void updateCounterText() {
         // Set counters text
-        tv_hint.setText(hintCounter + "");
-        tv_streak.setText(streakCounter + "");
-    }
-
-    public static void updateScore(String userAnswer, String correctAnswer, String question) {
-        userAnswer = userAnswer.toLowerCase().trim().replaceAll("\\s+", " ");
-        correctAnswer = correctAnswer.toLowerCase();
-
-        boolean isCorrect = userAnswer.equals(correctAnswer);
-
-        quizItems.add(new QuizResultAdapter.QuizItemInfo(question, correctAnswer, userAnswer, isCorrect));
-
-        // Check if selected answer is correct
-        if (isCorrect) {
-            score++;    // Add score
-            streakCounter++;    // Add streak
-
-            // Check if streak counter is divisible by items per level
-            if (streakCounter % quiz.itemsPerLevel == 0)
-                hintCounter++;  // Add hint
-        }
-        // If incorrect, reset streak to 0
-        else streakCounter = 0;
-    }
-
-    public static void batchEnable(Button[] buttons, boolean isEnabled) {
-        for (Button button : buttons)
-            button.setEnabled(isEnabled);
+        tv_hint.setText(ActiveQuiz.active.hints + "");
+        tv_streak.setText(ActiveQuiz.active.streak + "");
     }
 }

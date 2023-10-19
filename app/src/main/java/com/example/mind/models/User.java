@@ -1,6 +1,6 @@
 package com.example.mind.models;
 
-import com.example.mind.interfaces.InvalidQuizCodeException;
+import com.example.mind.exceptions.InvalidQuizCodeException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.UniqueID;
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,7 +9,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

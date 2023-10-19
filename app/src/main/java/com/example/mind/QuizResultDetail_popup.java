@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.example.mind.data.ActiveQuiz;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class QuizResultDetail_popup extends AppCompatActivity {
         List<QuizResultAdapter.QuizItemInfo> correctItems = new ArrayList<>();
         List<QuizResultAdapter.QuizItemInfo> wrongItems = new ArrayList<>();
 
-        for (QuizResultAdapter.QuizItemInfo item : BooleanQuizPage.quizItems)
+        for (QuizResultAdapter.QuizItemInfo item : ActiveQuiz.active.items)
             (item.answer.equals(item.response) ? correctItems : wrongItems).add(item);
 
         System.out.println("Correct: " + correctItems.size());

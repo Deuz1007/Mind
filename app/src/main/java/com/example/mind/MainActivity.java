@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     Handler handler; // For delaying the process
     AlertDialog alertDialog;
     TextView textLoading;
+
+    LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +41,14 @@ public class MainActivity extends AppCompatActivity {
         // Setup user defaults
         User.setStatics();
 
+        // Setup loading popup
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.setPurpose("Logging in");
+
         // Check if there is saved user log in information
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             // Show logging in popup
-            loggingIn();
+            loadingDialog.show();
 
             // Login user
             User.initialize(new PostProcess() {
@@ -66,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             User.login(email, password, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
-                    loggingIn();
+                    loadingDialog.show();
                 }
 
                 @Override
@@ -95,20 +102,6 @@ public class MainActivity extends AppCompatActivity {
     private void dashboard() {
         startActivity(new Intent(MainActivity.this, home_screen.class));
         finish();
-    }
-
-    public void loggingIn(){
-        // Loading Dialog
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
-        LayoutInflater inflater = MainActivity.this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.loading_dialog, null);
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.setCancelable(false); // Prevent user from dismissing the dialog
-        alertDialog = dialogBuilder.create();
-        alertDialog.show();
-
-        textLoading = dialogView.findViewById(R.id.loding_purpose);
-        textLoading.setText("Logging in...");
     }
 
     // Function to validate email
