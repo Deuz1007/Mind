@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 
 public class MultiChoiceQuizPage extends AppCompatActivity {
 
-//    MediaPlayer buttonClickSound; // For Button Sound Effect
-//
+    MediaPlayer buttonClickSound; // For Button Sound Effect
+
 //    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
 
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
@@ -61,7 +61,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         setContentView(R.layout.activity_quiz_page);
 
         // Button Sound Effect
-//        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
 
         // BGM
 //        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
@@ -138,6 +138,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     public void btnClick(View v) {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
+
+        buttonClickSound.start();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button || btnId == R.id.choice_three_button || btnId == R.id.choice_four_button) {
             // Disable button action if choice is hint

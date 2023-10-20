@@ -29,8 +29,6 @@ public class SettingsPage extends AppCompatActivity {
 
     FirebaseUser authUser;
 
-    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
-
     SeekBar volumeSeekBar; // to control music volume
     AudioManager audioManager;
 
@@ -47,10 +45,6 @@ public class SettingsPage extends AppCompatActivity {
 
         setVerifyPopup();
         setChangePasswordPopup();
-
-        // BGM
-        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
-        backgroundMusicPlayer.start();
 
         // Volume Control
         volumeSeekBar = findViewById(R.id.music);

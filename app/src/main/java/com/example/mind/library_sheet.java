@@ -20,16 +20,10 @@ import java.util.List;
 
 public class library_sheet extends AppCompatActivity {
 
-    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library_sheet);
-
-        // BGM
-        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
-        backgroundMusicPlayer.start();
 
         // Container of the Recycleview
         RecyclerView recyclerView = findViewById(R.id.content_items_container);
@@ -39,26 +33,6 @@ public class library_sheet extends AppCompatActivity {
         recyclerView.setAdapter(contentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Deleting the item in the recycler view
-//        contentAdapter.setOnItemClickListener(Position -> {
-//            Topic topic = contentAdapter.items.get(Position);
-//
-//            Topic.removeTopic(topic, new PostProcess() {
-//                @Override
-//                public void Success(Object... o) {
-//                    // deleting the specific item
-//                    contentAdapter.items.remove(Position);
-//
-//                    // notifying the adapter
-//                    contentAdapter.notifyDataSetChanged();
-//                }
-//
-//                @Override
-//                public void Failed(Exception e) {
-//                    // Show error
-//                }
-//            });
-//        });
     }
 
     public void buttonOpenFile(View view){

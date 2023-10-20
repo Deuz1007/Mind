@@ -1,13 +1,41 @@
 package com.example.mind;
 
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Binder;
+import android.os.IBinder;
 
-public class BackgroundMusicPlayer {
+import androidx.annotation.Nullable;
+
+public class BackgroundMusicPlayer extends Service {
+
     private static BackgroundMusicPlayer instance;
     private MediaPlayer mediaPlayer;
 
+    private boolean isPlaying = false;
 
+    private final IBinder binder = new LocalBinder();
+
+    public class LocalBinder extends Binder {
+        BackgroundMusicPlayer getService() {
+            return BackgroundMusicPlayer.this;
+        }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mediaPlayer = MediaPlayer.create(this, R.raw.bgm1);
+        mediaPlayer.setLooping(true);
+    }
 
     private BackgroundMusicPlayer(Context context, int rawResourceId) {
         mediaPlayer = MediaPlayer.create(context, rawResourceId);
@@ -22,13 +50,16 @@ public class BackgroundMusicPlayer {
 
     public void start() {
         if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            mediaPlayer.setLooping(true);
             mediaPlayer.start();
+            isPlaying = true;
         }
     }
 
     public void pause() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
+            isPlaying = false;
         }
     }
 
@@ -37,6 +68,7 @@ public class BackgroundMusicPlayer {
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
+            isPlaying = false;
         }
     }
 
@@ -47,4 +79,9 @@ public class BackgroundMusicPlayer {
     public static void playButtonSFX() {
 
     }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
 }

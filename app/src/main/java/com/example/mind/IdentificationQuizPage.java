@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 
 public class IdentificationQuizPage extends AppCompatActivity {
 
-//    MediaPlayer buttonClickSound; // For Button Sound Effect
+    MediaPlayer buttonClickSound; // For Button Sound Effect
 //    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
 
     EditText answer;
@@ -51,7 +52,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
         setContentView(R.layout.activity_identification_quiz_page);
 
         // Button Sound Effect
-//        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+        buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
 
         // BGM
 //        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
@@ -122,6 +123,8 @@ public class IdentificationQuizPage extends AppCompatActivity {
     public void btnClick(View v) {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
+
+        buttonClickSound.start();
 
         if (btnId == R.id.submitAnswer_btn) {
             try {
