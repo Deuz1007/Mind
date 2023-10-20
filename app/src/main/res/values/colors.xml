@@ -22,4 +22,6 @@
     <color name="error_color">#FD6060</color>
     <color name="error_message_color">#31383D</color>
 
+    <color name="success_color">#FDC760</color>
+
 </resources>
