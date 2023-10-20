@@ -19,6 +19,8 @@ public class User {
     public String birthDate;
     public Map<String, Topic> topics;
 
+    public User() {}
+
     public User(String fullName, String username, String email, String birthDate) {
         this.email = email;
         this.fullName = fullName;

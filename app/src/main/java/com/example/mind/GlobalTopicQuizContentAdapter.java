@@ -47,7 +47,7 @@ public class GlobalTopicQuizContentAdapter extends RecyclerView.Adapter<GlobalTo
 
     Context context;
     List<GlobalTopicQuizContentAdapter.QuizItem> quizItems;
-    Dialog quizAnalyticsPopup;
+    Dialog quizStartPopup;
 
     final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
@@ -71,59 +71,27 @@ public class GlobalTopicQuizContentAdapter extends RecyclerView.Adapter<GlobalTo
 
         holder.quizcontentView.setText(quizItem.quiz.quizId);
         holder.quizcontentView.setOnClickListener(view -> {
-            // To display upload option popup layout
-            quizAnalyticsPopup = new Dialog(context);
-            // Show popup
-            ShowAnalyticsPopup(quizItem);
+            quizStartPopup = new Dialog(context);
+            quizStartPopup.setContentView(R.layout.global_quiz_analytics_popup);
+
+            TextView tv_itemsCount = quizStartPopup.findViewById(R.id.itemsCount);
+            Button btn_start = quizStartPopup.findViewById(R.id.retry_btn);
+
+            tv_itemsCount.setText(quizItem.quiz.questions.size() + "");
+
+            btn_start.setOnClickListener(v -> {
+                Intent intent = new Intent(context, BooleanQuizPage.class);
+                intent.putExtra("global", quizItem.topic.topicId + "^" + quizItem.quiz.quizId);
+                context.startActivity(intent);
+            });
+
+            quizStartPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            quizStartPopup.show();
         });
     }
 
     @Override
     public int getItemCount() {
         return quizItems.size();
-    }
-
-    public void ShowAnalyticsPopup(GlobalTopicQuizContentAdapter.QuizItem quizItem) {
-        quizAnalyticsPopup.setContentView(R.layout.global_quiz_analytics_popup);
-
-        // Get components
-        Button startBtn = quizAnalyticsPopup.findViewById(R.id.start_btn);
-        Button shareBtn = quizAnalyticsPopup.findViewById(R.id.share_btn);
-        TextView tv_itemsPerLevel = quizAnalyticsPopup.findViewById(R.id.perlevel_text);
-        TextView tv_average = quizAnalyticsPopup.findViewById(R.id.average_score_text);
-        TextView tv_retries = quizAnalyticsPopup.findViewById(R.id.num_retires_text);
-
-        // Set text values
-        tv_itemsPerLevel.setText(quizItem.quiz.itemsPerLevel + "");
-        tv_average.setText(decimalFormat.format(quizItem.quiz.average));
-        tv_retries.setText(quizItem.quiz.retries + "");
-
-        // Button click listener
-        startBtn.setOnClickListener(view -> {
-            try {
-                Intent intent = new Intent(context, BooleanQuizPage.class);
-                intent.putExtra("topicId", quizItem.topic.topicId);
-                intent.putExtra("quizId", quizItem.quiz.quizId);
-                context.startActivity(intent);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        });
-
-        shareBtn.setOnClickListener(view -> {
-            // Create quiz code
-            String quizCode = FirebaseAuth.getInstance().getUid() + quizItem.topic.topicId + quizItem.quiz.quizId;
-
-            // Past code to clipboard
-            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clipData = ClipData.newPlainText("quizCode", quizCode);
-            clipboardManager.setPrimaryClip(clipData);
-
-            // Show toast
-            Toast.makeText(context, "Quiz code copied!", Toast.LENGTH_LONG).show();
-        });
-
-        quizAnalyticsPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        quizAnalyticsPopup.show();
     }
 }

@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.mind.data.ActiveQuiz;
 import com.example.mind.data.ConstantValues;
+import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.dialogs.QuitDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Question;
@@ -89,33 +90,60 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         // Get topic from intent from library sheet
         String code = getIntent().getStringExtra("code");
+        String global = getIntent().getStringExtra("global");
 
-        if (ActiveQuiz.active == null) {
-            if (code == null) {
-                String quizId = getIntent().getStringExtra("quizId");
-                String topicId = getIntent().getStringExtra("topicId");
+        if (ActiveQuiz.active != null) {
+            ActiveQuiz.active.reset();
+            initialize(ActiveQuiz.active);
 
-                Topic topic = User.current.topics.get(topicId);
-                Quiz quiz = topic.quizzes.get(quizId);
-
-                initialize(quiz, topic, false);
-            }
-            else {
-                // Show loading
-                User.getUser(code, new PostProcess() {
-                    @Override
-                    public void Success(Object... o) {
-                        initialize((Quiz) o[0], (Topic) o[1], true);
-                    }
-
-                    @Override
-                    public void Failed(Exception e) {
-                        // Invalid code
-                    }
-                });
-            }
+            return;
         }
-        else ActiveQuiz.active.reset();
+
+        if (code != null) {
+            // Show loading
+            LoadingDialog fromCodeDialog = new LoadingDialog(this);
+            fromCodeDialog.setPurpose("Getting quiz...");
+            fromCodeDialog.show();
+
+            User.getUser(code, new PostProcess() {
+                @Override
+                public void Success(Object... o) {
+                    fromCodeDialog.dismiss();
+
+                    initialize((Quiz) o[0], (Topic) o[1], true);
+                }
+
+                @Override
+                public void Failed(Exception e) {
+                    // Invalid code
+                }
+            });
+
+            return;
+        }
+
+        if (global != null) {
+            String[] quizInfo = global.split("\\^");
+
+            Topic topic = GlobalForum.allTopics.get(quizInfo[0]);
+            Quiz quiz = topic.quizzes.get(quizInfo[1]);
+
+            initialize(quiz, topic, true);
+
+            return;
+        }
+
+        String quizId = getIntent().getStringExtra("quizId");
+        String topicId = getIntent().getStringExtra("topicId");
+
+        Topic topic = User.current.topics.get(topicId);
+        Quiz quiz = topic.quizzes.get(quizId);
+
+        initialize(quiz, topic, false);
+    }
+
+    private void initialize(ActiveQuiz activeQuiz) {
+        initialize(activeQuiz.quiz, activeQuiz.topic, activeQuiz.isFromCode);
     }
 
     private void initialize(Quiz quiz,  Topic topic, boolean isFromCode) {
