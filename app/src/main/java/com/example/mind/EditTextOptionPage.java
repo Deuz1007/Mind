@@ -4,15 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.mind.dialogs.ErrorDialog;
+import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Topic;
 
 public class EditTextOptionPage extends AppCompatActivity {
+    LoadingDialog loadingDialog;
+    ErrorDialog errorDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +34,11 @@ public class EditTextOptionPage extends AppCompatActivity {
         Button discard = findViewById(R.id.discard_btn);
         Button saveContext = findViewById(R.id.submitEdit);
 
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.setPurpose("Saving topic...");
+
+        errorDialog = new ErrorDialog(this);
+
         // For Movement Action of the scrolls
         et_content.setMovementMethod(new ScrollingMovementMethod());
 
@@ -42,27 +53,37 @@ public class EditTextOptionPage extends AppCompatActivity {
         });
 
         saveContext.setOnClickListener(view -> {
-            String title = et_title.getText().toString();
-            String content = et_content.getText().toString();
+            String title = et_title.getText().toString().trim();
+            String content = et_content.getText().toString().trim();
 
-            Topic newTopic = new Topic(title, content);
+            String inputError = null;
 
-            if (title != "" && content != ""){
-                Topic.add(newTopic, new PostProcess() {
-                    @Override
-                    public void Success(Object... o) {
-                        Toast.makeText(EditTextOptionPage.this, "Topic saved", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(EditTextOptionPage.this, home_screen.class));
-                    }
+            if (TextUtils.isEmpty(title)) inputError = "Topic title is required";
+            if (TextUtils.isEmpty(content)) inputError = "Topic content is required";
 
-                    @Override
-                    public void Failed(Exception e) {
-                        Toast.makeText(EditTextOptionPage.this, "Upload Failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                //error message
+            if (inputError != null) {
+                errorDialog.setMessage(inputError);
+                errorDialog.show();
+
+                 return;
             }
+
+            loadingDialog.show();
+            Topic newTopic = new Topic(title, content);
+            Topic.add(newTopic, new PostProcess() {
+                @Override
+                public void Success(Object... o) {
+                    startActivity(new Intent(EditTextOptionPage.this, home_screen.class));
+                }
+
+                @Override
+                public void Failed(Exception e) {
+                    loadingDialog.dismiss();
+
+                    errorDialog.setMessage("Saving topic failed");
+                    errorDialog.show();
+                }
+            });
         });
 
     }

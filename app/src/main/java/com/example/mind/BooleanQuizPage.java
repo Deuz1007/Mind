@@ -206,7 +206,7 @@ public class BooleanQuizPage extends AppCompatActivity {
     }
 
     public void loadNewQuestion() {
-        if (currentQuestionIndex == ActiveQuiz.active.quiz.itemsPerLevel) {
+        if (currentQuestionIndex == questionList.size()) {
             timer.cancel();
 
             Intent intent = new Intent(BooleanQuizPage.this, MultiChoiceQuizPage.class);

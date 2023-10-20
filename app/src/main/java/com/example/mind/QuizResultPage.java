@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mind.data.ActiveQuiz;
+import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
@@ -32,6 +33,7 @@ public class QuizResultPage extends AppCompatActivity {
     TextView tv_correctScore, tv_wrongScore, tv_letterGrade, tv_compliment;
 
     AlertDialog alertDialog;
+    LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,9 @@ public class QuizResultPage extends AppCompatActivity {
         Button btn_quizAgain = findViewById(R.id.again_btn);
         Button btn_showResult = findViewById(R.id.show_details);
 
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.setPurpose("Saving quiz ...");
+
         setPopupDialog();
 
         // Set onclick listeners
@@ -55,11 +60,15 @@ public class QuizResultPage extends AppCompatActivity {
         btn_showResult.setOnClickListener(v -> alertDialog.show());
 
         if (ActiveQuiz.active.isFromCode) setTexts();
-        else
+        else {
+            loadingDialog.show();
+
             // Save score
             Quiz.saveScore(ActiveQuiz.active.quiz, ActiveQuiz.active.score, ActiveQuiz.active.topic, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
+                    loadingDialog.dismiss();
+                    
                     setTexts();
                 }
 
@@ -68,6 +77,7 @@ public class QuizResultPage extends AppCompatActivity {
                     Toast.makeText(QuizResultPage.this, "Quiz result not saved", Toast.LENGTH_LONG).show();
                 }
             });
+        }
     }
 
     private void setPopupDialog() {

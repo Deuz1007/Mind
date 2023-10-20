@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
@@ -23,19 +24,20 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-    Handler handler; // For delaying the process
-    AlertDialog alertDialog;
-    TextView textLoading;
-
     LoadingDialog loadingDialog;
+    ErrorDialog errorDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // EditText
+        EditText et_password = findViewById(R.id.password);
+
         // TextInputLayouts
         TextInputLayout emailTextInputLayout = findViewById(R.id.emailTextInputLayout);
+        TextInputLayout passwordTextInputLayout = findViewById(R.id.passwordContainer);
         TextInputEditText emailEditText = findViewById(R.id.emailEditText);
 
         // Setup user defaults
@@ -44,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         // Setup loading popup
         loadingDialog = new LoadingDialog(this);
         loadingDialog.setPurpose("Logging in");
+
+        // Error dialog
+        errorDialog = new ErrorDialog(this);
 
         // Check if there is saved user log in information
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -59,7 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void Failed(Exception e) {
-                    // Failed login with saved user info
+                    loadingDialog.dismiss();
+
+                    errorDialog.setMessage("User login failed. Please login again.");
+                    errorDialog.show();
                 }
             });
         }
@@ -68,27 +76,37 @@ public class MainActivity extends AppCompatActivity {
         Button login = findViewById(R.id.login_button);
 
         login.setOnClickListener(view -> {
-            String email = ((EditText) findViewById(R.id.emailEditText)).getText().toString();
-            String password = ((EditText) findViewById(R.id.password)).getText().toString();
+            String email = emailEditText.getText().toString();
+            String password = et_password.getText().toString();
+
+            String emailError = null;
+            String passwordError = null;
+
+            if (TextUtils.isEmpty(email)) emailError = "Email is required";
+            else if (!email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) emailError = "Invalid email ";
+
+            if (TextUtils.isEmpty(password)) passwordError = "Password is empty";
+
+            if (emailError != null || passwordError != null) {
+                emailTextInputLayout.setError(emailError);
+                passwordTextInputLayout.setError(passwordError);
+
+                return;
+            }
+
+            loadingDialog.show();
             User.login(email, password, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
-                    loadingDialog.show();
+                    dashboard();
                 }
 
                 @Override
                 public void Failed(Exception e) {
-                    // Display error
-//                    Toast.makeText(MainActivity.this, "user not registered", Toast.LENGTH_SHORT).show();
-                    String email = emailEditText.getText().toString().trim();
+                    loadingDialog.dismiss();
 
-                    if (TextUtils.isEmpty(email)) {
-                        emailTextInputLayout.setError("Email is required");
-                    } else if (!isValidEmail(email)) {
-                        emailTextInputLayout.setError("Invalid email address");
-                    } else {
-                        emailTextInputLayout.setError(null); // Clear the error
-                    }
+                    errorDialog.setMessage("User login failed.");
+                    errorDialog.show();
                 }
             });
         });
@@ -102,11 +120,5 @@ public class MainActivity extends AppCompatActivity {
     private void dashboard() {
         startActivity(new Intent(MainActivity.this, home_screen.class));
         finish();
-    }
-
-    // Function to validate email
-    private boolean isValidEmail(String email) {
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        return email.matches(emailPattern);
     }
 }

@@ -24,6 +24,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.ItemCountDialog;
 import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.exceptions.MaxContentTokensReachedException;
@@ -43,6 +44,7 @@ public class QuizContentPage extends AppCompatActivity {
     AlertDialog alertDialog;
     LoadingDialog generationDialog;
     ItemCountDialog itemCountDialog;
+    ErrorDialog errorDialog;
 
     TextView textLoading;
 
@@ -71,6 +73,7 @@ public class QuizContentPage extends AppCompatActivity {
 
         // Setup popup
         generationDialog = new LoadingDialog(this);
+        errorDialog = new ErrorDialog(this);
 
         itemCountDialog = new ItemCountDialog(this);
         itemCountDialog.setStartGeneration(objects -> {
@@ -84,6 +87,8 @@ public class QuizContentPage extends AppCompatActivity {
                 generate(items);
             } catch (MaxContentTokensReachedException e) {
                 // Show generation error
+                errorDialog.setMessage(e.getMessage());
+                errorDialog.show();
             }
 
             if (itemCountDialog.isShowing()) itemCountDialog.dismiss();
@@ -187,6 +192,9 @@ public class QuizContentPage extends AppCompatActivity {
                     public void Failed(Exception e) {
                         // Hide popup
                         generationDialog.dismiss();
+
+                        errorDialog.setMessage(e.getMessage());
+                        errorDialog.show();
                     }
                 });
     }
@@ -224,6 +232,8 @@ public class QuizContentPage extends AppCompatActivity {
                     @Override
                     public void Failed(Exception e) {
                         // Show error
+                        errorDialog.setMessage("Topic deletion failed");
+                        errorDialog.show();
                     }
                 });
             });

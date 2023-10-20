@@ -87,6 +87,10 @@ public class IdentificationQuizPage extends AppCompatActivity {
                 .filter(question -> question.type == Question.QuestionType.IDENTIFICATION)
                 .collect(Collectors.toList());
 
+        System.out.println("Fill in the Blanks questions: " + questionList.size());
+
+        System.out.println(ActiveQuiz.active.quiz.questions.size());
+
         // Set the number of questions per level
         numberOfQuestions.setText(ActiveQuiz.active.quiz.itemsPerLevel + "");
 
@@ -120,30 +124,36 @@ public class IdentificationQuizPage extends AppCompatActivity {
         int btnId = clickedButton.getId();
 
         if (btnId == R.id.submitAnswer_btn) {
-            // Disable buttons
-            ButtonToggleEnable.setBatchEnabled(false, hint);
+            try {
+                // Disable buttons
+                ButtonToggleEnable.setBatchEnabled(false, hint);
+                System.out.println(currentQuestionIndex);
 
-            // Get the user input in EditText
-            selectedAnswer = answer.getText().toString();
-            Question current = questionList.get(currentQuestionIndex);
+                // Get the user input in EditText
+                selectedAnswer = answer.getText().toString();
+                Question current = questionList.get(currentQuestionIndex);
 
-            ActiveQuiz.active.updateScore(
-                    selectedAnswer,
-                    current.answer,
-                    current.question
-            );
-            updateCounterText();
+                ActiveQuiz.active.updateScore(
+                        selectedAnswer,
+                        current.answer,
+                        current.question
+                );
+                updateCounterText();
 
-            // Increment current question index
-            currentQuestionIndex++;
+                // Increment current question index
+                currentQuestionIndex++;
 
-            // Proceed to new question
-            loadNewQuestion();
+                // Proceed to new question
+                loadNewQuestion();
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
     public void loadNewQuestion() {
-        if (currentQuestionIndex == ActiveQuiz.active.quiz.itemsPerLevel) {
+        if (currentQuestionIndex == questionList.size()) {
             timer.cancel();
 
             Intent intent = new Intent(IdentificationQuizPage.this, QuizResultPage.class);

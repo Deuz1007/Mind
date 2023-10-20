@@ -13,6 +13,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.mind.dialogs.ErrorDialog;
+import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
 import com.google.android.material.textfield.TextInputEditText;
@@ -23,6 +25,9 @@ import java.util.Calendar;
 public class RegisterPage extends AppCompatActivity {
 
     private Button datePickerButton;
+
+    LoadingDialog loadingDialog;
+    ErrorDialog errorDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,33 +48,46 @@ public class RegisterPage extends AppCompatActivity {
         TextInputLayout passswordTextInputLayout = findViewById(R.id.input_password);
         TextInputLayout reenterpassswordTextInputLayout = findViewById(R.id.input_reEnterPassword);
 
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.setPurpose("Registering...");
+
+        errorDialog = new ErrorDialog(this);
+
         datePickerButton = findViewById(R.id.birth_input);
         datePickerButton.setText(getTodaysDate());
 
         Button createAccount = findViewById(R.id.createAccount_btn);
         createAccount.setOnClickListener(view -> {
-            String username = usernameEditText.getText().toString();
-            String fullname = fullnameEditText.getText().toString();
-            String email = emailEditText.getText().toString();
+            String username = usernameEditText.getText().toString().trim();
+            String fullName = fullnameEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString().trim();
             String birthdate = datePickerButton.getText().toString();
             String password = passwordEditText.getText().toString();
             String reEnterPassword = reEnterPasswordEditText.getText().toString();
 
-            if (!password.equals(reEnterPassword)) {
-                // Show error message
-//                Toast.makeText(this, "Passwords are not the same", Toast.LENGTH_LONG).show();
+            String emailError = null;
+            String passwordError = null;
+            String reEnterPasswordError = null;
 
-                passswordTextInputLayout.setError("Passwords are not the same");
-                reenterpassswordTextInputLayout.setError("Passwords are not the same");
+            if (TextUtils.isEmpty(email)) emailError = "Email is required";
+            else if (!email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) emailError = "Invalid email";
 
-                return;
-            }else {
-                passswordTextInputLayout.setError(null); // Clear the error
-                reenterpassswordTextInputLayout.setError(null); // Clear the error
+            if (TextUtils.isEmpty(password)) passwordError = "Password is required";
+            else if (!password.equals(reEnterPassword)) {
+                passwordError = "Password are not the same";
+                reEnterPasswordError = "Password are not the same";
             }
 
-            User newuser = new User(fullname, username, email, birthdate);
+            if (emailError != null || passwordError != null || reEnterPasswordError != null) {
+                emailTextInputLayout.setError(emailError);
+                passswordTextInputLayout.setError(passwordError);
+                reenterpassswordTextInputLayout.setError(reEnterPasswordError);
 
+                return;
+            }
+
+            loadingDialog.show();
+            User newuser = new User(fullName, username, email, birthdate);
             User.register(newuser, password, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
@@ -79,16 +97,10 @@ public class RegisterPage extends AppCompatActivity {
 
                 @Override
                 public void Failed(Exception e) {
-                    Toast.makeText(RegisterPage.this, "Register Failed", Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismiss();
 
-                    String email = emailEditText.getText().toString().trim();
-                    if (TextUtils.isEmpty(email)) {
-                        emailTextInputLayout.setError("Email is required");
-                    } else if (!isValidEmail(email)) {
-                        emailTextInputLayout.setError("Invalid email address");
-                    } else {
-                        emailTextInputLayout.setError(null); // Clear the error
-                    }
+                    errorDialog.setMessage("Register failed.");
+                    errorDialog.show();
                 }
             });
         });
@@ -166,11 +178,5 @@ public class RegisterPage extends AppCompatActivity {
 
     public void openDatePicker(View view) {
         datePickerDialog.show();
-    }
-
-    // Function to validate email
-    private boolean isValidEmail(String email) {
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        return email.matches(emailPattern);
     }
 }
