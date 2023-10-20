@@ -47,18 +47,22 @@ public class EditTextOptionPage extends AppCompatActivity {
 
             Topic newTopic = new Topic(title, content);
 
-            Topic.add(newTopic, new PostProcess() {
-                @Override
-                public void Success(Object... o) {
-                    Toast.makeText(EditTextOptionPage.this, "Topic saved", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(EditTextOptionPage.this, home_screen.class));
-                }
+            if (title != "" && content != ""){
+                Topic.add(newTopic, new PostProcess() {
+                    @Override
+                    public void Success(Object... o) {
+                        Toast.makeText(EditTextOptionPage.this, "Topic saved", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(EditTextOptionPage.this, home_screen.class));
+                    }
 
-                @Override
-                public void Failed(Exception e) {
-                    Toast.makeText(EditTextOptionPage.this, "Upload Failed", Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override
+                    public void Failed(Exception e) {
+                        Toast.makeText(EditTextOptionPage.this, "Upload Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                //error message
+            }
         });
 
     }
