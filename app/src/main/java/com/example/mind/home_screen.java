@@ -26,6 +26,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.dialogs.ErrorDialog;
+import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
@@ -34,9 +36,10 @@ import com.example.mind.utilities.ExtractText;
 
 public class home_screen extends AppCompatActivity {
     public static User quizUser;
-    Intent bgmServiceIntent;
 
     Dialog popupDialog;
+    ErrorDialog errorDialog;
+    LoadingDialog loadingDialog;
 
     final int FILE_PICKER_REQUEST_CODE = 1;
 
@@ -52,6 +55,10 @@ public class home_screen extends AppCompatActivity {
         Button btn_profile = findViewById(R.id.userprofile_btn);
         Button btn_settings = findViewById(R.id.settings_btn);
         Button btn_global = findViewById(R.id.global_btn);
+
+        errorDialog = new ErrorDialog(this);
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.setPurpose("Extracting text...");
 
         btn_profile.setText(User.current.username);
 
@@ -74,6 +81,8 @@ public class home_screen extends AppCompatActivity {
                 String mimetype = home_screen.this.getContentResolver().getType(selectedFileUri);
 
                 if (mimetype.contains("image")) {
+                    loadingDialog.show();
+
                     ExtractText.Image(home_screen.this, selectedFileUri, new PostProcess() {
                         @Override
                         public void Success(Object... o) {
@@ -84,7 +93,8 @@ public class home_screen extends AppCompatActivity {
 
                         @Override
                         public void Failed(Exception e) {
-                            Toast.makeText(home_screen.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            errorDialog.setMessage("Image processing failed");
+                            errorDialog.show();
                         }
                     });
                 } else {
@@ -104,7 +114,8 @@ public class home_screen extends AppCompatActivity {
                     startActivity(intent);
                 }
             } catch (Exception e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                errorDialog.setMessage("File upload error");
+                errorDialog.show();
             }
         }
     }
@@ -191,11 +202,6 @@ public class home_screen extends AppCompatActivity {
 
         popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupDialog.show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
 }

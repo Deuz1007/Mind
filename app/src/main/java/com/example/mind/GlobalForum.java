@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
@@ -26,22 +27,25 @@ import java.util.stream.Collectors;
 public class GlobalForum extends AppCompatActivity {
     public static Map<String, Topic> allTopics;
 
+    ErrorDialog errorDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_forum);
 
-        allTopics = new HashMap<>();
-
         // Container of the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.global_content_items_container);
 
+        allTopics = new HashMap<>();
+
         // Create loading dialog
         LoadingDialog loadingDialog = new LoadingDialog(this);
-
-        // Show loading
         loadingDialog.setPurpose("Gathering all topics...");
         loadingDialog.show();
+
+        errorDialog = new ErrorDialog(this);
+        errorDialog.setMessage("Failed gathering all topics");
 
         FirebaseDatabase.getInstance().getReference("users")
                 .get()
@@ -63,9 +67,6 @@ public class GlobalForum extends AppCompatActivity {
                     recyclerView.setAdapter(new GlobalForumAdapter(this, topics));
                     recyclerView.setLayoutManager(new LinearLayoutManager(this));
                 })
-                .addOnFailureListener(e -> {
-                    // Show error
-                    System.out.println(e.getMessage());
-                });
+                .addOnFailureListener(e -> errorDialog.show());
     }
 }
