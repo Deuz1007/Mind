@@ -27,9 +27,12 @@ public class library_sheet extends AppCompatActivity {
 
         // Container of the Recycleview
         RecyclerView recyclerView = findViewById(R.id.content_items_container);
-        LibraryContentAdapter adapter = (LibraryContentAdapter) recyclerView.getAdapter();
 
-        LibraryContentAdapter contentAdapter = new LibraryContentAdapter(this, new ArrayList<>(User.current.topics.values()));
+        List<Topic> topics = new ArrayList<>();
+        if (User.current.topics != null)
+            topics = new ArrayList<>(User.current.topics.values());
+
+        LibraryContentAdapter contentAdapter = new LibraryContentAdapter(this, topics);
         recyclerView.setAdapter(contentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -42,10 +45,5 @@ public class library_sheet extends AppCompatActivity {
         }
         intent.setType("*/*");
         this.startActivity(intent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }
