@@ -59,7 +59,13 @@ public class MainActivity extends AppCompatActivity {
             User.initialize(new PostProcess() {
                 @Override
                 public void Success(Object... o) {
-                    dashboard();
+                    if (User.current.email != null) {
+                        dashboard();
+                        return;
+                    }
+
+                    User.logout();
+                    loadingDialog.dismiss();
                 }
 
                 @Override
