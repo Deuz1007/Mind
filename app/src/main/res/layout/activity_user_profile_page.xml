@@ -67,27 +67,29 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
                 android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/signout_btn"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profileLayout"
-                android:orientation="vertical">
+                app:layout_constraintVertical_bias="0.512">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
                     android:text="Analytics"
                     android:textColor="@color/white"
-                    android:textSize="30sp"
-                    android:layout_marginBottom="15dp"/>
+                    android:textSize="30sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="10dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/total_average_score"
@@ -103,23 +105,23 @@
                         android:layout_height="wrap_content"
                         android:text="Average Score"
                         android:textColor="@color/white"
-                        android:textSize="15sp"/>
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="10dp">
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="80dp"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:layout_marginRight="80dp">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/total_generated_topics"
@@ -135,7 +137,7 @@
                             android:layout_height="wrap_content"
                             android:text="Topics Saved"
                             android:textColor="@color/white"
-                            android:textSize="15sp"/>
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -149,17 +151,17 @@
                             android:id="@+id/total_generated_quiz"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="100"
                             android:fontFamily="sans-serif-black"
-                            android:textSize="30sp"
-                            android:textColor="@color/white" />
+                            android:text="100"
+                            android:textColor="@color/white"
+                            android:textSize="30sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Generated Quiz"
                             android:textColor="@color/white"
-                            android:textSize="15sp"/>
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -168,16 +170,16 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="10dp">
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="130dp"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:layout_marginRight="130dp">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/total_retry"
@@ -193,33 +195,33 @@
                             android:layout_height="wrap_content"
                             android:text="Total Retries"
                             android:textColor="@color/white"
-                            android:textSize="15sp"/>
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
                         android:layout_marginLeft="-20dp"
-                        android:layout_marginRight="15dp">
+                        android:layout_marginRight="15dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/answers_accuracy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="100"
                             android:fontFamily="sans-serif-black"
-                            android:textSize="30sp"
-                            android:textColor="@color/white" />
+                            android:text="100"
+                            android:textColor="@color/white"
+                            android:textSize="30sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Accuracy"
                             android:textColor="@color/white"
-                            android:textSize="15sp"/>
+                            android:textSize="15sp" />
 
                     </LinearLayout>
 
@@ -287,7 +289,6 @@
                 android:id="@+id/signout_btn"
                 android:layout_width="190dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp"
                 android:background="@drawable/nofill_button"
                 android:fontFamily="@font/work_sans_bold"
                 android:text="@string/signout"
@@ -295,7 +296,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/profileLayout"
+                app:layout_constraintVertical_bias="0.978" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
