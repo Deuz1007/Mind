@@ -47,12 +47,12 @@ public class GlobalForum extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     Map<String, User> users = snapshot.getValue(new GenericTypeIndicator<Map<String, User>>() {});
-                    for (User user : users.values()) {
-                        if (user.topics == null) continue;
 
-                        for (Topic topic : user.topics.values())
-                            allTopics.put(topic.topicId, topic);
-                    }
+                    allTopics = users.values().stream()
+                            .filter(user -> user.topics != null)
+                            .flatMap(user -> user.topics.values().stream())
+                            .filter(topic -> topic.quizzes.size() > 0)
+                            .collect(Collectors.toMap(topic -> topic.topicId, topic -> topic));
 
                     List<Topic> topics = allTopics.values().stream()
                             .sorted((o1, o2) -> o1.title.compareToIgnoreCase(o2.title))
