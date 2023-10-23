@@ -23,7 +23,7 @@
             android:fontFamily="@font/roboto_slab_bold"
             android:text="Content Title"
             android:textColor="@color/white"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 

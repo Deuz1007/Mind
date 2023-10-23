@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ import java.text.DecimalFormat;
 
 public class UserProfilePage extends AppCompatActivity {
 
-    AlertDialog ad_verify, ad_changePass;
+    AlertDialog ad_editUser, ad_changePass;
 
     FirebaseUser authUser;
 
@@ -60,6 +61,7 @@ public class UserProfilePage extends AppCompatActivity {
 
         Button btn_logout = findViewById(R.id.signout_btn);
         Button btn_home = findViewById(R.id.go_back_btn);
+        Button btn_edit = findViewById(R.id.edit_username_email_btn);
 
         authUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -81,6 +83,9 @@ public class UserProfilePage extends AppCompatActivity {
         tv_email.setText(User.current.email);
 
         btn_home.setOnClickListener(view -> startActivity(new Intent(UserProfilePage.this, home_screen.class)));
+        btn_edit.setOnClickListener(view -> ad_editUser.show());
+
+        setEditPopup();
 
         btn_logout.setOnClickListener(view -> {
             // Logout user
@@ -134,5 +139,25 @@ public class UserProfilePage extends AppCompatActivity {
         // To get the accuracy, divide the total accuracy by the total quiz size
         // You'll get the decimal value. Multiply it by 100 to get the percentage
         accuracy = totalAccuracy / totalQuizzes * 100;
+    }
+
+    public void setEditPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfilePage.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(UserProfilePage.this).inflate(R.layout.edit_username_email_popup, findViewById(R.id.editview));
+
+        EditText et_newUsername = view.findViewById(R.id.new_username_text);
+        EditText et_newEmail = view.findViewById(R.id.new_email_text);
+        Button btn_saveEdit = view.findViewById(R.id.save_edit_btn);
+
+        btn_saveEdit.setOnClickListener(v -> {
+
+        });
+
+        builder.setView(view);
+        ad_editUser = builder.create();
+
+        Window window = ad_editUser.getWindow();
+        if (window != null)
+            window.setBackgroundDrawable(new ColorDrawable(0));
     }
 }

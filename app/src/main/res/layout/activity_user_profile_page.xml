@@ -37,10 +37,10 @@
 
                 <ImageView
                     android:id="@+id/display_userprofile"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="55dp"
                     android:background="@drawable/avatar" />
 
                 <TextView
@@ -51,7 +51,7 @@
                     android:fontFamily="@font/work_sans_medium"
                     android:text="@string/username"
                     android:textColor="@color/white"
-                    android:textSize="26sp" />
+                    android:textSize="25sp" />
 
                 <TextView
                     android:id="@+id/display_email"
@@ -60,7 +60,16 @@
                     android:fontFamily="@font/work_sans_medium"
                     android:text="@string/email"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="16sp"
+                    android:layout_marginTop="5dp"/>
+
+                <Button
+                    android:id="@+id/edit_username_email_btn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/baseline_edit_24"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="-10dp"/>
 
             </LinearLayout>
 
@@ -246,7 +255,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/roboto_slab"
                 android:text="@string/settings"
                 android:textColor="@color/white"

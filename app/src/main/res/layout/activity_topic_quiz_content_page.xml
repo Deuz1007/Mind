@@ -22,8 +22,9 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_slab_bold"
             android:text="Content Title"
+            android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
