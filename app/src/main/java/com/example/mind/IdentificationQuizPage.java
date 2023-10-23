@@ -31,7 +31,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 //    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
 
     EditText answer;
-    TextView numberOfQuestions, questionItem, tv_hint, tv_streak, tv_hintText;
+    TextView numberOfQuestions, questionItem, tv_hint, tv_streak, tv_hintText, tv_correct_ans;
     Button hint;
 
     List<Question> questionList;
@@ -64,6 +64,10 @@ public class IdentificationQuizPage extends AppCompatActivity {
         tv_hint = findViewById(R.id.hint_count);
         tv_streak = findViewById(R.id.streak_count);
         tv_hintText = findViewById(R.id.show_hint_text);
+        tv_correct_ans = findViewById(R.id.correct_ans_text);
+
+        // Hide correct answer (default)
+        tv_correct_ans.setVisibility(View.INVISIBLE);
 
         // Button
         hint = findViewById(R.id.hint_btn);
