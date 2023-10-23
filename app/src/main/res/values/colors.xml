@@ -24,4 +24,7 @@
 
     <color name="success_color">#FDC760</color>
 
+    <color name="correct_ans">#169873</color>
+    <color name="correct_ans_txt">#71FFD7</color>
+
 </resources>

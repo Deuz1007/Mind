@@ -124,6 +124,16 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
+        <TextView
+            android:id="@+id/correct_ans_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="correct answer"
+            android:textColor="@color/correct_ans_txt"
+            android:gravity="center"
+            android:layout_marginTop="30dp"
+            android:textSize="16sp"/>
+
     </LinearLayout>
 
     <Button

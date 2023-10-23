@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -37,8 +38,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
     MediaPlayer buttonClickSound; // For Button Sound Effect
 
-//    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
-
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
     Button choiceA, choiceB, choiceC, choiceD, hint;
 
@@ -62,10 +61,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
         // Button Sound Effect
         buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
-
-        // BGM
-//        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.quiz_bgm);
-//        backgroundMusicPlayer.start();
 
         // TextView
         numberOfQuestions = findViewById(R.id.question_num);
@@ -138,6 +133,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     public void btnClick(View v) {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
+        int color = ContextCompat.getColor(this, R.color.correct_ans);
 
         buttonClickSound.start();
 
@@ -163,7 +159,25 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             currentQuestionIndex++;
 
             // Proceed to new question
-            loadNewQuestion();
+//            loadNewQuestion();
+            if(ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question)){
+                if(current.answer == choiceA.getText().toString()){
+                    choiceA.setBackgroundColor(color);
+                    delayLoadQuestion();
+                }
+                else if (current.answer == choiceB.getText().toString()) {
+                    choiceB.setBackgroundColor(color);
+                    delayLoadQuestion();
+                }
+                else if (current.answer == choiceC.getText().toString()) {
+                    choiceC.setBackgroundColor(color);
+                    delayLoadQuestion();
+                }
+                else if (current.answer == choiceD.getText().toString()) {
+                    choiceD.setBackgroundColor(color);
+                    delayLoadQuestion();
+                }
+            }
         }
     }
 
@@ -202,6 +216,15 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         choiceB.setBackgroundColor(color);
         choiceC.setBackgroundColor(color);
         choiceD.setBackgroundColor(color);
+    }
+
+    public void delayLoadQuestion(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadNewQuestion();
+            }
+        }, 1500);
     }
 
     private void startTimer() {

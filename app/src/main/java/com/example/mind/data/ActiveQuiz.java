@@ -35,7 +35,7 @@ public class ActiveQuiz {
         score = 0;
     }
 
-    public void updateScore(String response, String answer, String question) {
+    public boolean updateScore(String response, String answer, String question) {
         response = response.toLowerCase().trim().replaceAll("\\s+", " ");
         answer = answer.toLowerCase();
 
@@ -56,5 +56,7 @@ public class ActiveQuiz {
         }
         // If incorrect, reset streak to 0
         else streak = 0;
+
+        return isCorrect;
     }
 }
