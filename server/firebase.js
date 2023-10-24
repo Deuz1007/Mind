@@ -16,5 +16,3 @@ const database = getDatabase(firebaseApp);
 export const setData = (path, value) => set(ref(database, path), value);
 
 export const getData = (path) => get(child(ref(database), path)).then((snapshot) => snapshot.val());
-
-export default database;
