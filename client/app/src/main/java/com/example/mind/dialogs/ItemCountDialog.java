@@ -36,7 +36,7 @@ public class ItemCountDialog extends CustomDialog {
         });
 
         this.view = view;
-        this.create(false);
+        this.create();
     }
 
     public void setStartGeneration(Include startGeneration) {
