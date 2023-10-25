@@ -8,7 +8,7 @@ import { getData, setData } from './firebase.js';
 
 const {
     // PROJECT
-    PORT,
+    PORT = 3000,
     // OPENAPI CHATGPT
     OPENAPI_KEY
 } = process.env;
