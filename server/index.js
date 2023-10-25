@@ -30,16 +30,22 @@ const intervalTime = 1000 * 60; // 1 minute
 const sessions = new Map();
 const questionTypes = ['TRUE_OR_FALSE', 'MULTIPLE_CHOICE', 'IDENTIFICATION'];
 
+// Set up an interval to periodically execute the code block
 setInterval(() => {
+    // Check if there are any items in the chatgptPromptQueue, if not, return
     if (chatgptPromptQueue.length == 0) return;
 
+    // Get the last item from the chatgptPromptQueue
     const quizRequest = chatgptPromptQueue.pop();
     const { userId, topicId, content, items } = quizRequest;
 
+    // Get user data by making a GET request to the server
     getData(`users/${userId}`)
         .then((user) => {
+            // If the user does not exist, throw an error
             if (user === null) throw 1;
             return Promise.allSettled(createPrompt(content, items).map((prompt) => chatgpt.sendMessage(prompt)));
+            // Get topic data by making a GET request to the server
         })
         .then((results) => {
             if (results.some((result) => result.status === 'rejected')) throw 2;
@@ -52,6 +58,12 @@ setInterval(() => {
                 .map(({ question, answer, options, type }, idx) => {
                     const qn = { questionId: ids(), question, answer, type };
 
+            // If the topic does not exist, throw an error
+            // Create prompts from the quiz content and items
+            // Send each prompt to the chatgpt server and get the response
+            // Parse the response from chatgpt server and transform it into an array of questions
+                    // Create a question object with questionId, question, answer and type
+                    // If options is an array, add choices and set the answer to the option value
                     if (options instanceof Array) {
                         qn.choices = options;
                         qn.answer = options[answer];
@@ -61,6 +73,8 @@ setInterval(() => {
                 })
                 .reduce((all, question) => ({ ...all, [question.questionId]: question }), {});
 
+                // Convert the array of questions into an object with questionId as key
+            // Generate a quizId and save the quiz data to the server
             const quizId = ids();
             return setData(`users/${userId}/topics/${topicId}/quizzes/${quizId}`, {
                 average: 0,
@@ -72,7 +86,9 @@ setInterval(() => {
         })
         .then(() => sessions.get(userId).forEach((socketId) => io.to(socketId).emit('chatgpt', true)))
         .catch((e) => {
+            // If the error is 1, return
             if (e === 1) return;
+            // Add the quizRequest back to the beginning of the chatgptPromptQueue
             chatgptPromptQueue.unshift(quizRequest);
         });
 }, intervalTime);
@@ -92,6 +108,7 @@ io.on('connection', (socket) => {
 
         if (sessions.has(userId)) sessions.get(userId).add(socket.id);
         else sessions.set(userId, new Set(socket.id));
+        /* prettier-ignore */
 
         chatgptPromptQueue.unshift(data);
     });
