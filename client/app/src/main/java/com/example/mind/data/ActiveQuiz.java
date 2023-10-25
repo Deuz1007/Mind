@@ -36,11 +36,11 @@ public class ActiveQuiz {
     }
 
     public boolean updateScore(String response, String answer, String question) {
-        response = response.toLowerCase().trim().replaceAll("\\s+", " ");
-        answer = answer.toLowerCase();
+        response = response.trim().replaceAll("\\s+", " ");
+        answer = answer.trim();
 
         // Check if answer is correct
-        boolean isCorrect = response.equals(answer);
+        boolean isCorrect = response.equalsIgnoreCase(answer);
 
         // Add new QuizInfoItem to list
         items.add(new QuizResultAdapter.QuizItemInfo(question, answer, response, isCorrect));
