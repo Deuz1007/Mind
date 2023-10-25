@@ -237,8 +237,6 @@ public class BooleanQuizPage extends AppCompatActivity {
 
         // Reset UI texts
         questionItem.setText(current.question);
-        choiceA.setText(current.choices.get(0));
-        choiceB.setText(current.choices.get(1));
 
         // Reset Color of the Buttons
         int color = ContextCompat.getColor(this, R.color.cool);
