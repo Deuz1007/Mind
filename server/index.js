@@ -85,6 +85,8 @@ setInterval(() => {
         })
         .then(() => io.emit('chatgpt', userId))
         .catch((e) => {
+            console.log(e);
+
             // If the error is 1, return
             if (e === 1) return;
             // Add the quizRequest back to the beginning of the chatgptPromptQueue
@@ -94,7 +96,9 @@ setInterval(() => {
 
 io.on('connection', (socket) => {
     socket.on('disconnect', () => {
+    console.log(`New client: ${socket.id}`);
 
+        console.log(`User disconnected: ${socket.id}`);
     });
 
     socket.on('chatgpt', (data) => {
@@ -104,7 +108,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(PORT || 3000, () => console.log('Server started'));
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 function createPrompt(content, items) {
     return [
