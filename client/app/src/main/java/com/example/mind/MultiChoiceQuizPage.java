@@ -3,22 +3,15 @@ package com.example.mind;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,10 +19,7 @@ import com.example.mind.data.ActiveQuiz;
 import com.example.mind.data.ConstantValues;
 import com.example.mind.dialogs.QuitDialog;
 import com.example.mind.models.Question;
-import com.example.mind.models.User;
-import com.example.mind.models.Quiz;
-import com.example.mind.models.Topic;
-import com.example.mind.utilities.ButtonToggleEnable;
+import com.example.mind.utilities.ModifyButtons;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,7 +42,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
     QuitDialog quitDialog;
 
-    Dialog popupDialog;
+    int correctColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +67,9 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
         // Progress Bar
         progressBar = findViewById(R.id.timerprogressBar);
+
+        // Color of correct answer
+        correctColor = ContextCompat.getColor(this, R.color.correct_ans);
 
         // Create new QuitDialog
         quitDialog = new QuitDialog(this);
@@ -141,43 +134,23 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             // Disable button action if choice is hint
             if (btnId == hintChoiceBtnId) return;
 
-            // Diable buttons
-            ButtonToggleEnable.setBatchEnabled(false, choiceA, choiceB, choiceC, choiceD);
+            // Disable buttons
+            ModifyButtons.setBatchEnabled(false, choiceA, choiceB, choiceC, choiceD);
 
             // Change button design
             selectedAnswer = clickedButton.getText().toString();
-            Question current = questionList.get(currentQuestionIndex);
+            Question current = questionList.get(currentQuestionIndex++);
 
-            ActiveQuiz.active.updateScore(
-                    selectedAnswer,
-                    current.answer,
-                    current.question
-            );
+            ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
             updateCounterText();
 
-            // Increment current question index
-            currentQuestionIndex++;
-
-            // Proceed to new question
-//            loadNewQuestion();
-            if(ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question)){
-                if(current.answer == choiceA.getText().toString()){
-                    choiceA.setBackgroundColor(color);
-                    delayLoadQuestion();
-                }
-                else if (current.answer == choiceB.getText().toString()) {
-                    choiceB.setBackgroundColor(color);
-                    delayLoadQuestion();
-                }
-                else if (current.answer == choiceC.getText().toString()) {
-                    choiceC.setBackgroundColor(color);
-                    delayLoadQuestion();
-                }
-                else if (current.answer == choiceD.getText().toString()) {
-                    choiceD.setBackgroundColor(color);
-                    delayLoadQuestion();
-                }
-            }
+            // Show correct and proceed to new question
+            ModifyButtons.showCorrectButton(
+                    current.answer,
+                    correctColor,
+                    o -> loadNewQuestion(),
+                    choiceA, choiceB, choiceC, choiceD
+            );
         }
     }
 
@@ -199,7 +172,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         selectedAnswer = ""; // Selected answer
         hintChoiceBtnId = -1; // Hint
         // Enable buttons
-        ButtonToggleEnable.setBatchEnabled(true, choiceA, choiceB, choiceC, choiceD);
+        ModifyButtons.setBatchEnabled(true, choiceA, choiceB, choiceC, choiceD);
 
         currentQuestion = questionList.get(currentQuestionIndex);
 
@@ -218,15 +191,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         choiceD.setBackgroundColor(color);
     }
 
-    public void delayLoadQuestion(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadNewQuestion();
-            }
-        }, 1500);
-    }
-
     private void startTimer() {
         timer = new CountDownTimer(ConstantValues.TIMER_TIME, ConstantValues.INTERVAL_TIME) {
             @Override
@@ -238,9 +202,15 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                currentQuestionIndex++;
                 ActiveQuiz.active.streak = 0;
-                loadNewQuestion();
+
+                // Load new question
+                ModifyButtons.showCorrectButton(
+                        questionList.get(currentQuestionIndex++).answer,
+                        correctColor,
+                        o -> loadNewQuestion(),
+                        choiceA, choiceB, choiceC, choiceD
+                );
             }
         };
 

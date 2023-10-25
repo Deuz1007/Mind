@@ -2,17 +2,14 @@ package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.LayoutInflater;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,7 +17,7 @@ import com.example.mind.data.ActiveQuiz;
 import com.example.mind.data.ConstantValues;
 import com.example.mind.dialogs.QuitDialog;
 import com.example.mind.models.Question;
-import com.example.mind.utilities.ButtonToggleEnable;
+import com.example.mind.utilities.ModifyButtons;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -124,6 +121,14 @@ public class IdentificationQuizPage extends AppCompatActivity {
         quitDialog.show();
     }
 
+    private void showCorrectAnswer(String correct) {
+        // Show answer
+        tv_correct_ans.setText(correct.toUpperCase());
+        tv_correct_ans.setVisibility(View.VISIBLE);
+
+        new Handler().postDelayed(this::loadNewQuestion, ConstantValues.QUESTION_DELAY);
+    }
+
     public void btnClick(View v) {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
@@ -131,31 +136,18 @@ public class IdentificationQuizPage extends AppCompatActivity {
         buttonClickSound.start();
 
         if (btnId == R.id.submitAnswer_btn) {
-            try {
-                // Disable buttons
-                ButtonToggleEnable.setBatchEnabled(false, hint);
-                System.out.println(currentQuestionIndex);
+            // Disable buttons
+            ModifyButtons.setBatchEnabled(false, hint);
+            System.out.println(currentQuestionIndex);
 
-                // Get the user input in EditText
-                selectedAnswer = answer.getText().toString();
-                Question current = questionList.get(currentQuestionIndex);
+            // Get the user input in EditText
+            selectedAnswer = answer.getText().toString();
+            Question current = questionList.get(currentQuestionIndex++);
 
-                ActiveQuiz.active.updateScore(
-                        selectedAnswer,
-                        current.answer,
-                        current.question
-                );
-                updateCounterText();
+            ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
+            updateCounterText();
 
-                // Increment current question index
-                currentQuestionIndex++;
-
-                // Proceed to new question
-                loadNewQuestion();
-            }
-            catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            showCorrectAnswer(current.answer);
         }
     }
 
@@ -176,10 +168,11 @@ public class IdentificationQuizPage extends AppCompatActivity {
         startTimer();
         selectedAnswer = ""; // Selected answer
         tv_hintText.setText(""); // Hint
-        answer.setText(""); // Answer
+        tv_correct_ans.setText(""); // Correct answer
+        answer.setText(""); // User answer
         isHinted = false;
         // Enable buttons
-        ButtonToggleEnable.setBatchEnabled(true, hint);
+        ModifyButtons.setBatchEnabled(true, hint);
 
         currentQuestion = questionList.get(currentQuestionIndex);
 
@@ -198,9 +191,8 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                currentQuestionIndex++;
                 ActiveQuiz.active.streak = 0;
-                loadNewQuestion();
+                showCorrectAnswer(questionList.get(currentQuestionIndex++).answer);
             }
         };
 

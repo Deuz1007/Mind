@@ -3,37 +3,30 @@ package com.example.mind;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mind.data.ActiveQuiz;
 import com.example.mind.data.ConstantValues;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.dialogs.QuitDialog;
+import com.example.mind.interfaces.Include;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Question;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
-import com.example.mind.utilities.ButtonToggleEnable;
+import com.example.mind.utilities.ModifyButtons;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,8 +45,10 @@ public class BooleanQuizPage extends AppCompatActivity {
     CountDownTimer timer; // Timer
 
     QuitDialog quitDialog;
+    ErrorDialog errorDialog;
 
     long currentTimerTime;
+    int correctColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +72,20 @@ public class BooleanQuizPage extends AppCompatActivity {
         // ProgressBar
         progressBar = findViewById(R.id.timerprogressBar);
 
+        // Color of correct answer
+        correctColor = ContextCompat.getColor(this, R.color.correct_ans);
+
         // Create new QuitDialog
         quitDialog = new QuitDialog(this);
         quitDialog.setDoThisOnQuit(objects -> {
             ActiveQuiz.active = null;
             timer.cancel();
+        });
+
+        errorDialog = new ErrorDialog(this);
+        errorDialog.dialog.setOnDismissListener(dialog -> {
+            startActivity(new Intent(BooleanQuizPage.this, home_screen.class));
+            finish();
         });
 
         // Get topic from intent from library sheet
@@ -112,6 +116,8 @@ public class BooleanQuizPage extends AppCompatActivity {
                 @Override
                 public void Failed(Exception e) {
                     // Invalid code
+                    errorDialog.setMessage("Invalid quiz code");
+                    errorDialog.show();
                 }
             });
 
@@ -181,36 +187,27 @@ public class BooleanQuizPage extends AppCompatActivity {
     public void btnClick(View v) {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
-        int color = ContextCompat.getColor(this, R.color.correct_ans);
 
         buttonClickSound.start();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button) {
             // Disable buttons
-            ButtonToggleEnable.setBatchEnabled(false, choiceA, choiceB);
+            ModifyButtons.setBatchEnabled(false, choiceA, choiceB);
 
             // Get the string inside the button
             selectedAnswer = clickedButton.getText().toString();
-            Question current = questionList.get(currentQuestionIndex);
+            Question current = questionList.get(currentQuestionIndex++);
 
             ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
             updateCounterText();
 
-            // Increment current question index
-            currentQuestionIndex++;
-
-            // Proceed to new question
-//            loadNewQuestion();
-            if(ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question)){
-                if(current.answer == choiceA.getText().toString()){
-                    choiceA.setBackgroundColor(color);
-                    delayLoadQuestion();
-                }
-                else if (current.answer == choiceB.getText().toString()) {
-                    choiceB.setBackgroundColor(color);
-                    delayLoadQuestion();
-                }
-            }
+            // Show correct and proceed to new question
+            ModifyButtons.showCorrectButton(
+                    current.answer,
+                    correctColor,
+                    o -> loadNewQuestion(),
+                    choiceA, choiceB
+            );
         }
     }
 
@@ -231,7 +228,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         startTimer(ConstantValues.TIMER_TIME);
         selectedAnswer = ""; // Selected answer
         // Enable buttons
-        ButtonToggleEnable.setBatchEnabled(true, choiceA, choiceB);
+        ModifyButtons.setBatchEnabled(true, choiceA, choiceB);
 
         Question current = questionList.get(currentQuestionIndex);
 
@@ -242,15 +239,6 @@ public class BooleanQuizPage extends AppCompatActivity {
         int color = ContextCompat.getColor(this, R.color.cool);
         choiceA.setBackgroundColor(color);
         choiceB.setBackgroundColor(color);
-    }
-
-    public void delayLoadQuestion(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadNewQuestion();
-            }
-        }, 1500);
     }
 
     private void startTimer(long totalTime) {
@@ -264,11 +252,15 @@ public class BooleanQuizPage extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                // Increase question index
-                currentQuestionIndex++;
                 ActiveQuiz.active.streak = 0;
+
                 // Load new question
-                loadNewQuestion();
+                ModifyButtons.showCorrectButton(
+                        questionList.get(currentQuestionIndex++).answer,
+                        correctColor,
+                        o -> loadNewQuestion(),
+                        choiceA, choiceB
+                );
             }
         };
 
