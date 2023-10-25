@@ -102,14 +102,24 @@ setInterval(() => {
 }, intervalTime);
 
 io.on('connection', (socket) => {
-    socket.on('disconnect', () => {
     console.log(`New client: ${socket.id}`);
 
+    socket.on('disconnect', () => {
         console.log(`User disconnected: ${socket.id}`);
     });
 
     socket.on('chatgpt', (data) => {
+        const { userId, topicId, content, items } = data;
         /* prettier-ignore */
+        const isValid = typeof userId === 'string' && userId.length > 0 &&
+                        typeof topicId === 'string' && topicId.length === 16 &&
+                        typeof content === 'string' && content.length > 0 &&
+                        typeof items === 'number' && items > 0 && items <= 15 && items % 5 === 0;
+
+        if (!isValid) {
+            socket.emit('data_error', 'Invalid data');
+            return;
+        }
 
         chatgptPromptQueue.unshift(data);
     });
