@@ -104,13 +104,6 @@ public class User {
                 .addOnFailureListener(callback::Failed);
     }
 
-    public static void resetPassword(String email, PostProcess callback) {
-        FirebaseAuth.getInstance()
-                .sendPasswordResetEmail(email)
-                .addOnSuccessListener(callback::Success)
-                .addOnFailureListener(callback::Failed);
-    }
-
     public static void logout() {
         FirebaseAuth.getInstance().signOut();
 
