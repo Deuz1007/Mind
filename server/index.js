@@ -27,7 +27,6 @@ const chatgpt = new ChatGPTAPI({
 });
 const chatgptPromptQueue = [];
 const intervalTime = 1000 * 60; // 1 minute
-const sessions = new Map();
 const questionTypes = ['TRUE_OR_FALSE', 'MULTIPLE_CHOICE', 'IDENTIFICATION'];
 
 // Set up an interval to periodically execute the code block
@@ -84,7 +83,7 @@ setInterval(() => {
                 questions
             });
         })
-        .then(() => sessions.get(userId).forEach((socketId) => io.to(socketId).emit('chatgpt', true)))
+        .then(() => io.emit('chatgpt', userId))
         .catch((e) => {
             // If the error is 1, return
             if (e === 1) return;
@@ -95,19 +94,10 @@ setInterval(() => {
 
 io.on('connection', (socket) => {
     socket.on('disconnect', () => {
-        for (const userId of sessions.keys()) {
-            const set = sessions.get(userId);
 
-            set.delete(socket.id);
-            if (set.size == 0) sessions.delete(userId);
-        }
     });
 
     socket.on('chatgpt', (data) => {
-        const { userId } = data;
-
-        if (sessions.has(userId)) sessions.get(userId).add(socket.id);
-        else sessions.set(userId, new Set(socket.id));
         /* prettier-ignore */
 
         chatgptPromptQueue.unshift(data);
