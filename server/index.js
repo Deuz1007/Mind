@@ -21,7 +21,8 @@ const chatgpt = new ChatGPTAPI({
     apiKey: OPENAPI_KEY,
     completionParams: {
         model: 'gpt-3.5-turbo-16k',
-        temperature: 0
+        temperature: 0,
+        max_tokens: 4096
     }
 });
 const chatgptPromptQueue = [];
