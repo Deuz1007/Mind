@@ -43,25 +43,31 @@ setInterval(() => {
         .then((user) => {
             // If the user does not exist, throw an error
             if (user === null) throw 1;
-            return Promise.allSettled(createPrompt(content, items).map((prompt) => chatgpt.sendMessage(prompt)));
             // Get topic data by making a GET request to the server
+            return getData(`users/${userId}/topics/${topicId}`);
         })
-        .then((results) => {
-            if (results.some((result) => result.status === 'rejected')) throw 2;
-
-            const questions = results
-                .map((result, idx) =>
-                    JSON.parse(result.value.text).map((parsed) => ({ ...parsed, type: questionTypes[idx] }))
-                )
-                .flat()
-                .map(({ question, answer, options, type }, idx) => {
-                    const qn = { questionId: ids(), question, answer, type };
-
+        .then((topic) => {
             // If the topic does not exist, throw an error
+            if (topic === null) throw 1;
             // Create prompts from the quiz content and items
+            const prompts = createPrompt(content, items);
             // Send each prompt to the chatgpt server and get the response
+            return Promise.all(prompts.map((prompt) => chatgpt.sendMessage(prompt)));
+        })
+        .then((results) =>
             // Parse the response from chatgpt server and transform it into an array of questions
+            results
+                .map(({ text }) => JSON.parse(text))
+                .flatMap((parsed, i) => parsed.map((question) => ({ ...question, type: questionTypes[i] })))
+                .map(({ question, answer, options, type }) => {
                     // Create a question object with questionId, question, answer and type
+                    const qn = {
+                        questionId: ids(),
+                        question,
+                        answer: answer.toString(),
+                        type
+                    };
+
                     // If options is an array, add choices and set the answer to the option value
                     if (options instanceof Array) {
                         qn.choices = options;
@@ -70,9 +76,10 @@ setInterval(() => {
 
                     return qn;
                 })
-                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {});
-
                 // Convert the array of questions into an object with questionId as key
+                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {})
+        )
+        .then((questions) => {
             // Generate a quizId and save the quiz data to the server
             const quizId = ids();
             return setData(`users/${userId}/topics/${topicId}/quizzes/${quizId}`, {
