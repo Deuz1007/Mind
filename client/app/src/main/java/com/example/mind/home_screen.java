@@ -9,8 +9,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -73,6 +76,25 @@ public class home_screen extends AppCompatActivity {
             if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userId))
                 User.collection.get().addOnSuccessListener(snapshot -> User.current = new User(snapshot));
         });
+
+        /* Context for showing the popup dialog in the top part of the screen
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.activity_global_popup_dialog, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        Window window = dialog.getWindow();
+
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.gravity = Gravity.TOP;
+
+        window.setAttributes(layoutParams);
+
+        dialog.show();
+
+         */
+
     }
 
     @Override
