@@ -112,28 +112,32 @@ public class User {
     }
 
     public static void getUser(String code, PostProcess callback) {
-        int quizStart = code.length() - UniqueID.BYTES_LENGTH;
-        int topicStart = quizStart - UniqueID.BYTES_LENGTH;
-        String userId = code.substring(0, topicStart);
+        try {
+            int quizStart = code.length() - UniqueID.BYTES_LENGTH;
+            int topicStart = quizStart - UniqueID.BYTES_LENGTH;
+            String userId = code.substring(0, topicStart);
 
-        FirebaseDatabase.getInstance().getReference("users")
-                .child(userId)
-                .get()
-                .addOnSuccessListener(snapshot -> {
-                    User user = new User(snapshot);
-                    Topic topic = user.topics.get(code.substring(topicStart, quizStart));
+            FirebaseDatabase.getInstance().getReference("users")
+                    .child(userId)
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        User user = new User(snapshot);
+                        Topic topic = user.topics.get(code.substring(topicStart, quizStart));
 
-                    if (topic != null) {
-                        Quiz quiz = topic.quizzes.get(code.substring(quizStart));
+                        if (topic != null) {
+                            Quiz quiz = topic.quizzes.get(code.substring(quizStart));
 
-                        if (quiz != null) {
-                            callback.Success(quiz, topic);
-                            return;
+                            if (quiz != null) {
+                                callback.Success(quiz, topic);
+                                return;
+                            }
                         }
-                    }
 
-                    callback.Failed(new InvalidQuizCodeException());
-                })
-                .addOnFailureListener(callback::Failed);
+                        callback.Failed(new InvalidQuizCodeException());
+                    })
+                    .addOnFailureListener(callback::Failed);
+        } catch (Exception e) {
+            callback.Failed(e);
+        }
     }
 }
