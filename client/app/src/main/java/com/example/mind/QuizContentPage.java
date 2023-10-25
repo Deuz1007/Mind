@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,6 +25,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.ItemCountDialog;
 import com.example.mind.dialogs.LoadingDialog;
@@ -34,6 +36,7 @@ import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
+import org.json.JSONException;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -42,7 +45,7 @@ public class QuizContentPage extends AppCompatActivity {
     EditText et_contentField;
     Button btn_back, btn_edit, btn_save, btn_generate, btn_delete, btn_quizzes;
     AlertDialog alertDialog;
-    LoadingDialog generationDialog;
+    LoadingDialog loadingDialog;
     ItemCountDialog itemCountDialog;
     ErrorDialog errorDialog;
 
@@ -72,26 +75,53 @@ public class QuizContentPage extends AppCompatActivity {
         btn_delete = findViewById(R.id.delete_content_btn);
 
         // Setup popup
-        generationDialog = new LoadingDialog(this);
+        loadingDialog = new LoadingDialog(this);
         errorDialog = new ErrorDialog(this);
 
         itemCountDialog = new ItemCountDialog(this);
         itemCountDialog.setStartGeneration(objects -> {
             int items = (int) objects[0];
 
-            try {
-                // Disable generate button
-                btn_generate.setEnabled(false);
-
-                // Generate new quiz
-                generate(items);
-            } catch (MaxContentTokensReachedException e) {
-                // Show generation error
-                errorDialog.setMessage(e.getMessage());
-                errorDialog.show();
-            }
-
+            // Hide items list
             if (itemCountDialog.isShowing()) itemCountDialog.dismiss();
+
+            // Show loading
+            loadingDialog.setPurpose("Adding to queue ...");
+            loadingDialog.show();
+
+            // Check connection
+            new CountDownTimer(1000 * 60, 1000 * 12) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (SocketIO.instance.connected()) {
+                        // Hide loading
+                        loadingDialog.dismiss();
+
+                        // Generate question
+                        try {
+                            SocketIO.instance.emit("chatgpt", Topic.createQuizData(topic, topic.content, items));
+                        } catch (Exception e) {
+                            errorDialog.setMessage(e.getMessage());
+                            errorDialog.show();
+                        }
+
+                        this.cancel();
+                        return;
+                    }
+
+                    // Connect to socket
+                    SocketIO.instance.connect();
+                }
+
+                @Override
+                public void onFinish() {
+                    loadingDialog.dismiss();
+
+                    // Show error
+                    errorDialog.setMessage("Unable to connect to server");
+                    errorDialog.show();
+                }
+            }.start();
         });
 
         // Get topic from intent from library sheet
@@ -125,7 +155,12 @@ public class QuizContentPage extends AppCompatActivity {
 
         // Set onclick listener to edit and save buttons
         btn_edit.setOnClickListener(v -> toggleContentContainer(true, View.INVISIBLE, View.VISIBLE, View.VISIBLE, View.INVISIBLE));
-        btn_save.setOnClickListener(v -> toggleContentContainer(false, View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.VISIBLE));
+        btn_save.setOnClickListener(v -> {
+            toggleContentContainer(false, View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.VISIBLE);
+
+            // Update content
+            topic.content = et_contentField.getText().toString().trim();
+        });
 
         // Adapter for the content items of the contents in the library sheet
         contentAdapter = new LibraryContentAdapter(this, new ArrayList<>(User.current.topics.values()));
@@ -158,7 +193,11 @@ public class QuizContentPage extends AppCompatActivity {
         btn_quizzes.setVisibility(quizVisibility);
     }
 
-    private void generate(int itemsPerLevel) throws MaxContentTokensReachedException {
+//    private void generate(int itemsPerLevel) throws MaxContentTokensReachedException, JSONException {
+//
+//        Topic.createQuiz(topic, topic.content, itemsPerLevel);
+
+        /*
         Topic.createQuiz(
                 topic,
                 topic.content,
@@ -197,7 +236,8 @@ public class QuizContentPage extends AppCompatActivity {
                         errorDialog.show();
                     }
                 });
-    }
+         */
+//    }
 
     public void deleteAlertPopup(){
         AlertDialog.Builder builder = new AlertDialog.Builder(QuizContentPage.this, R.style.AlertDialogTheme);

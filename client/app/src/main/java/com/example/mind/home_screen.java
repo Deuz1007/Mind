@@ -1,38 +1,28 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
-import com.example.mind.models.Quiz;
-import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 import com.example.mind.utilities.ExtractText;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class home_screen extends AppCompatActivity {
     public static User quizUser;
@@ -42,7 +32,6 @@ public class home_screen extends AppCompatActivity {
     LoadingDialog loadingDialog;
 
     final int FILE_PICKER_REQUEST_CODE = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +49,15 @@ public class home_screen extends AppCompatActivity {
         loadingDialog = new LoadingDialog(this);
         loadingDialog.setPurpose("Extracting text...");
 
+        if (SocketIO.instance == null) {
+            try {
+                SocketIO.createInstance();
+            } catch (Exception e) {
+                errorDialog.setMessage("Failed connecting to API");
+                errorDialog.show();
+            }
+        }
+
         btn_profile.setText(User.current.username);
 
         btn_profile.setOnClickListener(view -> startActivity(new Intent(this, UserProfilePage.class)));
@@ -69,6 +67,12 @@ public class home_screen extends AppCompatActivity {
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
+
+        SocketIO.onChatGPT(o -> {
+            String userId = (String) o[0];
+            if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userId))
+                User.collection.get().addOnSuccessListener(snapshot -> User.current = new User(snapshot));
+        });
     }
 
     @Override

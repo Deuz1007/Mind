@@ -2,16 +2,16 @@ package com.example.mind.models;
 
 import com.example.mind.exceptions.MaxContentTokensReachedException;
 import com.example.mind.interfaces.PostProcess;
-import com.example.mind.interfaces.ProcessMessage;
-import com.example.mind.utilities.AIRequest;
 import com.example.mind.utilities.UniqueID;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Topic {
@@ -70,78 +70,18 @@ public class Topic {
                 .addOnFailureListener(callback::Failed);
     }
 
-    public static void createQuiz(Topic topic, String quizContent, int itemsPerLevel, ProcessMessage message, PostProcess callback) throws MaxContentTokensReachedException {
+    public static JSONObject createQuizData(Topic topic, String quizContent, int itemsPerLevel) throws MaxContentTokensReachedException, JSONException {
         // Check if the quizContent exceeds token max length
         if (!Quiz.isValidContent(quizContent))
             throw new MaxContentTokensReachedException();
 
-        // Create new quiz
-        Quiz newQuiz = new Quiz(itemsPerLevel);
-        quizContent = quizContent
-                .replaceAll("\\n", " ")
-                .replaceAll("\\s+", " ");
+        JSONObject quizData = new JSONObject();
+        quizData.put("userId", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        quizData.put("topicId", topic.topicId);
+        quizData.put("content", quizContent.replaceAll("\\n", " ").replaceAll("\\s+", " "));
+        quizData.put("items", itemsPerLevel);
 
-        /* Create requests */
-
-        // Level 1
-        AIRequest.QuestionRequest level1 = new AIRequest.QuestionRequest(
-                Question.QuestionType.TRUE_OR_FALSE,
-                AIRequest.createRequest(Quiz.createContent(
-                        itemsPerLevel,
-                        quizContent,
-                        Quiz.Description.TRUE_OR_FALSE,
-                        Quiz.XML.ANSWER_ONLY
-                ))
-        );
-
-        // Level 2
-        AIRequest.QuestionRequest level2 = new AIRequest.QuestionRequest(
-                Question.QuestionType.MULTIPLE_CHOICE,
-                AIRequest.createRequest(Quiz.createContent(
-                        itemsPerLevel,
-                        quizContent,
-                        Quiz.Description.MULTIPLE_CHOICE,
-                        Quiz.XML.HAS_CHOICES
-                ))
-        );
-
-        // Level 3
-        AIRequest.QuestionRequest level3 = new AIRequest.QuestionRequest(
-                Question.QuestionType.IDENTIFICATION,
-                AIRequest.createRequest(Quiz.createContent(
-                        itemsPerLevel,
-                        quizContent,
-                        Quiz.Description.IDENTIFICATION,
-                        Quiz.XML.ANSWER_ONLY
-                ))
-        );
-
-        // Send requests
-        AIRequest.send(
-                new AIRequest.QuestionRequest[]{level1, level2, level3},
-                message,
-                new PostProcess() {
-                    @Override
-                    public void Success(Object... o) {
-                        message.Message("Saving quiz");
-
-                        // Extract the questions
-                        for (Object obj : (List<?>) o[0]) {
-                            Question question = (Question) obj;
-
-                            newQuiz.questions.put(question.questionId, question);
-                        }
-
-                        // Save new quiz to database
-                        Quiz.add(newQuiz, topic, callback);
-                    }
-
-                    @Override
-                    public void Failed(Exception e) {
-                        callback.Failed(e);
-                    }
-                }
-        );
+        return quizData;
     }
 
     public static void add(Topic newTopic, PostProcess callback) {

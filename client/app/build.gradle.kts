@@ -64,7 +64,9 @@ dependencies {
     implementation("com.google.mlkit:text-recognition:16.0.0")
 
     // HTTP Request
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("io.socket:socket.io-client:2.0.0") {
+        exclude("org.json", "json")
+    }
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
