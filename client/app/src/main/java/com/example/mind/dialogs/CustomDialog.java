@@ -12,7 +12,7 @@ import com.example.mind.R;
 
 public class CustomDialog {
     protected View view;
-    protected AlertDialog dialog;
+    public AlertDialog dialog;
     protected Context context;
     protected AlertDialog.Builder dialogBuilder;
     protected Window window;
