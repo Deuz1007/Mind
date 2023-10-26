@@ -10,7 +10,9 @@
         android:id="@+id/notif_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/upper_dialog_bg"
         android:gravity="center"
+        android:padding="5dp"
         android:text="back online"
         android:textColor="@color/black"
         android:textSize="16dp"
@@ -19,7 +21,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.009"
-        android:background="@drawable/create_bg"/>
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
