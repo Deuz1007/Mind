@@ -1,6 +1,9 @@
 package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -71,6 +74,14 @@ public class home_screen extends AppCompatActivity {
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
+
+    }
+
+    private void replaceFragment (Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.upper_notif, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override
