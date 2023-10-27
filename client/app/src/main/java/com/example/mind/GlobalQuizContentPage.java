@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.mind.data.SocketIO;
+
 public class GlobalQuizContentPage extends AppCompatActivity {
 
     @Override
@@ -25,5 +27,17 @@ public class GlobalQuizContentPage extends AppCompatActivity {
             intent.putExtra("topicId", topicId);
             startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SocketIO.currentActivity = this;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SocketIO.currentActivity = this;
     }
 }

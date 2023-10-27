@@ -4,32 +4,35 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
+import com.example.mind.dialogs.QuizGeneratedDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
 import com.example.mind.utilities.ExtractText;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class home_screen extends AppCompatActivity {
-    public static User quizUser;
-
     Dialog popupDialog;
     ErrorDialog errorDialog;
     LoadingDialog loadingDialog;
@@ -40,8 +43,6 @@ public class home_screen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-
-        quizUser = User.current;
 
         Button btn_library = findViewById(R.id.library_btn);
         Button btn_profile = findViewById(R.id.userprofile_btn);
@@ -70,31 +71,18 @@ public class home_screen extends AppCompatActivity {
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
+    }
 
-        SocketIO.onChatGPT(o -> {
-            String userId = (String) o[0];
-            if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userId))
-                User.collection.get().addOnSuccessListener(snapshot -> User.current = new User(snapshot));
-        });
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SocketIO.currentActivity = this;
+    }
 
-        /* Context for showing the popup dialog in the top part of the screen
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.activity_global_popup_dialog, null);
-        builder.setView(dialogView);
-
-        AlertDialog dialog = builder.create();
-        Window window = dialog.getWindow();
-
-        WindowManager.LayoutParams layoutParams = window.getAttributes();
-        layoutParams.gravity = Gravity.TOP;
-
-        window.setAttributes(layoutParams);
-
-        dialog.show();
-
-         */
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SocketIO.currentActivity = this;
     }
 
     @Override

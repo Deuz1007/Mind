@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.mind.data.SocketIO;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
@@ -38,12 +39,15 @@ public class library_sheet extends AppCompatActivity {
 
     }
 
-    public void buttonOpenFile(View view){
-        Intent intent = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            intent = new Intent(Intent.ACTION_VIEW, MediaStore.Downloads.EXTERNAL_CONTENT_URI);
-        }
-        intent.setType("*/*");
-        this.startActivity(intent);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SocketIO.currentActivity = this;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SocketIO.currentActivity = this;
     }
 }

@@ -86,7 +86,7 @@ public class QuizContentPage extends AppCompatActivity {
             if (itemCountDialog.isShowing()) itemCountDialog.dismiss();
 
             // Show loading
-            loadingDialog.setPurpose("Adding to queue ...");
+            loadingDialog.setPurpose("Connecting to server ...");
             loadingDialog.show();
 
             // Check connection
@@ -94,12 +94,17 @@ public class QuizContentPage extends AppCompatActivity {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     if (SocketIO.instance.connected()) {
-                        // Hide loading
-                        loadingDialog.dismiss();
+                        loadingDialog.setPurpose("Adding to queue ...");
 
                         // Generate question
                         try {
                             SocketIO.instance.emit("chatgpt", Topic.createQuizData(topic, topic.content, items));
+
+                            loadingDialog.setPurpose("Added to queue");
+                            new Handler().postDelayed(() -> {
+                                if (loadingDialog.isShowing())
+                                    loadingDialog.dismiss();
+                            }, 1500);
                         } catch (Exception e) {
                             errorDialog.setMessage(e.getMessage());
                             errorDialog.show();
@@ -184,6 +189,18 @@ public class QuizContentPage extends AppCompatActivity {
         btn_back.setOnClickListener(v -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SocketIO.currentActivity = this;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SocketIO.currentActivity = this;
+    }
+
     private void toggleContentContainer(boolean contentFieldEnabled, int editVisibility, int saveVisibility, int deleteVisibility, int quizVisibility) {
         et_contentField.setEnabled(contentFieldEnabled);
 
@@ -192,52 +209,6 @@ public class QuizContentPage extends AppCompatActivity {
         btn_delete.setVisibility(deleteVisibility);
         btn_quizzes.setVisibility(quizVisibility);
     }
-
-//    private void generate(int itemsPerLevel) throws MaxContentTokensReachedException, JSONException {
-//
-//        Topic.createQuiz(topic, topic.content, itemsPerLevel);
-
-        /*
-        Topic.createQuiz(
-                topic,
-                topic.content,
-                itemsPerLevel,
-                message -> {
-                    // Show message
-                    QuizContentPage.this.runOnUiThread(() -> {
-                        if (!generationDialog.isShowing())
-                            generationDialog.show();
-
-                        generationDialog.setPurpose(message);
-                    });
-                },
-                new PostProcess() {
-                    @Override
-                    public void Success(Object... o) {
-                        generationDialog.setPurpose("Quiz generation success!");
-
-                        Quiz quiz = (Quiz) o[0];
-                        Class<?> targetClass = topic.quizzes.size() - 1 == 0 ? Instructions_Popup.class : BooleanQuizPage.class;
-
-                        new Handler().postDelayed(() -> {
-                            Intent intent = new Intent(QuizContentPage.this, targetClass);
-                            intent.putExtra("quizId", quiz.quizId);
-                            intent.putExtra("topicId", topic.topicId);
-                            startActivity(intent);
-                        }, 3000);
-                    }
-
-                    @Override
-                    public void Failed(Exception e) {
-                        // Hide popup
-                        generationDialog.dismiss();
-
-                        errorDialog.setMessage(e.getMessage());
-                        errorDialog.show();
-                    }
-                });
-         */
-//    }
 
     public void deleteAlertPopup(){
         AlertDialog.Builder builder = new AlertDialog.Builder(QuizContentPage.this, R.style.AlertDialogTheme);

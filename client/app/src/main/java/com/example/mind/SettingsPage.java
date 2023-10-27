@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.example.mind.data.SocketIO;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,6 +86,18 @@ public class SettingsPage extends AppCompatActivity {
 
         Button btn_guide = findViewById(R.id.support_btn);
         btn_guide.setOnClickListener(v -> startActivity(new Intent(this, Instructions_Popup.class)));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SocketIO.currentActivity = this;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SocketIO.currentActivity = this;
     }
 
     private void setVerifyPopup() {

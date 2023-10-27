@@ -5,8 +5,6 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-val CHATGPT_KEY: String = "\"${gradleLocalProperties(rootDir).getProperty("CHATGPT_KEY")}\"";
-
 android {
     namespace = "com.example.mind"
     compileSdk = 33
@@ -22,18 +20,12 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField("String", "CHATGPT_KEY", CHATGPT_KEY)
-        }
-
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
-            buildConfigField("String", "CHATGPT_KEY", CHATGPT_KEY)
         }
     }
     compileOptions {

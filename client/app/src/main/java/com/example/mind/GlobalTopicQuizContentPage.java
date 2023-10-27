@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.mind.data.SocketIO;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 
@@ -34,5 +35,17 @@ public class GlobalTopicQuizContentPage extends AppCompatActivity {
 
         recyclerView.setAdapter(new GlobalTopicQuizContentAdapter(this, quizItemList));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SocketIO.currentActivity = this;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SocketIO.currentActivity = this;
     }
 }

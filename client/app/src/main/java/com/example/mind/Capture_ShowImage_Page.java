@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.mind.data.SocketIO;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.ExtractText;
 
@@ -53,6 +54,18 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
                 System.out.println(e.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SocketIO.currentActivity = this;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SocketIO.currentActivity = this;
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.mind.data.SocketIO;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
@@ -51,6 +52,18 @@ public class AnalyticsPage extends AppCompatActivity {
         // Go back to Home Screen
         Button goBackToHomeScreen = findViewById(R.id.go_back_btn);
         goBackToHomeScreen.setOnClickListener(view -> onBackPressed());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SocketIO.currentActivity = this;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SocketIO.currentActivity = this;
     }
 
     private void calculateAnalytics() {
