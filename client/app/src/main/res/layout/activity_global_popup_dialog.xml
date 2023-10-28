@@ -13,7 +13,7 @@
         android:background="@drawable/upper_dialog_bg"
         android:gravity="center"
         android:padding="5dp"
-        android:text="back online"
+        android:text="Quiz generated"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
