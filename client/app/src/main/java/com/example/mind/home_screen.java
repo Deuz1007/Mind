@@ -4,33 +4,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
-import com.example.mind.dialogs.QuizGeneratedDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
 import com.example.mind.utilities.ExtractText;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class home_screen extends AppCompatActivity {
     Dialog popupDialog;

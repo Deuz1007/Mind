@@ -1,33 +1,22 @@
 package com.example.mind;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -35,7 +24,7 @@ import java.text.DecimalFormat;
 
 public class UserProfilePage extends AppCompatActivity {
 
-    AlertDialog ad_editUser, ad_changePass;
+    AlertDialog ad_editUser;
 
     FirebaseUser authUser;
 
@@ -66,11 +55,7 @@ public class UserProfilePage extends AppCompatActivity {
 
         authUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        try {
-            calculateAnalytics();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        calculateAnalytics();
 
         tv_username.setText(User.current.username);
         tv_email.setText(User.current.email);
