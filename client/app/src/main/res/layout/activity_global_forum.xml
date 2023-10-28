@@ -7,11 +7,6 @@
     android:background="@drawable/round_library_sheet"
     android:id="@+id/library_sheet">
 
-    <FrameLayout
-        android:id="@+id/upper_notif"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

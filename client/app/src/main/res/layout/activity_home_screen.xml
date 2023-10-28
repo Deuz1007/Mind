@@ -27,13 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center">
 
-            <FrameLayout
-                android:id="@+id/upper_notif"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/mind_logo"
