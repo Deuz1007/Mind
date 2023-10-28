@@ -21,8 +21,8 @@ public class SocketIO {
     private static QuizGeneratedDialog dialog;
 
     public static void createInstance() throws URISyntaxException {
-//        instance = IO.socket("http://192.168.1.4:3000");
-        instance = IO.socket("https://mind-api.onrender.com");
+        instance = IO.socket("http://192.168.1.4:3000");
+//        instance = IO.socket("https://mind-api.onrender.com");
         instance.connect();
 
         instance.on("chatgpt", args -> {
