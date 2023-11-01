@@ -279,17 +279,16 @@
             <Button
                 android:id="@+id/signout_btn"
                 android:layout_width="150dp"
-                android:layout_height="30"
+                android:layout_height="30dp"
                 android:background="@drawable/nofill_button"
                 android:fontFamily="@font/work_sans_bold"
                 android:text="@string/signout"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/profileLayout"
-                app:layout_constraintVertical_bias="0.978" />
+                app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
