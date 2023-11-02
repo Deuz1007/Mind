@@ -2,6 +2,7 @@ package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +15,8 @@ import com.example.mind.models.User;
 import java.text.DecimalFormat;
 
 public class AnalyticsPage extends AppCompatActivity {
+    TextView notificationBar;
+
     int totalTopics;
     int totalQuizzes;
     int totalRetries;
@@ -22,6 +25,7 @@ public class AnalyticsPage extends AppCompatActivity {
 
     final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +38,9 @@ public class AnalyticsPage extends AppCompatActivity {
         TextView tv_retries = findViewById(R.id.total_retry);
         TextView tv_average = findViewById(R.id.total_average_score);
         TextView tv_accuracy = findViewById(R.id.answers_accuracy);
+        notificationBar = findViewById(R.id.notification);
 
-        try {
-            calculateAnalytics();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        calculateAnalytics();
 
         tv_username.setText(User.current.username);
         tv_email.setText(User.current.email);
@@ -57,13 +58,13 @@ public class AnalyticsPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.quizNotification = notificationBar;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.quizNotification = notificationBar;
     }
 
     private void calculateAnalytics() {

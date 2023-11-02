@@ -27,6 +27,7 @@ public class home_screen extends AppCompatActivity {
     Dialog popupDialog;
     ErrorDialog errorDialog;
     LoadingDialog loadingDialog;
+    TextView notificationBar;
 
     final int FILE_PICKER_REQUEST_CODE = 1;
 
@@ -44,14 +45,8 @@ public class home_screen extends AppCompatActivity {
         loadingDialog = new LoadingDialog(this);
         loadingDialog.setPurpose("Extracting text...");
 
-        if (SocketIO.instance == null) {
-            try {
-                SocketIO.createInstance();
-            } catch (Exception e) {
-                errorDialog.setMessage("Failed connecting to API");
-                errorDialog.show();
-            }
-        }
+        notificationBar = findViewById(R.id.notification);
+        SocketIO.setNotificationBar(notificationBar);
 
         btn_profile.setText(User.current.username);
 
@@ -67,13 +62,13 @@ public class home_screen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -25,6 +26,7 @@ import java.text.DecimalFormat;
 public class UserProfilePage extends AppCompatActivity {
 
     AlertDialog ad_editUser;
+    TextView notificationBar;
 
     FirebaseUser authUser;
 
@@ -36,6 +38,7 @@ public class UserProfilePage extends AppCompatActivity {
 
     final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,7 @@ public class UserProfilePage extends AppCompatActivity {
         TextView tv_retries = findViewById(R.id.total_retry);
         TextView tv_average = findViewById(R.id.total_average_score);
         TextView tv_accuracy = findViewById(R.id.answers_accuracy);
+        notificationBar = findViewById(R.id.notification);
 
         Button btn_logout = findViewById(R.id.signout_btn);
         Button btn_home = findViewById(R.id.go_back_btn);
@@ -68,6 +72,8 @@ public class UserProfilePage extends AppCompatActivity {
         tv_username.setText(User.current.username);
         tv_email.setText(User.current.email);
 
+        SocketIO.setNotificationBar(notificationBar);
+
         btn_home.setOnClickListener(view -> startActivity(new Intent(UserProfilePage.this, home_screen.class)));
         btn_edit.setOnClickListener(view -> ad_editUser.show());
 
@@ -86,13 +92,13 @@ public class UserProfilePage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     private void calculateAnalytics() {

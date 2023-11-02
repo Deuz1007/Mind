@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.interfaces.PostProcess;
@@ -30,12 +32,18 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
     String imagePath;
     File imageFile;
 
+    TextView notificationBar;
+
     final int CAMERA_CAPTURE_REQUEST_CODE = 111;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture_show_image_page);
+
+        notificationBar = findViewById(R.id.notification);
+        SocketIO.setNotificationBar(notificationBar);
 
         // To Access Camera and Capture Photo
         imageView = findViewById(R.id.imageCaptured);
@@ -59,13 +67,13 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override

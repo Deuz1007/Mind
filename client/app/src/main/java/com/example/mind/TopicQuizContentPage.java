@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,10 +24,16 @@ import java.util.List;
 
 public class TopicQuizContentPage extends AppCompatActivity {
 
+    TextView notificationBar;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_quiz_content_page);
+
+        notificationBar = findViewById(R.id.notification);
+        SocketIO.setNotificationBar(notificationBar);
 
         // Get topic from intent from Quiz Content
         String topicId = getIntent().getStringExtra("topicId");
@@ -51,12 +58,12 @@ public class TopicQuizContentPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 }

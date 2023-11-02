@@ -7,6 +7,18 @@
     android:background="#000000"
     tools:context=".home_screen">
 
+    <TextView
+        android:id="@+id/notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/upper_dialog_bg"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Quiz generated"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"

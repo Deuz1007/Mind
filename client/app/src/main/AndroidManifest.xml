@@ -21,11 +21,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".GlobalPopupDialog"
-            android:exported="false"
-            android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Translucent" />
-        <activity
             android:name=".GlobalTopicQuizContentPage"
             android:exported="false" />
         <activity

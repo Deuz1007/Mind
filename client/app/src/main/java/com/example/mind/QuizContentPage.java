@@ -3,6 +3,7 @@ package com.example.mind;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -50,11 +51,13 @@ public class QuizContentPage extends AppCompatActivity {
     ErrorDialog errorDialog;
 
     TextView textLoading;
+    TextView notificationBar;
 
     Topic topic;
 
     LibraryContentAdapter contentAdapter;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,7 @@ public class QuizContentPage extends AppCompatActivity {
 
         // TextView
         TextView tv_tokenCount = findViewById(R.id.tokenCount_text);
+        notificationBar = findViewById(R.id.notification);
 
         // Button
         btn_quizzes = findViewById(R.id.check_content_btn);
@@ -129,6 +133,8 @@ public class QuizContentPage extends AppCompatActivity {
             }.start();
         });
 
+        SocketIO.setNotificationBar(notificationBar);
+
         // Get topic from intent from library sheet
         String topicId = getIntent().getStringExtra("topicId");
         topic = User.current.topics.get(topicId);
@@ -192,13 +198,13 @@ public class QuizContentPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     private void toggleContentContainer(boolean contentFieldEnabled, int editVisibility, int saveVisibility, int deleteVisibility, int quizVisibility) {

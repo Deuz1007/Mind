@@ -2,6 +2,7 @@ package com.example.mind;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mind.data.SocketIO;
@@ -33,13 +35,18 @@ public class SettingsPage extends AppCompatActivity {
     SeekBar volumeSeekBar; // to control music volume
     AudioManager audioManager;
 
+    TextView notificationBar;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_page);
 
-        Button btn_change = findViewById(R.id.changepass_btn);
+        notificationBar = findViewById(R.id.notification);
+        SocketIO.setNotificationBar(notificationBar);
 
+        Button btn_change = findViewById(R.id.changepass_btn);
         btn_change.setOnClickListener(view -> ad_verify.show());
 
         authUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -91,13 +98,13 @@ public class SettingsPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     private void setVerifyPopup() {

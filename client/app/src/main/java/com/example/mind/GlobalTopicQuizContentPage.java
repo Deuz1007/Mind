@@ -16,10 +16,15 @@ import java.util.List;
 
 public class GlobalTopicQuizContentPage extends AppCompatActivity {
 
+    TextView notificationBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_topic_quiz_content_page);
+
+        notificationBar = findViewById(R.id.notification);
+        SocketIO.setNotificationBar(notificationBar);
 
         RecyclerView recyclerView = findViewById(R.id.quiz_content_id);
         TextView tv_title = findViewById(R.id.topic_title);
@@ -40,12 +45,12 @@ public class GlobalTopicQuizContentPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 }

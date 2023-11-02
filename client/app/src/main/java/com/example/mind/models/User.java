@@ -1,5 +1,6 @@
 package com.example.mind.models;
 
+import com.example.mind.data.SocketIO;
 import com.example.mind.exceptions.InvalidQuizCodeException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.UniqueID;
@@ -52,6 +53,13 @@ public class User {
         collection.child(uid)
                 .get()
                 .addOnSuccessListener(snapshot -> {
+                    try {
+                        SocketIO.createInstance();
+                    } catch (Exception e) {
+                        callback.Failed(e);
+                        return;
+                    }
+
                     collection = collection.child(uid);
                     // Get the user value of the snapshot and make it the current user
                     current = new User(snapshot);
@@ -65,6 +73,13 @@ public class User {
         FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(newUser.email, password)
                 .addOnSuccessListener(authResult -> {
+                    try {
+                        SocketIO.createInstance();
+                    } catch (Exception e) {
+                        callback.Failed(e);
+                        return;
+                    }
+
                     // Get the uid if the registered user
                     String uid = authResult.getUser().getUid();
                     collection = collection.child(uid);
@@ -87,6 +102,13 @@ public class User {
         FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
+                    try {
+                        SocketIO.createInstance();
+                    } catch (Exception e) {
+                        callback.Failed(e);
+                        return;
+                    }
+
                     // Get the uid if the logged in user
                     String uid = authResult.getUser().getUid();
                     collection = collection.child(uid);

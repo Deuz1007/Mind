@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
@@ -29,11 +30,15 @@ public class GlobalForum extends AppCompatActivity {
     public static Map<String, Topic> allTopics;
 
     ErrorDialog errorDialog;
+    TextView notificationBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_forum);
+
+        notificationBar = findViewById(R.id.notification);
+        SocketIO.setNotificationBar(notificationBar);
 
         // Container of the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.global_content_items_container);
@@ -74,12 +79,12 @@ public class GlobalForum extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.currentActivity = this;
+        SocketIO.setNotificationBar(notificationBar);
     }
 }
