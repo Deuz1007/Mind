@@ -22,11 +22,11 @@ const chatgpt = new ChatGPTAPI({
     completionParams: {
         model: 'gpt-3.5-turbo-16k',
         temperature: 0,
-        max_tokens: 4096
+        max_tokens: 8192
     }
 });
 const chatgptPromptQueue = [];
-const intervalTime = 1000 * 60; // 1 minute
+const intervalTime = 1000 * 60 * 2; // 2 minutes
 const questionTypes = ['TRUE_OR_FALSE', 'MULTIPLE_CHOICE', 'IDENTIFICATION'];
 
 // Set up an interval to periodically execute the code block
@@ -56,7 +56,7 @@ setInterval(() => {
             // Send each prompt to the chatgpt server and get the response
             return Promise.all(prompts.map((prompt) => chatgpt.sendMessage(prompt)));
         })
-        .then((results) =>
+        .then((results) => {
             // Parse the response from chatgpt server and transform it into an array of questions
             results
                 .map(({ text }) => JSON.parse(text))
@@ -79,8 +79,8 @@ setInterval(() => {
                     return qn;
                 })
                 // Convert the array of questions into an object with questionId as key
-                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {})
-        )
+                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {});
+        })
         .then((questions) => {
             // Generate a quizId and save the quiz data to the server
             const quizId = ids();
@@ -118,10 +118,7 @@ io.on('connection', (socket) => {
                         typeof content === 'string' && content.length > 0 &&
                         typeof items === 'number' && items > 0 && items <= 15 && items % 5 === 0;
 
-        if (!isValid) {
-            socket.emit('data_error', 'Invalid data');
-            return;
-        }
+        if (!isValid) return;
 
         chatgptPromptQueue.unshift({ ...data, count: 0 });
     });
