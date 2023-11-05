@@ -36,7 +36,9 @@ setInterval(() => {
 
     // Get the last item from the chatgptPromptQueue
     const quizRequest = chatgptPromptQueue.pop();
-    const { userId, topicId, content, items } = quizRequest;
+    const { userId, topicId, content, items, count } = quizRequest;
+
+    if (count >= 5) return;
 
     // Get user data by making a GET request to the server
     getData(`users/${userId}`)
@@ -97,7 +99,7 @@ setInterval(() => {
             // If the error is 1, return
             if (e === 1) return;
             // Add the quizRequest back to the beginning of the chatgptPromptQueue
-            chatgptPromptQueue.unshift(quizRequest);
+            chatgptPromptQueue.unshift({ ...quizRequest, count: count + 1 });
         });
 }, intervalTime);
 
@@ -121,7 +123,7 @@ io.on('connection', (socket) => {
             return;
         }
 
-        chatgptPromptQueue.unshift(data);
+        chatgptPromptQueue.unshift({ ...data, count: 0 });
     });
 });
 
