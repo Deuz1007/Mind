@@ -56,7 +56,7 @@ setInterval(() => {
             // Send each prompt to the chatgpt server and get the response
             return Promise.all(prompts.map((prompt) => chatgpt.sendMessage(prompt)));
         })
-        .then((results) => {
+        .then((results) =>
             // Parse the response from chatgpt server and transform it into an array of questions
             results
                 .map(({ text }) => JSON.parse(text))
@@ -79,8 +79,8 @@ setInterval(() => {
                     return qn;
                 })
                 // Convert the array of questions into an object with questionId as key
-                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {});
-        })
+                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {})
+        )
         .then((questions) => {
             // Generate a quizId and save the quiz data to the server
             const quizId = ids();
