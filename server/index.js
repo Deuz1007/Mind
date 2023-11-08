@@ -59,7 +59,13 @@ setInterval(() => {
         .then((results) =>
             // Parse the response from chatgpt server and transform it into an array of questions
             results
-                .map(({ text }) => JSON.parse(text))
+                .map(({ text }) => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        throw text;
+                    }
+                })
                 .flatMap((parsed, i) => parsed.map((question) => ({ ...question, type: questionTypes[i] })))
                 .map(({ question, answer, options, type }) => {
                     // Create a question object with questionId, question, answer and type
@@ -98,6 +104,8 @@ setInterval(() => {
 
             // If the error is 1, return
             if (e === 1) return;
+            if (typeof e === 'string') return io.emit('error', userId, e);
+
             // Add the quizRequest back to the beginning of the chatgptPromptQueue
             chatgptPromptQueue.unshift({ ...quizRequest, count: count + 1 });
         });
@@ -142,7 +150,7 @@ function createPrompt(content, items) {
         }
     ].map(
         ({ type, format }) => `With this given content:
-${content}
+"${content}"
 
 Write me a ${items} ${type} questions, written in this json format: ${format}`
     );
