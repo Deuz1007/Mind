@@ -130,6 +130,9 @@ io.on('connection', (socket) => {
 
         if (!isValid) return;
 
+        if (chatgptPromptQueue.some((queue) => queue.userId === userId && queue.topicId === topicId))
+            return io.emit('error', userId, 'Request already in queue');
+
         chatgptPromptQueue.unshift({ ...data, count: 0 });
     });
 });
