@@ -42,19 +42,19 @@ setInterval(() => {
 
     const { userId, topicId, content, items, count } = quizRequest;
 
-    if (count >= 5) return;
+    if (count >= 5) return io.emit('error', userId, 'Request reached max retries');
 
     // Get user data by making a GET request to the server
     getData(`users/${userId}`)
         .then((user) => {
             // If the user does not exist, throw an error
-            if (user === null) throw 1;
+            if (user === null) throw 'User not existing';
             // Get topic data by making a GET request to the server
             return getData(`users/${userId}/topics/${topicId}`);
         })
         .then((topic) => {
             // If the topic does not exist, throw an error
-            if (topic === null) throw 1;
+            if (topic === null) throw 'Topic not existing';
             // Create prompts from the quiz content and items
             const prompts = createPrompt(content, items);
             // Send each prompt to the chatgpt server and get the response
@@ -104,11 +104,9 @@ setInterval(() => {
         })
         .then(() => io.emit('chatgpt', userId))
         .catch((e) => {
-            console.log(e);
-
-            // If the error is 1, return
-            if (e === 1) return;
             if (typeof e === 'string') return io.emit('error', userId, e);
+
+            console.log(e.message);
 
             // Add the quizRequest back to the beginning of the chatgptPromptQueue
             chatgptPromptQueue.unshift({ ...quizRequest, count: count + 1 });
