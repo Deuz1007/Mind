@@ -31,11 +31,15 @@ const questionTypes = ['TRUE_OR_FALSE', 'MULTIPLE_CHOICE', 'IDENTIFICATION'];
 
 // Set up an interval to periodically execute the code block
 setInterval(() => {
+    const queueCount = chatgptPromptQueue.length;
+
     // Check if there are any items in the chatgptPromptQueue, if not, return
-    if (chatgptPromptQueue.length == 0) return;
+    if (queueCount === 0) return;
 
     // Get the last item from the chatgptPromptQueue
     const quizRequest = chatgptPromptQueue.pop();
+    console.log(queueCount);
+
     const { userId, topicId, content, items, count } = quizRequest;
 
     if (count >= 5) return;
