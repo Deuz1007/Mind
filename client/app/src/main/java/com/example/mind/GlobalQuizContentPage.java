@@ -10,10 +10,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 
 public class GlobalQuizContentPage extends AppCompatActivity {
 
     TextView notificationBar;
+    ErrorDialog errorDialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -22,7 +24,8 @@ public class GlobalQuizContentPage extends AppCompatActivity {
         setContentView(R.layout.activity_global_quiz_content_page);
 
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         EditText et_content = findViewById(R.id.edit_content_field);
         Button btn_quizzes = findViewById(R.id.check_content_btn);
@@ -40,12 +43,12 @@ public class GlobalQuizContentPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 }

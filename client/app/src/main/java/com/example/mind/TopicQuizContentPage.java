@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
@@ -25,6 +26,7 @@ import java.util.List;
 public class TopicQuizContentPage extends AppCompatActivity {
 
     TextView notificationBar;
+    ErrorDialog errorDialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -33,7 +35,8 @@ public class TopicQuizContentPage extends AppCompatActivity {
         setContentView(R.layout.activity_topic_quiz_content_page);
 
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         // Get topic from intent from Quiz Content
         String topicId = getIntent().getStringExtra("topicId");
@@ -58,12 +61,12 @@ public class TopicQuizContentPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 }

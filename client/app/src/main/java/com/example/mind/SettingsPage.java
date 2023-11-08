@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +37,7 @@ public class SettingsPage extends AppCompatActivity {
     AudioManager audioManager;
 
     TextView notificationBar;
+    ErrorDialog errorDialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -44,7 +46,8 @@ public class SettingsPage extends AppCompatActivity {
         setContentView(R.layout.activity_settings_page);
 
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         Button btn_change = findViewById(R.id.changepass_btn);
         btn_change.setOnClickListener(view -> ad_verify.show());
@@ -98,13 +101,13 @@ public class SettingsPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     private void setVerifyPopup() {
