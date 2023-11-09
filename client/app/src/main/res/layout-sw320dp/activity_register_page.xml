@@ -22,7 +22,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view2"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/register_page"
@@ -39,10 +39,10 @@
                 android:layout_marginTop="30dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.438"
+                app:layout_constraintHorizontal_bias="0.452"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.198"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/register_logo" />
 
             <EditText
@@ -50,7 +50,7 @@
                 android:layout_width="250dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="30dp"
-                android:background="@drawable/white_button_round"
+                android:background="@drawable/light_rounded_bg"
                 android:ems="10"
                 android:inputType="text"
                 android:maxLines="1"
@@ -67,7 +67,7 @@
                 android:layout_width="250dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/white_button_round"
+                android:background="@drawable/light_rounded_bg"
                 android:ems="10"
                 android:inputType="text"
                 android:maxLines="1"
@@ -97,7 +97,7 @@
                     android:layout_width="250dp"
                     android:layout_height="25dp"
                     android:layout_marginTop="36dp"
-                    android:background="@drawable/white_button_round"
+                    android:background="@drawable/light_rounded_bg"
                     android:ems="10"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
@@ -110,7 +110,7 @@
                 android:layout_width="250dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/white_button_round"
+                android:background="@drawable/light_rounded_bg"
                 android:ems="10"
                 android:hint="JAN/22/2023"
                 android:onClick="openDatePicker"
@@ -140,7 +140,7 @@
                     android:id="@+id/password_input"
                     android:layout_width="250dp"
                     android:layout_height="25dp"
-                    android:background="@drawable/white_button_round"
+                    android:background="@drawable/light_rounded_bg"
                     android:ems="10"
                     android:inputType="textPassword"
                     android:padding="5dp"
@@ -165,7 +165,7 @@
                     android:id="@+id/re_enterpassword_input"
                     android:layout_width="250dp"
                     android:layout_height="25dp"
-                    android:background="@drawable/white_button_round"
+                    android:background="@drawable/light_rounded_bg"
                     android:ems="10"
                     android:inputType="textPassword"
                     android:padding="5dp"
@@ -267,7 +267,7 @@
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.236"
+                app:layout_constraintHorizontal_bias="0.231"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/input_reEnterPassword"
                 app:layout_constraintVertical_bias="0.0" />

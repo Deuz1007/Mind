@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:orientation="vertical"
-        android:background="@drawable/upload_option_popup_bg"
+        android:background="@drawable/rounded_popup_bg"
         android:gravity="center"
         android:padding="40dp">
 
@@ -33,7 +33,7 @@
             android:maxLines="1"
             android:inputType="text"
             android:paddingStart="10dp"
-            android:background="@color/white"
+            android:background="@drawable/light_rounded_bg"
             android:layout_marginTop="20dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -51,7 +51,7 @@
                 android:textColor="@color/black"
                 android:textSize="23sp"
                 android:paddingStart="10dp"
-                android:background="@color/white"
+                android:background="@drawable/light_rounded_bg"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -63,10 +63,10 @@
             android:layout_height="60dp"
             android:layout_marginTop="30dp"
             android:text="Verify"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:fontFamily="@font/work_sans_bold"
             android:textSize="20sp"
-            android:background="@drawable/option_button_bg_black"/>
+            android:background="@drawable/white_rounded_bg"/>
 
     </LinearLayout>
 

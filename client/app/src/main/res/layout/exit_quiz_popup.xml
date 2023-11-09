@@ -10,13 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/light_dark_cool">
+        android:background="@drawable/rounded_popup_bg">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_gravity="center"
-            android:background="@color/light_saturated"
             android:orientation="vertical"
             android:gravity="center">
 
@@ -25,9 +24,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="QUITING ALREADY?"
-                android:textColor="@color/black"
+                android:textColor="#9EB7DD"
                 android:fontFamily="@font/roboto_slab"
-                android:textSize="28sp"
+                android:textSize="34sp"
                 android:layout_marginTop="-20dp"/>
 
         </LinearLayout>
@@ -35,10 +34,10 @@
         <ImageView
             android:id="@+id/quit_image"
             android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/crying"
+            android:layout_height="61dp"
             android:layout_gravity="center"
-            android:layout_marginTop="-30dp" />
+            android:layout_marginTop="-30dp"
+            android:background="@drawable/crying" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,42 +47,42 @@
 
             <TextView
                 android:id="@+id/quit_comment"
-                android:layout_marginTop="-25dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You Already Made a progress,\nAre you sure you wanna quit?\nYour progress won't be save."
-                android:gravity="center"
-                android:textColor="@color/white"
+                android:layout_marginTop="-25dp"
                 android:fontFamily="@font/roboto_slab"
-                android:textSize="25sp"/>
+                android:gravity="center"
+                android:text="Are you sure you want to quit?\nYour progress won't be saved."
+                android:textColor="#C6EFE9"
+                android:textSize="20sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="30dp"
                 android:gravity="center"
-                android:layout_marginTop="30dp">
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/yes_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
                     android:background="@drawable/nofill_button"
+                    android:fontFamily="@font/roboto_slab"
                     android:text="Yes"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/roboto_slab"
-                    android:layout_marginRight="20dp"/>
+                    android:textSize="20sp" />
 
                 <Button
                     android:id="@+id/no_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/nofill_button"
+                    android:fontFamily="@font/roboto_slab"
                     android:text="No"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/roboto_slab"/>
+                    android:textSize="20sp" />
 
             </LinearLayout>
 

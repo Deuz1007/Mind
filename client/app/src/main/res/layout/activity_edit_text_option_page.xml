@@ -13,7 +13,7 @@
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_marginTop="30dp"
-        android:background="@color/cool"
+        android:background="@drawable/dark_rounded_bg"
         android:padding="5dp"
         android:hint="Content Title"
         android:textColorHint="@color/white"
@@ -42,22 +42,21 @@
 
     <EditText
         android:id="@+id/editField"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="397dp"
+        android:layout_height="477dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
-        android:background="@color/white"
-        android:padding="10dp"
-        android:hint="Content here"
+        android:background="@drawable/light_rounded_contentbg"
         android:gravity="start"
+        android:hint="Content here"
+        android:padding="10dp"
         android:scrollbars="vertical"
         android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@+id/submitEdit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/content_title_text"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.666" />
 
     <Button
         android:id="@+id/discard_btn"

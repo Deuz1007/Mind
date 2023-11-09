@@ -9,7 +9,7 @@
         android:id="@+id/chooseitem"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:background="@drawable/gradient_bg"
+        android:background="@drawable/rounded_popup_bg"
         android:gravity="center"
         android:orientation="vertical">
 

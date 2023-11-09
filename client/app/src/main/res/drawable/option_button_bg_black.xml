@@ -3,5 +3,11 @@
 
     <solid android:color="@color/black"/>
     <corners android:radius="15dp"/>
-
+    <shape
+        android:shape="rectangle">
+        <stroke
+            android:color="@color/white"
+            android:width="1dp" /> <!-- Width of the border -->
+        <corners android:radius="10dp" /> <!-- Adjust the radius to match the background -->
+    </shape>
 </shape>

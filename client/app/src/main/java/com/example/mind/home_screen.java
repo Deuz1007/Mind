@@ -22,6 +22,11 @@ import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
 import com.example.mind.utilities.ExtractText;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Bundle;
+import android.widget.VideoView;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class home_screen extends AppCompatActivity {
     Dialog popupDialog;
@@ -203,5 +208,6 @@ public class home_screen extends AppCompatActivity {
         popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupDialog.show();
     }
+
 
 }

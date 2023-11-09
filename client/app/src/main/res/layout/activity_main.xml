@@ -7,6 +7,13 @@
     tools:context=".MainActivity"
     android:windowSoftInputMode="adjustResize">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/animated_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/mind_bg_final" />
+
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -80,7 +87,7 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="76dp"
-                    android:background="@drawable/white_button_round"
+                    android:background="@drawable/light_rounded_bg"
                     android:drawablePadding="15sp"
                     android:ems="10"
                     android:importantForAutofill="no"
@@ -125,7 +132,7 @@
                     android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="68dp"
-                    android:background="@drawable/white_button_round"
+                    android:background="@drawable/light_rounded_bg"
                     android:drawablePadding="15sp"
                     android:ems="10"
                     android:importantForAutofill="no"

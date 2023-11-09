@@ -185,7 +185,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:background="@drawable/round_button_cool"
+            android:background="@drawable/themed_gradmain_bg"
             android:fontFamily="@font/roboto_slab_bold"
             android:onClick="btnClick"
             android:text="Submit"

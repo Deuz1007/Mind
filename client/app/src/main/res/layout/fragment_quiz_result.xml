@@ -13,7 +13,7 @@
         android:layout_height="280dp"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:background="@color/saturated"
+        android:background="@drawable/themed_grad_bg"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,7 +27,7 @@
             android:fontFamily="@font/roboto_slab_bold"
             android:text="A"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="#FFFFFF"
             android:textSize="80sp" />
 
         <TextView
@@ -37,7 +37,7 @@
             android:fontFamily="@font/work_sans_bold"
             android:text="Well Don Sir!!!"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="#FFFFFF"
             android:textSize="30sp" />
 
     </LinearLayout>
@@ -121,10 +121,10 @@
             android:id="@+id/main_menu_btn"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/round_button_cool"
+            android:background="@drawable/light_rounded_bg"
             android:fontFamily="@font/work_sans_medium"
             android:text="@string/menu"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="20sp" />
 
         <Button
@@ -132,10 +132,10 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/round_button_cool"
+            android:background="@drawable/light_rounded_bg"
             android:fontFamily="@font/work_sans_medium"
             android:text="@string/again"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="20sp" />
 
     </LinearLayout>

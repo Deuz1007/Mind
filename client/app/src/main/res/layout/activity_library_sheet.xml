@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/round_library_sheet"
+    android:background="@drawable/themed_grad_bg"
     android:id="@+id/library_sheet">
 
     <TextView

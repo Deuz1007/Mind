@@ -7,6 +7,13 @@
     android:background="#000000"
     tools:context=".home_screen">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/animated_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/mind_bg_final" />
+
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -85,12 +92,12 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/gray_round_button"
+                    android:background="@drawable/nofill_button"
                     android:fontFamily="@font/work_sans_medium"
                     android:padding="15dp"
                     android:text="@string/settings"
                     android:textColor="#FFFFFF"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.197"
                     app:layout_constraintStart_toStartOf="parent"
@@ -99,25 +106,24 @@
                 <Button
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gray_round_button"
+                    android:background="@drawable/nofill_button"
                     android:fontFamily="@font/work_sans_medium"
                     android:onClick="ShowEnterQuizCode"
                     android:text="Enter Code"
                     android:textColor="@color/white"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/create_section"
-                android:layout_width="276dp"
-                android:layout_height="180dp"
+                android:layout_width="277dp"
+                android:layout_height="148dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/round_create_bg"
+                android:background="@drawable/nofill_button_dark"
                 app:cardCornerRadius="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.496"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
                 app:layout_constraintVertical_bias="0.0">
@@ -162,19 +168,19 @@
                     android:id="@+id/create_option_btn"
                     android:layout_width="190dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
                     android:background="@drawable/library_round_button"
                     android:drawableRight="@drawable/dropdown"
                     android:fontFamily="@font/roboto_slab_bold"
                     android:onClick="ShowUploadOption"
                     android:paddingRight="10dp"
                     android:text="@string/upload"
-                    android:textSize="30sp"
+                    android:textSize="25sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.494"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView4"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toTopOf="@+id/textView4"
+                    app:layout_constraintVertical_bias="0.431" />
 
                 <TextView
                     android:id="@+id/textView4"
@@ -184,7 +190,7 @@
                     android:fontFamily="@font/roboto_slab_bold"
                     android:text="@string/create"
                     android:textColor="#FFFFFF"
-                    android:textSize="30sp"
+                    android:textSize="25sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -193,13 +199,13 @@
 
             <Button
                 android:id="@+id/global_btn"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:background="@drawable/nofill_button"
+                android:layout_width="176dp"
+                android:layout_height="35dp"
+                android:background="@drawable/nofill_button_dark"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="Global Quiz"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
@@ -210,15 +216,15 @@
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/coordinatorLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/library_gradient_bg"
+                android:layout_height="60dp"
+                android:background="@drawable/rounded_popup_bg_library"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:layout_editor_absoluteX="0dp">
 
                 <Button
                     android:id="@+id/library_btn"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/library_logo"
                     android:fontFamily="@font/roboto_slab_bold"

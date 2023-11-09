@@ -7,6 +7,13 @@
     android:background="#000000"
     tools:context=".home_screen">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/animated_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/mind_bg_final" />
+
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -71,9 +78,9 @@
 
                 <Button
                     android:id="@+id/settings_btn"
-                    android:layout_width="80dp"
+                    android:layout_width="100dp"
                     android:layout_height="20dp"
-                    android:background="@drawable/gray_round_button"
+                    android:background="@drawable/nofill_button"
                     android:fontFamily="@font/work_sans_medium"
                     android:text="@string/settings"
                     android:textColor="#FFFFFF"
@@ -87,7 +94,7 @@
                     android:layout_width="100dp"
                     android:layout_height="20dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/gray_round_button"
+                    android:background="@drawable/nofill_button"
                     android:fontFamily="@font/work_sans_medium"
                     android:onClick="ShowEnterQuizCode"
                     android:text="Enter Code"
@@ -100,7 +107,7 @@
                 android:id="@+id/create_section"
                 android:layout_width="276dp"
                 android:layout_height="120dp"
-                android:background="@drawable/round_create_bg"
+                android:background="@drawable/nofill_button_dark"
                 app:cardCornerRadius="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -145,7 +152,7 @@
                 android:id="@+id/global_btn"
                 android:layout_width="160dp"
                 android:layout_height="40dp"
-                android:background="@drawable/nofill_button"
+                android:background="@drawable/nofill_button_dark"
                 android:fontFamily="@font/work_sans_medium"
                 android:text="Global Quiz"
                 android:textColor="@color/white"
@@ -159,15 +166,15 @@
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/coordinatorLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/library_gradient_bg"
+                android:layout_height="60dp"
+                android:background="@drawable/rounded_popup_bg_library"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:layout_editor_absoluteX="0dp">
 
                 <Button
                     android:id="@+id/library_btn"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/library_logo"
                     android:fontFamily="@font/roboto_slab_bold"
