@@ -174,8 +174,8 @@
         android:text="HINT"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="wrap_content"
-        app:layout_constraintTop_toTopOf="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         tools:layout_editor_absoluteX="120dp"
         tools:layout_editor_absoluteY="322dp" />
 
