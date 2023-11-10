@@ -22,7 +22,6 @@ public class SocketIO {
 
     public static void createInstance() throws URISyntaxException {
         instance = IO.socket("https://mind-api.onrender.com");
-        instance = IO.socket("http://192.168.1.4:4000");
         instance.connect();
 
         instance.on("chatgpt", SocketIO::onChatGPT);

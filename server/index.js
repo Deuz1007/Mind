@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import { ChatGPTAPI } from 'chatgpt';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import express from 'express';
@@ -17,26 +16,18 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
-const chatgpt = new ChatGPTAPI({
-    apiKey: OPENAPI_KEY,
-    completionParams: {
-        model: 'gpt-3.5-turbo-16k',
-        temperature: 0,
-        max_tokens: 8192
-    }
-});
-const chatgptPromptQueue = [];
-const intervalTime = 1000 * 60 * 2; // 2 minutes
 const questionTypes = ['TRUE_OR_FALSE', 'MULTIPLE_CHOICE', 'IDENTIFICATION'];
+const interval = 1000 * 60 * 2; // 2 minutes
+const queue = [];
 
-// Set up an interval to periodically execute the code block
-setInterval(() => {
-    // Check if there are any items in the chatgptPromptQueue, if not, return
-    if (chatgptPromptQueue.length == 0) return;
+const processRequests = async () => {
+    if (queue.length === 0) return;
+    console.log('Queue length:', queue.length);
 
-    // Get the last item from the chatgptPromptQueue
-    const quizRequest = chatgptPromptQueue.pop();
-    const { userId, topicId, content, items, count } = quizRequest;
+    const request = queue.pop();
+    const { userId, topicId, content, items, count } = request;
+
+    console.log('Request:', userId, topicId, items, count);
 
     if (count > 5) return io.emit('error', userId, 'Request reached max retries');
 
@@ -64,9 +55,12 @@ setInterval(() => {
                             }
                         ]
                     })
-                }).then((res) => res.json())
+                })
             )
         );
+        
+        if (results.some((r) => !r.ok)) throw new Error('Not all requests were successful');
+        results = await Promise.all(results.map((r) => r.json()));
 
         results = results
             .map(
@@ -93,38 +87,35 @@ setInterval(() => {
                     type
                 };
 
-                    // If options is an array, add choices and set the answer to the option value
-                    if (options instanceof Array) {
-                        qn.choices = options;
-                        qn.answer = options[answer];
-                    }
+                if (options instanceof Array) {
+                    qn.choices = options;
+                    qn.answer = options[answer];
+                }
 
-                    return qn;
-                })
-                // Convert the array of questions into an object with questionId as key
-                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {});
-        })
-        .then((questions) => {
-            // Generate a quizId and save the quiz data to the server
-            const quizId = ids();
-            return setData(`users/${userId}/topics/${topicId}/quizzes/${quizId}`, {
-                average: 0,
-                retries: 0,
-                quizId: quizId,
-                itemsPerLevel: items,
-                questions
-            });
-        })
-        .then(() => io.emit('chatgpt', userId))
-        .catch((e) => {
-            console.log(e);
+                return qn;
+            })
+            .reduce((all, question) => ({ ...all, [question.questionId]: question }), {});
 
-            // If the error is 1, return
-            if (e === 1) return;
-            // Add the quizRequest back to the beginning of the chatgptPromptQueue
-            chatgptPromptQueue.unshift({ ...quizRequest, count: count + 1 });
+        const quizId = ids();
+        await setData(`users/${userId}/topics/${topicId}/quizzes/${quizId}`, {
+            average: 0,
+            retries: 0,
+            quizId: quizId,
+            itemsPerLevel: items,
+            questions: results
         });
-}, intervalTime);
+
+        io.emit('chatgpt', userId);
+    } catch (e) {
+        console.log(e.message || e);
+
+        if (typeof e === 'string') return io.emit('error', userId, e);
+
+        queue.unshift({ ...request, count: count + 1 });
+    }
+};
+
+setInterval(processRequests, interval);
 
 io.on('connection', (socket) => {
     console.log(`New client: ${socket.id}`);
@@ -143,7 +134,10 @@ io.on('connection', (socket) => {
 
         if (!isValid) return;
 
-        chatgptPromptQueue.unshift({ ...data, count: 0 });
+        if (queue.some((req) => req.userId === userId && req.topicId === topicId))
+            return io.emit('error', userId, 'Request already in queue');
+
+        queue.unshift({ ...data, count: 0 });
     });
 });
 
@@ -165,7 +159,7 @@ function createPrompt(content, items) {
         }
     ].map(
         ({ type, format }) => `With this given content:
-${content}
+"${content}"
 
 Write me a ${items} ${type} questions, written in this json format: ${format}`
     );
