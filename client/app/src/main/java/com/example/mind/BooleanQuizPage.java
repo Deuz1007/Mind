@@ -159,7 +159,7 @@ public class BooleanQuizPage extends AppCompatActivity {
                 .collect(Collectors.toList());
 
         // Set the number of questions per level
-        numberOfQuestions.setText(quiz.itemsPerLevel + "");
+        numberOfQuestions.setText(currentQuestionIndex);
 
         // Update texts
         updateCounterText();
@@ -221,6 +221,9 @@ public class BooleanQuizPage extends AppCompatActivity {
 
             return;
         }
+
+        // change the item number once the button is pressed
+        numberOfQuestions.setText(currentQuestionIndex);
 
         /* Reset values: */
         // Timer

@@ -94,7 +94,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
         System.out.println(ActiveQuiz.active.quiz.questions.size());
 
         // Set the number of questions per level
-        numberOfQuestions.setText(ActiveQuiz.active.quiz.itemsPerLevel + "");
+        numberOfQuestions.setText(currentQuestionIndex + "");
 
         // Hint Button set to invisible (Default)
         hint.setOnClickListener(v -> {
@@ -161,6 +161,9 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
             return;
         }
+
+        // change the item number once the button is pressed
+        numberOfQuestions.setText(currentQuestionIndex);
 
         /* Reset values: */
         // Timer

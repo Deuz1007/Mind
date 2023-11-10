@@ -86,7 +86,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
                 .collect(Collectors.toList());
 
         // Set the number of questions per level
-        numberOfQuestions.setText(ActiveQuiz.active.quiz.itemsPerLevel + "");
+        numberOfQuestions.setText(currentQuestionIndex);
 
         Button[] choiceButtons = new Button[] { choiceA, choiceB, choiceC, choiceD };
 
@@ -164,6 +164,9 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
             return;
         }
+
+        // change the item number once the button is pressed
+        numberOfQuestions.setText(currentQuestionIndex);
 
         /* Reset values: */
         // Timer

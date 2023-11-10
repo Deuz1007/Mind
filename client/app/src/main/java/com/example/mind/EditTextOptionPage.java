@@ -46,10 +46,7 @@ public class EditTextOptionPage extends AppCompatActivity {
         loadingDialog.setPurpose("Saving topic...");
 
         errorDialog = new ErrorDialog(this);
-
-        // For Movement Action of the scrolls
-        et_content.setMovementMethod(new ScrollingMovementMethod());
-
+        
         // Get text from intent
         String extractedText = getIntent().getStringExtra("extractedText");
         et_content.setText(extractedText);
