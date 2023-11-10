@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import { ChatGPTAPI } from 'chatgpt';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import express from 'express';
@@ -17,101 +16,102 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
-const chatgpt = new ChatGPTAPI({
-    apiKey: OPENAPI_KEY,
-    completionParams: {
-        model: 'gpt-3.5-turbo-16k',
-        temperature: 0,
-        max_tokens: 8192
-    }
-});
-const chatgptPromptQueue = [];
-const intervalTime = 1000 * 60 * 2; // 2 minutes
 const questionTypes = ['TRUE_OR_FALSE', 'MULTIPLE_CHOICE', 'IDENTIFICATION'];
+const interval = 1000 * 60 * 1; // 1 minute
+const queue = [];
 
-// Set up an interval to periodically execute the code block
-setInterval(() => {
-    const queueCount = chatgptPromptQueue.length;
+const processRequests = async () => {
+    if (queue.length === 0) return;
 
-    // Check if there are any items in the chatgptPromptQueue, if not, return
-    if (queueCount === 0) return;
+    await new Promise((resolve) => setTimeout(resolve, interval));
 
-    // Get the last item from the chatgptPromptQueue
-    const quizRequest = chatgptPromptQueue.pop();
-    console.log(queueCount);
+    const request = queue.pop();
+    const { userId, topicId, content, items, count } = request;
 
-    const { userId, topicId, content, items, count } = quizRequest;
+    if (count > 5) return io.emit('error', userId, 'Request reached max retries');
 
-    if (count >= 5) return io.emit('error', userId, 'Request reached max retries');
+    try {
+        const userExisting = await getData(`users/${userId}`);
+        if (!userExisting) throw 'User not existing';
 
-    // Get user data by making a GET request to the server
-    getData(`users/${userId}`)
-        .then((user) => {
-            // If the user does not exist, throw an error
-            if (user === null) throw 'User not existing';
-            // Get topic data by making a GET request to the server
-            return getData(`users/${userId}/topics/${topicId}`);
-        })
-        .then((topic) => {
-            // If the topic does not exist, throw an error
-            if (topic === null) throw 'Topic not existing';
-            // Create prompts from the quiz content and items
-            const prompts = createPrompt(content, items);
-            // Send each prompt to the chatgpt server and get the response
-            return Promise.all(prompts.map((prompt) => chatgpt.sendMessage(prompt)));
-        })
-        .then((results) =>
-            // Parse the response from chatgpt server and transform it into an array of questions
-            results
-                .map(({ text }) => {
+        const topicExisting = await getData(`users/${userId}/topics/${topicId}`);
+        if (!topicExisting) throw 'Topic not existing';
+
+        let results = await Promise.all(
+            createPrompt(content, items).map((prompt) =>
+                fetch(`https://api.openai.com/v1/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${OPENAPI_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo-16k',
+                        messages: [
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ]
+                    })
+                }).then((res) => res.json())
+            )
+        );
+
+        results = results
+            .map(
+                ({
+                    choices: [
+                        {
+                            message: { content }
+                        }
+                    ]
+                }) => {
                     try {
-                        return JSON.parse(text);
+                        return JSON.parse(content);
                     } catch (e) {
                         throw text;
                     }
-                })
-                .flatMap((parsed, i) => parsed.map((question) => ({ ...question, type: questionTypes[i] })))
-                .map(({ question, answer, options, type }) => {
-                    // Create a question object with questionId, question, answer and type
-                    const qn = {
-                        questionId: ids(),
-                        question,
-                        answer: answer.toString(),
-                        type
-                    };
+                }
+            )
+            .flatMap((parsed, i) => parsed.map((question) => ({ ...question, type: questionTypes[i] })))
+            .map(({ question, answer, options, type }) => {
+                const qn = {
+                    questionId: ids(),
+                    question,
+                    answer: answer.toString(),
+                    type
+                };
 
-                    // If options is an array, add choices and set the answer to the option value
-                    if (options instanceof Array) {
-                        qn.choices = options;
-                        qn.answer = options[answer];
-                    }
+                if (options instanceof Array) {
+                    qn.choices = options;
+                    qn.answer = options[answer];
+                }
 
-                    return qn;
-                })
-                // Convert the array of questions into an object with questionId as key
-                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {})
-        )
-        .then((questions) => {
-            // Generate a quizId and save the quiz data to the server
-            const quizId = ids();
-            return setData(`users/${userId}/topics/${topicId}/quizzes/${quizId}`, {
-                average: 0,
-                retries: 0,
-                quizId: quizId,
-                itemsPerLevel: items,
-                questions
-            });
-        })
-        .then(() => io.emit('chatgpt', userId))
-        .catch((e) => {
-            if (typeof e === 'string') return io.emit('error', userId, e);
+                return qn;
+            })
+            .reduce((all, question) => ({ ...all, [question.questionId]: question }), {});
 
-            console.log(e.message);
-
-            // Add the quizRequest back to the beginning of the chatgptPromptQueue
-            chatgptPromptQueue.unshift({ ...quizRequest, count: count + 1 });
+        const quizId = ids();
+        await setData(`users/${userId}/topics/${topicId}/quizzes/${quizId}`, {
+            average: 0,
+            retries: 0,
+            quizId: quizId,
+            itemsPerLevel: items,
+            questions: results
         });
-}, intervalTime);
+
+        io.emit('chatgpt', userId);
+    } catch (e) {
+        if (typeof e === 'string') return io.emit('error', userId, e);
+
+        console.log(e.message);
+
+        queue.push({ ...request, count: count + 1 });
+    }
+
+    await processRequests();
+};
 
 io.on('connection', (socket) => {
     console.log(`New client: ${socket.id}`);
@@ -130,10 +130,11 @@ io.on('connection', (socket) => {
 
         if (!isValid) return;
 
-        if (chatgptPromptQueue.some((queue) => queue.userId === userId && queue.topicId === topicId))
+        if (queue.some((req) => req.userId === userId && req.topicId === topicId))
             return io.emit('error', userId, 'Request already in queue');
 
-        chatgptPromptQueue.unshift({ ...data, count: 0 });
+        queue.unshift({ ...data, count: 0 });
+        processRequests();
     });
 });
 
