@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.ExtractText;
 
@@ -33,6 +34,7 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
     File imageFile;
 
     TextView notificationBar;
+    ErrorDialog errorDialog;
 
     final int CAMERA_CAPTURE_REQUEST_CODE = 111;
 
@@ -43,7 +45,8 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
         setContentView(R.layout.activity_capture_show_image_page);
 
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         // To Access Camera and Capture Photo
         imageView = findViewById(R.id.imageCaptured);
@@ -67,13 +70,13 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override

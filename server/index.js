@@ -31,35 +31,45 @@ const questionTypes = ['TRUE_OR_FALSE', 'MULTIPLE_CHOICE', 'IDENTIFICATION'];
 
 // Set up an interval to periodically execute the code block
 setInterval(() => {
+    const queueCount = chatgptPromptQueue.length;
+
     // Check if there are any items in the chatgptPromptQueue, if not, return
-    if (chatgptPromptQueue.length == 0) return;
+    if (queueCount === 0) return;
 
     // Get the last item from the chatgptPromptQueue
     const quizRequest = chatgptPromptQueue.pop();
+    console.log(queueCount);
+
     const { userId, topicId, content, items, count } = quizRequest;
 
-    if (count >= 5) return;
+    if (count >= 5) return io.emit('error', userId, 'Request reached max retries');
 
     // Get user data by making a GET request to the server
     getData(`users/${userId}`)
         .then((user) => {
             // If the user does not exist, throw an error
-            if (user === null) throw 1;
+            if (user === null) throw 'User not existing';
             // Get topic data by making a GET request to the server
             return getData(`users/${userId}/topics/${topicId}`);
         })
         .then((topic) => {
             // If the topic does not exist, throw an error
-            if (topic === null) throw 1;
+            if (topic === null) throw 'Topic not existing';
             // Create prompts from the quiz content and items
             const prompts = createPrompt(content, items);
             // Send each prompt to the chatgpt server and get the response
             return Promise.all(prompts.map((prompt) => chatgpt.sendMessage(prompt)));
         })
-        .then((results) => {
+        .then((results) =>
             // Parse the response from chatgpt server and transform it into an array of questions
             results
-                .map(({ text }) => JSON.parse(text))
+                .map(({ text }) => {
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        throw text;
+                    }
+                })
                 .flatMap((parsed, i) => parsed.map((question) => ({ ...question, type: questionTypes[i] })))
                 .map(({ question, answer, options, type }) => {
                     // Create a question object with questionId, question, answer and type
@@ -79,8 +89,8 @@ setInterval(() => {
                     return qn;
                 })
                 // Convert the array of questions into an object with questionId as key
-                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {});
-        })
+                .reduce((all, question) => ({ ...all, [question.questionId]: question }), {})
+        )
         .then((questions) => {
             // Generate a quizId and save the quiz data to the server
             const quizId = ids();
@@ -94,10 +104,10 @@ setInterval(() => {
         })
         .then(() => io.emit('chatgpt', userId))
         .catch((e) => {
-            console.log(e);
+            if (typeof e === 'string') return io.emit('error', userId, e);
 
-            // If the error is 1, return
-            if (e === 1) return;
+            console.log(e.message);
+
             // Add the quizRequest back to the beginning of the chatgptPromptQueue
             chatgptPromptQueue.unshift({ ...quizRequest, count: count + 1 });
         });
@@ -119,6 +129,9 @@ io.on('connection', (socket) => {
                         typeof items === 'number' && items > 0 && items <= 15 && items % 5 === 0;
 
         if (!isValid) return;
+
+        if (chatgptPromptQueue.some((queue) => queue.userId === userId && queue.topicId === topicId))
+            return io.emit('error', userId, 'Request already in queue');
 
         chatgptPromptQueue.unshift({ ...data, count: 0 });
     });
@@ -142,7 +155,7 @@ function createPrompt(content, items) {
         }
     ].map(
         ({ type, format }) => `With this given content:
-${content}
+"${content}"
 
 Write me a ${items} ${type} questions, written in this json format: ${format}`
     );

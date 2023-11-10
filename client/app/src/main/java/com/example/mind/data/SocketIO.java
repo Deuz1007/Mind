@@ -4,8 +4,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -13,11 +12,11 @@ import java.net.URISyntaxException;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
 public class SocketIO {
     public static Socket instance;
     public static TextView quizNotification;
+    public static ErrorDialog errorDialog;
     public static boolean isNotificationShowing = false;
 
     public static void createInstance() throws URISyntaxException {
@@ -25,12 +24,15 @@ public class SocketIO {
         instance.connect();
 
         instance.on("chatgpt", SocketIO::onChatGPT);
+        instance.on("error", SocketIO::onError);
     }
 
-    public static void setNotificationBar(TextView notificationBar) {
+    public static void setNotificationBar(TextView notificationBar, ErrorDialog errorPopup) {
         quizNotification = notificationBar;
         if (isNotificationShowing)
             quizNotification.setVisibility(View.VISIBLE);
+
+        errorDialog = errorPopup;
     }
 
     private static void onChatGPT(Object... args) {
@@ -50,6 +52,17 @@ public class SocketIO {
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
+            });
+    }
+
+    private static void onError(Object... args) {
+        String userId = (String) args[0];
+        String error = (String) args[1];
+
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userId))
+            User.collection.get().addOnSuccessListener(snapshot -> {
+                errorDialog.setMessage(error);
+                errorDialog.show();
             });
     }
 }

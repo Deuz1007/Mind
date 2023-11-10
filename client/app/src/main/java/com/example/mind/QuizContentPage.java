@@ -133,7 +133,7 @@ public class QuizContentPage extends AppCompatActivity {
             }.start();
         });
 
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         // Get topic from intent from library sheet
         String topicId = getIntent().getStringExtra("topicId");
@@ -198,13 +198,13 @@ public class QuizContentPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     private void toggleContentContainer(boolean contentFieldEnabled, int editVisibility, int saveVisibility, int deleteVisibility, int quizVisibility) {

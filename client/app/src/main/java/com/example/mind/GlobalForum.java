@@ -38,7 +38,8 @@ public class GlobalForum extends AppCompatActivity {
         setContentView(R.layout.activity_global_forum);
 
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         // Container of the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.global_content_items_container);
@@ -50,7 +51,6 @@ public class GlobalForum extends AppCompatActivity {
         loadingDialog.setPurpose("Gathering all topics...");
         loadingDialog.show();
 
-        errorDialog = new ErrorDialog(this);
         errorDialog.setMessage("Failed gathering all topics");
 
         FirebaseDatabase.getInstance().getReference("users")
@@ -79,12 +79,12 @@ public class GlobalForum extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 }

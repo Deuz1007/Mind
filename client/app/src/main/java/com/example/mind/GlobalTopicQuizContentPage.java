@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class GlobalTopicQuizContentPage extends AppCompatActivity {
 
     TextView notificationBar;
+    ErrorDialog errorDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +26,8 @@ public class GlobalTopicQuizContentPage extends AppCompatActivity {
         setContentView(R.layout.activity_global_topic_quiz_content_page);
 
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         RecyclerView recyclerView = findViewById(R.id.quiz_content_id);
         TextView tv_title = findViewById(R.id.topic_title);
@@ -45,12 +48,12 @@ public class GlobalTopicQuizContentPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 }

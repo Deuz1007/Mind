@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
@@ -27,6 +28,7 @@ public class UserProfilePage extends AppCompatActivity {
 
     AlertDialog ad_editUser;
     TextView notificationBar;
+    ErrorDialog errorDialog;
 
     FirebaseUser authUser;
 
@@ -58,6 +60,7 @@ public class UserProfilePage extends AppCompatActivity {
         Button btn_edit = findViewById(R.id.edit_username_email_btn);
 
         authUser = FirebaseAuth.getInstance().getCurrentUser();
+        errorDialog = new ErrorDialog(this);
 
         calculateAnalytics();
 
@@ -72,7 +75,7 @@ public class UserProfilePage extends AppCompatActivity {
         tv_username.setText(User.current.username);
         tv_email.setText(User.current.email);
 
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         btn_home.setOnClickListener(view -> startActivity(new Intent(UserProfilePage.this, home_screen.class)));
         btn_edit.setOnClickListener(view -> ad_editUser.show());
@@ -92,13 +95,13 @@ public class UserProfilePage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     private void calculateAnalytics() {

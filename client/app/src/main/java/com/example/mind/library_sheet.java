@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
@@ -24,6 +25,7 @@ import java.util.List;
 public class library_sheet extends AppCompatActivity {
 
     TextView notificationBar;
+    ErrorDialog errorDialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -32,7 +34,8 @@ public class library_sheet extends AppCompatActivity {
         setContentView(R.layout.activity_library_sheet);
 
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         // Container of the Recycleview
         RecyclerView recyclerView = findViewById(R.id.content_items_container);
@@ -50,12 +53,12 @@ public class library_sheet extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 }

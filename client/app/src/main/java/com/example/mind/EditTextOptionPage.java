@@ -30,7 +30,8 @@ public class EditTextOptionPage extends AppCompatActivity {
         setContentView(R.layout.activity_edit_text_option_page);
 
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         /* Get components */
 
@@ -44,8 +45,6 @@ public class EditTextOptionPage extends AppCompatActivity {
 
         loadingDialog = new LoadingDialog(this);
         loadingDialog.setPurpose("Saving topic...");
-
-        errorDialog = new ErrorDialog(this);
 
         // For Movement Action of the scrolls
         et_content.setMovementMethod(new ScrollingMovementMethod());
@@ -98,12 +97,12 @@ public class EditTextOptionPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 }
