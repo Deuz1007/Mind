@@ -5,6 +5,13 @@ import express from 'express';
 import ids from './ids.js';
 import { getData, setData } from './firebase.js';
 
+class CustomError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'CustomError';
+    }
+}
+
 const {
     // PROJECT
     PORT = 3000,
@@ -33,10 +40,10 @@ const processRequests = async () => {
 
     try {
         const userExisting = await getData(`users/${userId}`);
-        if (!userExisting) throw 'User not existing';
+        if (!userExisting) throw new CustomError('User not existing');
 
         const topicExisting = await getData(`users/${userId}/topics/${topicId}`);
-        if (!topicExisting) throw 'Topic not existing';
+        if (!topicExisting) throw new CustomError('Topic not existing');
 
         let results = await Promise.all(
             createPrompt(content, items).map((prompt) =>
@@ -109,7 +116,7 @@ const processRequests = async () => {
     } catch (e) {
         console.log(e.message || e);
 
-        if (typeof e === 'string') return io.emit('error', userId, e);
+        if (e instanceof CustomError) return io.emit('error', userId, e.message);
 
         queue.unshift({ ...request, count: count + 1 });
     }
