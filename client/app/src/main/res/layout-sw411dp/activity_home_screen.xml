@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_anchor="@+id/view"
+        app:layout_anchor="@+id/animated_background"
         app:layout_anchorGravity="center"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="-36dp">

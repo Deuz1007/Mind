@@ -22,10 +22,17 @@ import com.example.mind.utilities.ModifyButtons;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+
 public class IdentificationQuizPage extends AppCompatActivity {
 
     MediaPlayer buttonClickSound; // For Button Sound Effect
 //    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
+
+    private boolean isRedWarning = false;
 
     EditText answer;
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak, tv_hintText, tv_correct_ans;
@@ -43,8 +50,13 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
     QuitDialog quitDialog;
 
+    private Animation shakeAnimation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identification_quiz_page);
 
@@ -133,6 +145,10 @@ public class IdentificationQuizPage extends AppCompatActivity {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
 
+        if (isRedWarning) {
+            return;
+        }
+
         buttonClickSound.start();
 
         if (btnId == R.id.submitAnswer_btn) {
@@ -146,6 +162,27 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
             ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
             updateCounterText();
+
+            if (!selectedAnswer.equalsIgnoreCase(current.answer)) {
+                // Incorrect answer, apply screen shake animation
+                new Handler().postDelayed(() -> {
+                    findViewById(R.id.hint_btn).startAnimation(shakeAnimation);
+                    findViewById(R.id.linearLayout3).startAnimation(shakeAnimation);
+                    findViewById(R.id.constraintLayout3).startAnimation(shakeAnimation);
+                    findViewById(R.id.InfoBar).startAnimation(shakeAnimation);
+
+                    answer.setBackgroundResource(R.drawable.red_warning);
+                    // Disable submit button
+                    findViewById(R.id.submitAnswer_btn).setEnabled(false);
+
+                    // Enable submit button after a delay
+                    new Handler().postDelayed(() -> {
+                        findViewById(R.id.submitAnswer_btn).setEnabled(true);
+                    }, 1000); // Delay of 1000 milliseconds
+                }, 0); // Delay of 1000 milliseconds
+            }
+
+
 
             showCorrectAnswer(current.answer);
         }
@@ -178,6 +215,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         // Reset UI texts
         questionItem.setText(currentQuestion.question);
+        answer.setBackgroundResource(R.drawable.light_rounded_bg);
     }
 
     private void startTimer() {
@@ -201,7 +239,18 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
     private void updateCounterText() {
         // Set counters text
-        tv_hint.setText(ActiveQuiz.active.hints + "");
-        tv_streak.setText(ActiveQuiz.active.streak + "");
+        int totalQuestions = questionList.size();
+        int currentQuestionNumber = Math.min(currentQuestionIndex + 1, totalQuestions); // Add 1 to start from 1
+
+        // Display the current question number and total number of questions after a delay of 1000ms
+        new Handler().postDelayed(() -> {
+            runOnUiThread(() -> {
+                String counterText = currentQuestionNumber + " / " + totalQuestions;
+                numberOfQuestions.setText(counterText);
+
+                tv_hint.setText(ActiveQuiz.active.hints + "");
+                tv_streak.setText(ActiveQuiz.active.streak + "");
+            });
+        }, 2000);
     }
 }

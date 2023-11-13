@@ -27,6 +27,12 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import android.os.Handler;
+import android.widget.Toast;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 public class SettingsPage extends AppCompatActivity {
 
     AlertDialog ad_verify, ad_changePass;
@@ -50,7 +56,25 @@ public class SettingsPage extends AppCompatActivity {
         SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         Button btn_change = findViewById(R.id.changepass_btn);
-        btn_change.setOnClickListener(view -> ad_verify.show());
+        btn_change.setOnClickListener(view -> {
+            // Delay the change password button click by 50 ms
+            new Handler().postDelayed(() -> {
+                // Check for internet connectivity
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(SettingsPage.this, "You cannot change password without internet connection", Toast.LENGTH_SHORT).show();
+
+                    // Disable the button after a delay
+                    new Handler().postDelayed(() -> {
+                        btn_change.setClickable(false);
+                        btn_change.setEnabled(false);
+                        btn_change.setAlpha(0.5f);
+                    }, 50);
+                } else {
+                    // Perform the change password action here
+                    ad_verify.show();
+                }
+            }, 50);
+        });
 
         authUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -87,6 +111,7 @@ public class SettingsPage extends AppCompatActivity {
             }
         });
 
+
         // Go back to Home Screen
         Button goBackToHomeScreen = findViewById(R.id.go_back_btn);
         goBackToHomeScreen.setOnClickListener(view ->  {
@@ -96,6 +121,15 @@ public class SettingsPage extends AppCompatActivity {
 
         Button btn_guide = findViewById(R.id.support_btn);
         btn_guide.setOnClickListener(v -> startActivity(new Intent(this, Instructions_Popup.class)));
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
     }
 
     @Override

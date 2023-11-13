@@ -15,6 +15,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.os.Handler;
+import pl.droidsonroids.gif.GifImageView;
+import pl.droidsonroids.gif.GifDrawable;
+import android.widget.Toast;
+
+
+
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
@@ -27,6 +36,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 public class home_screen extends AppCompatActivity {
     Dialog popupDialog;
@@ -34,17 +46,32 @@ public class home_screen extends AppCompatActivity {
     LoadingDialog loadingDialog;
     TextView notificationBar;
 
+    Animation shakeAnimation;
+
     final int FILE_PICKER_REQUEST_CODE = 1;
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
+        shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
+
+
         Button btn_library = findViewById(R.id.library_btn);
         Button btn_profile = findViewById(R.id.userprofile_btn);
         Button btn_settings = findViewById(R.id.settings_btn);
         Button btn_global = findViewById(R.id.global_btn);
+        GifImageView animatedBackground = findViewById(R.id.animated_background);
 
         errorDialog = new ErrorDialog(this);
         loadingDialog = new LoadingDialog(this);
@@ -58,11 +85,37 @@ public class home_screen extends AppCompatActivity {
         btn_profile.setOnClickListener(view -> startActivity(new Intent(this, UserProfilePage.class)));
         btn_library.setOnClickListener(view -> startActivity(new Intent(this, library_sheet.class)));
         btn_settings.setOnClickListener(view -> startActivity(new Intent(this, SettingsPage.class)));
-        btn_global.setOnClickListener(view -> startActivity(new Intent(this, GlobalForum.class)));
+
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
+
+
+        // screenshake
+        new Handler().postDelayed(() -> {
+            findViewById(R.id.home).startAnimation(shakeAnimation);
+        }, 900);
+
+        btn_global.setOnClickListener(view -> {
+            // Add a delay of 500 milliseconds before checking for internet connectivity
+            new Handler().postDelayed(() -> {
+                if (isNetworkAvailable()) {
+                    startActivity(new Intent(this, GlobalForum.class));
+                } else {
+                    // No internet connection, disable the global quiz button
+                    btn_global.setClickable(false);
+                    btn_global.setEnabled(false);
+                    btn_global.setAlpha(0.5f);
+
+                    // Display a message
+                    Toast.makeText(this, "You cannot access this feature without internet connection", Toast.LENGTH_SHORT).show();
+
+                }
+            }, 50);
+        });
     }
+
+
 
     @Override
     protected void onStart() {
@@ -154,6 +207,23 @@ public class home_screen extends AppCompatActivity {
     }
 
     public void ShowUploadOption(View view) {
+        // Check for internet connectivity
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "You cannot upload without internet connection", Toast.LENGTH_SHORT).show();
+
+            // Disable the button after a delay
+            new Handler().postDelayed(() -> {
+                Button uploadFileOption = popupDialog.findViewById(R.id.uplaod_option);
+                if (uploadFileOption != null) {
+                    // Simulate disabled effect by setting a transparent background
+                    uploadFileOption.setBackgroundResource(android.R.color.transparent);
+                    uploadFileOption.setEnabled(false);
+                }
+            }, 50);
+
+            return;
+        }
+
         popupDialog.setContentView(R.layout.upload_option_popup);
 
         // Uploading File
@@ -194,15 +264,29 @@ public class home_screen extends AppCompatActivity {
         // Identify the Code
         Button enterCode = popupDialog.findViewById(R.id.enter_code);
         enterCode.setOnClickListener(v -> {
-            String quizCode = et_quizCode.getText().toString();
+            // Delay the button click by 50 ms
+            new Handler().postDelayed(() -> {
+                // Check for internet connectivity
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(this, "You cannot enter a quiz code without internet connection", Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(home_screen.this, BooleanQuizPage.class);
-            intent.putExtra("code", quizCode);
+                    // Disable the button after a delay
+                    new Handler().postDelayed(() -> {
+                        // Decrease the opacity by half
+                        enterCode.setAlpha(0.5f); // 128 is half of 255
+                        enterCode.setEnabled(false);
+                    }, 50);
+                } else {
+                    // Proceed with the quiz code entry logic
+                    String quizCode = et_quizCode.getText().toString();
+                    Intent intent = new Intent(home_screen.this, BooleanQuizPage.class);
+                    intent.putExtra("code", quizCode);
 
-//            backgroundMusicPlayer.stop();
-
-            startActivity(intent);
-            finish();
+                    // backgroundMusicPlayer.stop();
+                    startActivity(intent);
+                    finish();
+                }
+            }, 50);
         });
 
         popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

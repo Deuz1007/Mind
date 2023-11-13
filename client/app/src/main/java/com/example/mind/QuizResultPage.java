@@ -29,6 +29,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
+
 public class QuizResultPage extends AppCompatActivity {
     TextView tv_correctScore, tv_wrongScore, tv_letterGrade, tv_compliment;
 
@@ -59,8 +64,7 @@ public class QuizResultPage extends AppCompatActivity {
         btn_quizAgain.setOnClickListener(v -> quizAgain());
         btn_showResult.setOnClickListener(v -> alertDialog.show());
 
-        if (ActiveQuiz.active.isFromCode) setTexts();
-        else {
+        if (isNetworkAvailable()) {
             loadingDialog.show();
 
             // Save score
@@ -68,7 +72,6 @@ public class QuizResultPage extends AppCompatActivity {
                 @Override
                 public void Success(Object... o) {
                     loadingDialog.dismiss();
-                    
                     setTexts();
                 }
 
@@ -77,9 +80,21 @@ public class QuizResultPage extends AppCompatActivity {
                     Toast.makeText(QuizResultPage.this, "Quiz result not saved", Toast.LENGTH_LONG).show();
                 }
             });
+        } else {
+            // No internet connection, skip saving process
+            Toast.makeText(this, "No internet connection. Quiz result not saved.", Toast.LENGTH_LONG).show();
+            setTexts();
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
+    }
     private void setPopupDialog() {
         View view = LayoutInflater.from(this).inflate(R.layout.quiz_result_details_popup, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(QuizResultPage.this, R.style.AlertDialogTheme);
