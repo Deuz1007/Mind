@@ -24,7 +24,7 @@ const server = createServer(app);
 const io = new Server(server);
 
 const questionTypes = ['TRUE_OR_FALSE', 'MULTIPLE_CHOICE', 'IDENTIFICATION'];
-const interval = 1000 * 60 * 2; // 2 minutes
+const interval = 1000 * 60 * 1; // 1 minute
 const queue = [];
 
 const processRequests = async () => {
@@ -137,7 +137,7 @@ io.on('connection', (socket) => {
         const isValid = typeof userId === 'string' && userId.length > 0 &&
                         typeof topicId === 'string' && topicId.length === 16 &&
                         typeof content === 'string' && content.length > 0 &&
-                        typeof items === 'number' && items > 0 && items <= 15 && items % 5 === 0;
+                        typeof items === 'number' && items > 0 && items <= 10 && items % 5 === 0;
 
         if (!isValid) return;
 
