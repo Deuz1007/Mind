@@ -195,47 +195,37 @@ public class QuizContentPage extends AppCompatActivity {
 
     public void deleteAlertPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(QuizContentPage.this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.exit_quiz_popup, (LinearLayout) findViewById(R.id.exit_popup));
+        View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.exit_quiz_popup, null);
 
-        builder.setView(view);
-        ((TextView) view.findViewById(R.id.quit_comment)).setText("Are You Sure You wanna delete this topic?");
-        ((ImageView) view.findViewById(R.id.quit_image)).setImageResource(R.drawable.warning);
-        ((LinearLayout) view.findViewById(R.id.exit_popup)).setBackgroundResource(R.drawable.library_gradient_bg);
+        TextView quitComment = view.findViewById(R.id.quit_comment);
+        Button yesBtn = view.findViewById(R.id.yes_btn);
+        Button noBtn = view.findViewById(R.id.no_btn);
 
-        final AlertDialog alertDialog = builder.create();
+        quitComment.setText("Are you sure you want to delete this topic?");
 
-        view.findViewById(R.id.yes_btn).setOnClickListener(View -> {
-            contentAdapter.setOnItemClickListener(Position -> {
-                loadingScreen();
+        yesBtn.setOnClickListener(v -> {
+            loadingScreen();
 
-                Topic topic = contentAdapter.items.get(Position);
-                Topic.removeTopic(topic, new PostProcess() {
+            Topic.removeTopic(topic, new PostProcess() {
+                @Override
+                public void Success(Object... o) {
+                    // redirecting to library sheet
+                    startActivity(new Intent(QuizContentPage.this, library_sheet.class));
+                }
 
-                    @Override
-                    public void Success(Object... o) {
-                        // deleting the specific item
-                        contentAdapter.items.remove(Position);
-
-                        // notifying the adapter
-                        contentAdapter.notifyDataSetChanged();
-
-                        // redirecting to library sheet
-                        startActivity(new Intent(QuizContentPage.this, library_sheet.class));
-                    }
-
-                    @Override
-                    public void Failed(Exception e) {
-                        // Show error
-                        errorDialog.setMessage("Topic deletion failed");
-                        errorDialog.show();
-                    }
-                });
+                @Override
+                public void Failed(Exception e) {
+                    // Show error
+                    errorDialog.setMessage("Topic deletion failed");
+                    errorDialog.show();
+                }
             });
         });
 
-        view.findViewById(R.id.no_btn).setOnClickListener(View -> {
-            alertDialog.dismiss();
-        });
+        noBtn.setOnClickListener(v -> alertDialog.dismiss());
+
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
 
         if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
