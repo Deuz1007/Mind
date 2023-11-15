@@ -39,8 +39,6 @@ public class QuizContentPage extends AppCompatActivity {
 
     Topic topic;
 
-    LibraryContentAdapter contentAdapter;
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,9 +154,6 @@ public class QuizContentPage extends AppCompatActivity {
             // Update content
             topic.content = et_contentField.getText().toString().trim();
         });
-
-        // Adapter for the content items of the contents in the library sheet
-        contentAdapter = new LibraryContentAdapter(this, new ArrayList<>(User.current.topics.values()));
 
         // Set onclick listener to delete the quiz content
         btn_delete.setOnClickListener(v -> {
