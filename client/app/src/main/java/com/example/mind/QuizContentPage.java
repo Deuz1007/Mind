@@ -156,9 +156,7 @@ public class QuizContentPage extends AppCompatActivity {
         });
 
         // Set onclick listener to delete the quiz content
-        btn_delete.setOnClickListener(v -> {
-            deleteAlertPopup();
-        });
+        btn_delete.setOnClickListener(v -> deleteAlertPopup());
 
         // Set onclick listener for list of quizzes
         btn_quizzes.setOnClickListener(v -> {
@@ -195,7 +193,7 @@ public class QuizContentPage extends AppCompatActivity {
         btn_quizzes.setVisibility(quizVisibility);
     }
 
-    public void deleteAlertPopup(){
+    public void deleteAlertPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(QuizContentPage.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.exit_quiz_popup, (LinearLayout) findViewById(R.id.exit_popup));
 
