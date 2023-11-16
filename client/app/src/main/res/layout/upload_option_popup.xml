@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical"
+        android:background="@drawable/upload_option_popup_bg"
+        android:gravity="center"
+        android:padding="40dp">
+
+        <Button
+            android:id="@+id/uplaod_option"
+            android:layout_width="280dp"
+            android:layout_height="80dp"
+            android:text="UPLOAD"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:textSize="30sp"
+            android:background="@drawable/option_button_bg_black"/>
+
+        <Button
+            android:id="@+id/capture_option"
+            android:layout_width="280dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="15dp"
+            android:text="CAPTURE"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:textSize="30sp"
+            android:background="@drawable/option_button_bg_black"/>
+
+        <Button
+            android:id="@+id/edit_option"
+            android:layout_width="280dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="15dp"
+            android:text="Paste text"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_slab_bold"
+            android:textSize="30sp"
+            android:background="@drawable/option_button_bg_black"/>
+
+    </LinearLayout>
+
+</LinearLayout>

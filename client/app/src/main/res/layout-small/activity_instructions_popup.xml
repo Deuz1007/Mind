@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/showInstructions"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Instructions_Popup"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/gradient_bg">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPagerInstruction"
+        android:layout_width="match_parent"
+        android:layout_height="400dp" />
+
+    <Button
+        android:id="@+id/next_btn"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/nofill_button"
+        android:text="next"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:fontFamily="@font/work_sans_medium"/>
+
+    <LinearLayout
+        android:id="@+id/page_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>

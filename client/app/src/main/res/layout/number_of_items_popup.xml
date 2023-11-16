@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_group"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/chooseitem"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:background="@drawable/rounded_popup_bg"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Choose no. of \nitems to generate"
+            android:textColor="@color/white"
+            android:textSize="30sp" />
+
+
+        <RadioGroup
+            android:id="@+id/items_to_gen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="20dp">
+
+            <RadioButton
+                android:id="@+id/item15"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="15"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+
+            <RadioButton
+                android:id="@+id/item30"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="30"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+
+            <RadioButton
+                android:id="@+id/item45"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="45"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/confirm_item"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/nofill_button"
+            android:fontFamily="@font/work_sans_medium"
+            android:text="Confirm"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

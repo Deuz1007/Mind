@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="cream_white">#FCFBF4</color>
+
+    <color name="cool">#0F3359</color>
+    <color name="dark_cool">#175E56</color>
+    <color name="light_dark_cool">#104061</color>
+    <color name="saturated">#18AE9F</color>
+    <color name="light_saturated">#00FFE5</color>
+    <color name="plus_saturated">#131618</color>
+
+    <color name="nuetral_btn_color">#5E5E5E</color>
+    <color name="bg_gradient_1">#272B2D</color>
+    <color name="bg_gradient_2">#131618</color>
+
+    <color name="seekbar_bg">#AFB1B6</color>
+    <color name="seekbar_progress">#949494</color>
+
+    <color name="wrong_bg_color">#FF7373</color>
+
+    <color name="error_color">#FD6060</color>
+    <color name="error_message_color">#31383D</color>
+
+    <color name="success_color">#FDC760</color>
+
+    <color name="correct_ans">#169873</color>
+    <color name="correct_ans_txt">#71FFD7</color>
+
+</resources>
