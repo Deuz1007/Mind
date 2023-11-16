@@ -1,17 +1,11 @@
 package com.example.mind.data;
 
-import static androidx.core.app.AppOpsManagerCompat.Api23Impl.getSystemService;
-
-import android.app.NotificationManager;
-import android.content.Context;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 
-import com.example.mind.R;
 import com.example.mind.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -47,20 +41,7 @@ public class SocketIO {
                     isNotificationShowing = true;
                     quizNotification.setVisibility(View.VISIBLE);
 
-                    // trigger notif
-                    NotificationCompat.Builder notificationBuilder =
-                            new NotificationCompat.Builder(quizNotification.getContext(), "NOTIFICATION_CHANNEL");
-                    notificationBuilder.setSmallIcon(R.drawable.baseline_lightbulb_circle_24)
-                            .setContentTitle("QUIZ GENERATAED")
-                            .setContentText("you may view your quiz")
-                            .setAutoCancel(true)
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-                    NotificationManager notificationManager =
-                            NotificationManager getSystemService(Context.NOTIFICATION_SERVICE);
-                    notificationManager.notify(0, notificationBuilder.build());
-
-                            User.current = new User(snapshot);
+                    User.current = new User(snapshot);
 
                     new Handler().postDelayed(() -> {
                         isNotificationShowing = false;
@@ -70,12 +51,5 @@ public class SocketIO {
                     System.out.println(e.getMessage());
                 }
             });
-    }
-
-    private static void getSystemService(String notificationService) {
-    }
-
-    public void makeNotification(){
-
     }
 }
