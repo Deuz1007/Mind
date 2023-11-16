@@ -1,17 +1,17 @@
 package com.example.mind;
 
+import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
@@ -23,11 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class library_sheet extends AppCompatActivity {
+    private BackgroundMusicPlayer backgroundMusicPlayer;
+    private TextView notificationBar;
+    private ErrorDialog errorDialog;
 
-    TextView notificationBar;
-    ErrorDialog errorDialog;
-
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +36,10 @@ public class library_sheet extends AppCompatActivity {
         errorDialog = new ErrorDialog(this);
         SocketIO.setNotificationBar(notificationBar, errorDialog);
 
-        // Container of the Recycleview
+        // Initialize BackgroundMusicPlayer
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
+
+        // Container of the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.content_items_container);
 
         List<Topic> topics = new ArrayList<>();
@@ -47,18 +49,24 @@ public class library_sheet extends AppCompatActivity {
         LibraryContentAdapter contentAdapter = new LibraryContentAdapter(this, topics);
         recyclerView.setAdapter(contentAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
-    @Override
     protected void onStart() {
         super.onStart();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        backgroundMusicPlayer.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start();
     }
 }

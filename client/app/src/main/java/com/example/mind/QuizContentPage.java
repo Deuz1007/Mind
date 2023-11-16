@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -49,19 +50,20 @@ public class QuizContentPage extends AppCompatActivity {
     LoadingDialog loadingDialog;
     ItemCountDialog itemCountDialog;
     ErrorDialog errorDialog;
-
     TextView textLoading;
     TextView notificationBar;
-
     Topic topic;
-
     LibraryContentAdapter contentAdapter;
+    MediaPlayer buttonClickSound;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_content_page);
+
+        //button sfx
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
 
         // Edit Text
         et_contentField = findViewById(R.id.edit_content_field);
@@ -165,12 +167,17 @@ public class QuizContentPage extends AppCompatActivity {
         toggleContentContainer(false, View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.VISIBLE);
 
         // Set onclick listener to edit and save buttons
-        btn_edit.setOnClickListener(v -> toggleContentContainer(true, View.INVISIBLE, View.VISIBLE, View.VISIBLE, View.INVISIBLE));
+        btn_edit.setOnClickListener(v -> {
+            // Play button click sound effect
+            buttonClickSound.start();
+            toggleContentContainer(true, View.INVISIBLE, View.VISIBLE, View.VISIBLE, View.INVISIBLE);
+        });
         btn_save.setOnClickListener(v -> {
             toggleContentContainer(false, View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.VISIBLE);
 
             // Update content
             topic.content = et_contentField.getText().toString().trim();
+            buttonClickSound.start();
         });
 
         // Adapter for the content items of the contents in the library sheet
@@ -183,19 +190,28 @@ public class QuizContentPage extends AppCompatActivity {
 
         // Set onclick listener for list of quizzes
         btn_quizzes.setOnClickListener(v -> {
+            buttonClickSound.start();
             Intent intent = new Intent(QuizContentPage.this, TopicQuizContentPage.class);
             intent.putExtra("topicId", topicId);
             startActivity(intent);
         });
 
         // Set onclick listener for generate button
-        btn_generate.setOnClickListener(v -> itemCountDialog.show());
+        btn_generate.setOnClickListener(v -> {
+            // Play button click sound effect
+            buttonClickSound.start();
+            itemCountDialog.show();
+        });
+
 
         // Go back to home screen
-        btn_back.setOnClickListener(v -> startActivity(new Intent(QuizContentPage.this, home_screen.class)));
+        btn_back.setOnClickListener(v -> {
+            // Play button click sound effect
+            buttonClickSound.start();
+            startActivity(new Intent(QuizContentPage.this, home_screen.class));
+        });
     }
 
-    @Override
     protected void onStart() {
         super.onStart();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
@@ -219,6 +235,7 @@ public class QuizContentPage extends AppCompatActivity {
     public void deleteAlertPopup(){
         AlertDialog.Builder builder = new AlertDialog.Builder(QuizContentPage.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.exit_quiz_popup, (LinearLayout) findViewById(R.id.exit_popup));
+        buttonClickSound.start();
 
         builder.setView(view);
         ((TextView) view.findViewById(R.id.quit_comment)).setText("Are You Sure You wanna delete this topic?");

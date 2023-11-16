@@ -22,10 +22,13 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Calendar;
 
+import android.media.MediaPlayer;
+
+
 public class RegisterPage extends AppCompatActivity {
 
     private Button datePickerButton;
-
+    MediaPlayer buttonClickSound;
     LoadingDialog loadingDialog;
     ErrorDialog errorDialog;
 
@@ -33,6 +36,9 @@ public class RegisterPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_page);
+
+        // Initialize buttonClickSound
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
 
         initDatePicker(); // For Date Picker
 
@@ -58,6 +64,7 @@ public class RegisterPage extends AppCompatActivity {
 
         Button createAccount = findViewById(R.id.createAccount_btn);
         createAccount.setOnClickListener(view -> {
+            buttonClickSound.start();
             String username = usernameEditText.getText().toString().trim();
             String fullName = fullnameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
@@ -91,6 +98,7 @@ public class RegisterPage extends AppCompatActivity {
             User.register(newuser, password, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
+                    buttonClickSound.start();
                     Intent intent = new Intent(RegisterPage.this, home_screen.class);
                     startActivity(intent);
                 }
@@ -109,6 +117,7 @@ public class RegisterPage extends AppCompatActivity {
         Button goToLoginPage = findViewById(R.id.goinglogin_btn);
 
         goToLoginPage.setOnClickListener(view -> {
+            buttonClickSound.start();
             Intent intent = new Intent(RegisterPage.this, MainActivity.class);
             startActivity(intent);
         });

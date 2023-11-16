@@ -45,10 +45,11 @@ public class home_screen extends AppCompatActivity {
     ErrorDialog errorDialog;
     LoadingDialog loadingDialog;
     TextView notificationBar;
-
     Animation shakeAnimation;
-
     final int FILE_PICKER_REQUEST_CODE = 1;
+    BackgroundMusicPlayer backgroundMusicPlayer;
+    MediaPlayer buttonClickSound;
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -63,9 +64,12 @@ public class home_screen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-
+        //Animation
         shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
-
+        // Initialize BackgroundMusicPlayer
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
+        //button sfx
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
 
         Button btn_library = findViewById(R.id.library_btn);
         Button btn_profile = findViewById(R.id.userprofile_btn);
@@ -82,22 +86,32 @@ public class home_screen extends AppCompatActivity {
 
         btn_profile.setText(User.current.username);
 
-        btn_profile.setOnClickListener(view -> startActivity(new Intent(this, UserProfilePage.class)));
-        btn_library.setOnClickListener(view -> startActivity(new Intent(this, library_sheet.class)));
-        btn_settings.setOnClickListener(view -> startActivity(new Intent(this, SettingsPage.class)));
+        btn_profile.setOnClickListener(view -> {
+            buttonClickSound.start();
+            startActivity(new Intent(this, UserProfilePage.class));
+        });
 
+        btn_library.setOnClickListener(view -> {
+            buttonClickSound.start();
+            Intent libraryIntent = new Intent(this, library_sheet.class);
+            startActivity(libraryIntent);
+        });
+
+        btn_settings.setOnClickListener(view -> {
+            buttonClickSound.start();
+            startActivity(new Intent(this, SettingsPage.class));
+        });
 
         // To display upload option popup layout
         popupDialog = new Dialog(this);
 
-
-        // screenshake
+        // screenshake welcome
         new Handler().postDelayed(() -> {
             findViewById(R.id.home).startAnimation(shakeAnimation);
         }, 900);
 
         btn_global.setOnClickListener(view -> {
-            // Add a delay of 500 milliseconds before checking for internet connectivity
+            buttonClickSound.start();
             new Handler().postDelayed(() -> {
                 if (isNetworkAvailable()) {
                     startActivity(new Intent(this, GlobalForum.class));
@@ -115,18 +129,24 @@ public class home_screen extends AppCompatActivity {
         });
     }
 
-
-
     @Override
     protected void onStart() {
         super.onStart();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start();
+    }
+
+    protected void onPause() {
+        super.onPause();
+        // Pause background music
+        backgroundMusicPlayer.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start();
     }
 
     @Override
@@ -225,6 +245,7 @@ public class home_screen extends AppCompatActivity {
         }
 
         popupDialog.setContentView(R.layout.upload_option_popup);
+        buttonClickSound.start();
 
         // Uploading File
         Button uploadFileOption = popupDialog.findViewById(R.id.uplaod_option);
@@ -257,7 +278,7 @@ public class home_screen extends AppCompatActivity {
 
     public void ShowEnterQuizCode(View view) {
         popupDialog.setContentView(R.layout.quiz_code_popup);
-
+        buttonClickSound.start();
         // EditText of the Quiz Code
         EditText et_quizCode = popupDialog.findViewById(R.id.quiz_code);
 
@@ -292,6 +313,4 @@ public class home_screen extends AppCompatActivity {
         popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         popupDialog.show();
     }
-
-
 }

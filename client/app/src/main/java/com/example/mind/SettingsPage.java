@@ -36,14 +36,14 @@ import android.net.NetworkInfo;
 public class SettingsPage extends AppCompatActivity {
 
     AlertDialog ad_verify, ad_changePass;
-
     FirebaseUser authUser;
-
     SeekBar volumeSeekBar; // to control music volume
     AudioManager audioManager;
-
     TextView notificationBar;
     ErrorDialog errorDialog;
+    BackgroundMusicPlayer backgroundMusicPlayer;
+    MediaPlayer buttonClickSound;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -51,12 +51,19 @@ public class SettingsPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_page);
 
+        //button sfx
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
+
         notificationBar = findViewById(R.id.notification);
         errorDialog = new ErrorDialog(this);
         SocketIO.setNotificationBar(notificationBar, errorDialog);
 
+        // Initialize BackgroundMusicPlayer
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
+
         Button btn_change = findViewById(R.id.changepass_btn);
         btn_change.setOnClickListener(view -> {
+            buttonClickSound.start();
             // Delay the change password button click by 50 ms
             new Handler().postDelayed(() -> {
                 // Check for internet connectivity
@@ -96,27 +103,23 @@ public class SettingsPage extends AppCompatActivity {
         volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                //
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
 
-
         // Go back to Home Screen
         Button goBackToHomeScreen = findViewById(R.id.go_back_btn);
-        goBackToHomeScreen.setOnClickListener(view ->  {
-                Intent intent = new Intent(SettingsPage.this, home_screen.class);
-                startActivity(intent);
+        goBackToHomeScreen.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsPage.this, home_screen.class);
+            startActivity(intent);
         });
 
         Button btn_guide = findViewById(R.id.support_btn);
@@ -136,12 +139,20 @@ public class SettingsPage extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        backgroundMusicPlayer.pause();
     }
 
     private void setVerifyPopup() {

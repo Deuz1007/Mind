@@ -26,8 +26,8 @@
 
             <LinearLayout
                 android:id="@+id/profileLayout"
-                android:layout_width="0dp"
-                android:layout_height="350dp"
+                android:layout_width="match_parent"
+                android:layout_height="324dp"
                 android:background="@drawable/profile_bg"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -37,8 +37,8 @@
 
                 <ImageView
                     android:id="@+id/display_userprofile"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="137dp"
+                    android:layout_height="129dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="55dp"
                     android:background="@drawable/avatar" />
@@ -57,19 +57,19 @@
                     android:id="@+id/display_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/work_sans_medium"
                     android:text="@string/email"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:layout_marginTop="5dp"/>
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/edit_username_email_btn"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/baseline_edit_24"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="-10dp"/>
+                    android:layout_marginBottom="-10dp"
+                    android:background="@drawable/baseline_edit_24" />
 
             </LinearLayout>
 
@@ -105,13 +105,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp"
                     android:text="Analytics"
-                    android:textColor="@color/white"
-                    android:textSize="30sp" />
+                    android:fontFamily="@font/work_sans_medium"
+                    android:textColor="#136375"
+                    android:textSize="40sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="15dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -121,8 +122,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-black"
                         android:text="100"
-                        android:textColor="@color/white"
-                        android:textSize="30sp" />
+                        android:textColor="#62D8CE"
+                        android:textSize="40sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -136,7 +137,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="15dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -153,8 +154,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-black"
                             android:text="100"
-                            android:textColor="@color/white"
-                            android:textSize="30sp" />
+                            android:textColor="#62D8CE"
+                            android:textSize="40sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -177,8 +178,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-black"
                             android:text="100"
-                            android:textColor="@color/white"
-                            android:textSize="30sp" />
+                            android:textColor="#62D8CE"
+                            android:textSize="40sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -200,7 +201,7 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginRight="130dp"
                         android:gravity="center"
                         android:orientation="vertical">
@@ -211,8 +212,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-black"
                             android:text="100"
-                            android:textColor="@color/white"
-                            android:textSize="30sp" />
+                            android:textColor="#62D8CE"
+                            android:textSize="40sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -225,7 +226,7 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="-20dp"
                         android:layout_marginRight="15dp"
                         android:gravity="center"
@@ -237,8 +238,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-black"
                             android:text="100"
-                            android:textColor="@color/white"
-                            android:textSize="30sp" />
+                            android:textColor="#62D8CE"
+                            android:textSize="35sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -272,7 +273,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/roboto_slab"
-                android:text="@string/settings"
+                android:text="Profile Page"
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"

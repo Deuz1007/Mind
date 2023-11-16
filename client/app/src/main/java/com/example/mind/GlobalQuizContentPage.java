@@ -11,17 +11,22 @@ import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
+import android.media.MediaPlayer;
 
 public class GlobalQuizContentPage extends AppCompatActivity {
 
     TextView notificationBar;
     ErrorDialog errorDialog;
+    MediaPlayer buttonClickSound;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_quiz_content_page);
+
+        // Initialize button click sound
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
 
         notificationBar = findViewById(R.id.notification);
         errorDialog = new ErrorDialog(this);
@@ -34,10 +39,16 @@ public class GlobalQuizContentPage extends AppCompatActivity {
 
         et_content.setText(GlobalForum.allTopics.get(topicId).content);
         btn_quizzes.setOnClickListener(v -> {
+            // Play button click sound effect
+            buttonClickSound.start();
+
+            // Navigate to the Global Topic Quiz Content Page
             Intent intent = new Intent(this, GlobalTopicQuizContentPage.class);
             intent.putExtra("topicId", topicId);
             startActivity(intent);
         });
+
+
     }
 
     @Override

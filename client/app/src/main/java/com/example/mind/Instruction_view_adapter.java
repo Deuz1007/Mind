@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.media.MediaPlayer;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -13,6 +14,7 @@ import androidx.viewpager.widget.PagerAdapter;
 public class Instruction_view_adapter extends PagerAdapter {
 
     Context context;
+    MediaPlayer buttonClickSound;
 
     int images[] = {
             R.drawable.how_to_play_text,
@@ -24,7 +26,7 @@ public class Instruction_view_adapter extends PagerAdapter {
     public Instruction_view_adapter(Context context){
 
         this.context = context;
-
+        buttonClickSound = MediaPlayer.create(context, R.raw.btn_click3);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class Instruction_view_adapter extends PagerAdapter {
         ImageView instruction_image = (ImageView) view.findViewById(R.id.instruction_image);
 
         instruction_image.setImageResource(images[position]);
-
+        buttonClickSound.start();
         container.addView(view);
 
         return view;

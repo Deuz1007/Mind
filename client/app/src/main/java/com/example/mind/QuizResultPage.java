@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.media.MediaPlayer;
+
 
 import com.example.mind.data.ActiveQuiz;
 import com.example.mind.dialogs.LoadingDialog;
@@ -39,11 +41,16 @@ public class QuizResultPage extends AppCompatActivity {
 
     AlertDialog alertDialog;
     LoadingDialog loadingDialog;
+    MediaPlayer buttonClickSound;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_result_page);
+
+        //button sfx
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
 
         tv_correctScore = findViewById(R.id.txt_correct_answers);
         tv_wrongScore = findViewById(R.id.txt_wrong_answers);
@@ -60,9 +67,20 @@ public class QuizResultPage extends AppCompatActivity {
         setPopupDialog();
 
         // Set onclick listeners
-        btn_mainMenu.setOnClickListener(v -> mainMenu());
-        btn_quizAgain.setOnClickListener(v -> quizAgain());
-        btn_showResult.setOnClickListener(v -> alertDialog.show());
+        btn_mainMenu.setOnClickListener(v -> {
+            buttonClickSound.start();
+            mainMenu();
+        });
+
+        btn_quizAgain.setOnClickListener(v -> {
+            buttonClickSound.start();
+            quizAgain();
+        });
+
+        btn_showResult.setOnClickListener(v -> {
+            buttonClickSound.start();
+            alertDialog.show();
+        });
 
         if (isNetworkAvailable()) {
             loadingDialog.show();

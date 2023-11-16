@@ -31,6 +31,7 @@ public class GlobalForum extends AppCompatActivity {
 
     ErrorDialog errorDialog;
     TextView notificationBar;
+    BackgroundMusicPlayer backgroundMusicPlayer; // Add this line
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,10 @@ public class GlobalForum extends AppCompatActivity {
         notificationBar = findViewById(R.id.notification);
         errorDialog = new ErrorDialog(this);
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+
+        // Initialize the BackgroundMusicPlayer
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
+        backgroundMusicPlayer.setVolume(0.5f, 0.5f); // Set the volume to half
 
         // Container of the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.global_content_items_container);
@@ -80,11 +85,25 @@ public class GlobalForum extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start(); // Start playing background music when the activity starts
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        backgroundMusicPlayer.pause(); // Pause background music when the activity is paused
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start(); // Resume background music when the activity is resumed
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        backgroundMusicPlayer.release(); // Release resources when the activity is destroyed
     }
 }

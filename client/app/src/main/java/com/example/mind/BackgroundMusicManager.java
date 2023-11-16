@@ -12,9 +12,9 @@ import android.view.animation.LinearInterpolator;
 import androidx.annotation.Nullable;
 
 
-public class BackgroundMusicPlayer extends Service {
+public class BackgroundMusicManager extends Service {
 
-    private static BackgroundMusicPlayer instance;
+    private static BackgroundMusicManager instance;
     private MediaPlayer mediaPlayer;
 
     private boolean isPlaying = false;
@@ -22,19 +22,19 @@ public class BackgroundMusicPlayer extends Service {
     private final IBinder binder = new LocalBinder();
 
     public class LocalBinder extends Binder {
-        BackgroundMusicPlayer getService() {
-            return BackgroundMusicPlayer.this;
+        BackgroundMusicManager getService() {
+            return BackgroundMusicManager.this;
         }
     }
 
-    public static BackgroundMusicPlayer getInstance(Context context, int rawResourceId) {
+    public static BackgroundMusicManager getInstance(Context context, int rawResourceId) {
         if (instance == null) {
-            instance = new BackgroundMusicPlayer(context, rawResourceId);
+            instance = new BackgroundMusicManager(context, rawResourceId);
         }
         return instance;
     }
 
-    public BackgroundMusicPlayer(Context context, int rawResourceId) {
+    public BackgroundMusicManager(Context context, int rawResourceId) {
         mediaPlayer = MediaPlayer.create(context, rawResourceId);
         mediaPlayer.setLooping(true);
     }

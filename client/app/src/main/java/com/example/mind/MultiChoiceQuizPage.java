@@ -21,6 +21,7 @@ import android.util.Log;
 
 import com.example.mind.data.ActiveQuiz;
 import com.example.mind.data.ConstantValues;
+import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.QuitDialog;
 import com.example.mind.models.Question;
 import com.example.mind.utilities.ModifyButtons;
@@ -30,9 +31,14 @@ import java.util.stream.Collectors;
 
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 
 public class MultiChoiceQuizPage extends AppCompatActivity {
 
+    Vibrator vibrator;
     MediaPlayer buttonClickSound; // For Button Sound Effect
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
     Button choiceA, choiceB, choiceC, choiceD, hint;
@@ -47,6 +53,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     int correctColor;
     Animation shakeAnimation;
     Button[] choiceButtons;
+    private BackgroundMusicManager BackgroundMusicManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,11 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
         // Button Sound Effect
         buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+
+        // Initialize BackgroundMusicPlayer
+        BackgroundMusicManager = BackgroundMusicManager.getInstance(this, R.raw.bgm2);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         // TextView
         numberOfQuestions = findViewById(R.id.question_num);
@@ -102,7 +114,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         numberOfQuestions.setText(ActiveQuiz.active.quiz.itemsPerLevel + "");
 
 
-
         // Hint Button set to invisible (Default)
         hint.setOnClickListener(v -> {
             if (ActiveQuiz.active.hints < 1) return;
@@ -144,10 +155,11 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     }
 
     public void btnClick(View v) {
+
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
 
-        buttonClickSound.start();
+        vibrateDevice();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button || btnId == R.id.choice_three_button || btnId == R.id.choice_four_button) {
             // Disable button action if choice is hint
@@ -165,6 +177,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
                 findViewById(R.id.InfoBar).startAnimation(shakeAnimation);
                 findViewById(R.id.constraintLayout).startAnimation(shakeAnimation);
                 findViewById(R.id.linearLayout3).startAnimation(shakeAnimation);
+                playWrongSoundEffect();
+
 
                 clickedButton.setBackgroundResource(R.drawable.red_warning);
 
@@ -172,6 +186,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
                 // Correct answer, speed up the GIF
                 ImageView gifImageView = findViewById(R.id.animated_background);
                 GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
+                buttonClickSound.start();
 
                 // Check if the drawable is a GifDrawable
                 if (gifDrawable != null) {
@@ -280,4 +295,37 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         }, 1000);
     }
 
+    private void playWrongSoundEffect() {
+        // Play the wrong sound effect
+        MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong_sfx);
+        wrongSound.start();
+    }
+
+    private void vibrateDevice() {
+        if (vibrator != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(150);
+            }
+        }
+
+    }
+
+    protected void onStart() {
+        super.onStart();
+        BackgroundMusicManager.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BackgroundMusicManager.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BackgroundMusicManager.start();
+    }
 }
