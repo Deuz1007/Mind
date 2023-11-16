@@ -1,15 +1,21 @@
 package com.example.mind.data;
 
+import android.Manifest;
+import android.app.Application;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.mind.R;
 import com.example.mind.models.User;
@@ -21,11 +27,11 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-public class SocketIO {
+public class SocketIO{
     public static Socket instance;
     public static TextView quizNotification;
     public static boolean isNotificationShowing = false;
-    private static final String CHANNEL_ID = "your_channel_id";
+    private static final String CHANNEL_ID = "mind";
     private static final int NOTIFICATION_ID = 1;
 
 
@@ -50,19 +56,9 @@ public class SocketIO {
                     isNotificationShowing = true;
                     quizNotification.setVisibility(View.VISIBLE);
 
-                    // trigger notif
-//                    NotificationCompat.Builder notificationBuilder =
-//                            new NotificationCompat.Builder(quizNotification.getContext(), "NOTIFICATION_CHANNEL");
-//                    notificationBuilder.setSmallIcon(R.drawable.baseline_lightbulb_circle_24)
-//                            .setContentTitle("QUIZ GENERATAED")
-//                            .setContentText("you may view your quiz")
-//                            .setAutoCancel(true)
-//                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-//
-//                    NotificationManager notificationManager =
-//                            NotificationManager getSystemService(Context.NOTIFICATION_SERVICE);
-//                    notificationManager.notify(0, notificationBuilder.build());
+                    System.out.println(quizNotification.getContext());
 
+                    // trigger notif
                     // Create a notification manager
                     NotificationManager notificationManager = (NotificationManager) quizNotification.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -70,7 +66,7 @@ public class SocketIO {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationChannel channel = new NotificationChannel(
                                 CHANNEL_ID,
-                                "Your Channel Name",
+                                "MIND",
                                 NotificationManager.IMPORTANCE_DEFAULT);
                         notificationManager.createNotificationChannel(channel);
                     }
@@ -79,13 +75,13 @@ public class SocketIO {
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(quizNotification.getContext(), CHANNEL_ID)
                             .setSmallIcon(android.R.drawable.ic_dialog_info)
                             .setContentTitle("QUIZ GENERATED")
-                            .setContentText("you may now view your quiz")
+                            .setContentText("you may view your quiz now")
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
                     // Show the notification
                     notificationManager.notify(NOTIFICATION_ID, builder.build());
 
-                            User.current = new User(snapshot);
+                    User.current = new User(snapshot);
 
                     new Handler().postDelayed(() -> {
                         isNotificationShowing = false;
