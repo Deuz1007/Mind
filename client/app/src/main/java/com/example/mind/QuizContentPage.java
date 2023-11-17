@@ -213,7 +213,7 @@ public class QuizContentPage extends AppCompatActivity {
 
     public void deleteAlertPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(QuizContentPage.this, R.style.AlertDialogTheme);
-        View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.exit_quiz_popup, (LinearLayout) findViewById(R.id.exit_popup));
+        View view = LayoutInflater.from(QuizContentPage.this).inflate(R.layout.exit_quiz_popup, findViewById(R.id.exit_popup));
         buttonClickSound.start();
 
         TextView quitComment = view.findViewById(R.id.quit_comment);
