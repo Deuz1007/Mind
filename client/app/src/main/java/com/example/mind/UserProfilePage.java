@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -38,6 +40,7 @@ public class UserProfilePage extends AppCompatActivity {
     TextView notificationBar;
     ErrorDialog errorDialog;
     FirebaseUser authUser;
+    Dialog popupDialog;
 
     private void playButtonClickSound() {
         MediaPlayer buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
@@ -118,6 +121,8 @@ public class UserProfilePage extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        popupDialog = new Dialog(this);
     }
 
     @Override
@@ -194,6 +199,8 @@ public class UserProfilePage extends AppCompatActivity {
 
         btn_saveEdit.setOnClickListener(v -> {
             // Show popup for user input password
+            popupDialog.findViewById(R.id.save_edit_btn);
+            showAuth();
 
             // Starting from this line, code below may migrate inside the onclick listener of the button in the password popup
             // Please move it if necessary
@@ -202,6 +209,7 @@ public class UserProfilePage extends AppCompatActivity {
             String email = et_newEmail.getText().toString().trim();
             String password = "" /* GET PASSWORD FROM EDIT TEXT */;
             String username = et_newUsername.getText().toString().trim();
+
 
             PostProcess callback = new PostProcess() {
                 @Override
@@ -217,11 +225,11 @@ public class UserProfilePage extends AppCompatActivity {
             };
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            AuthCredential credential = EmailAuthProvider.getCredential(email, password);
-
-            user.reauthenticate(credential)
-                    .addOnSuccessListener(unused -> User.updateEmailAndUserName(email, username, callback))
-                    .addOnFailureListener(callback::Failed);
+//            AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+//
+//            user.reauthenticate(credential)
+//                    .addOnSuccessListener(unused -> User.updateEmailAndUserName(email, username, callback))
+//                    .addOnFailureListener(callback::Failed);
         });
 
         builder.setView(view);
@@ -230,5 +238,12 @@ public class UserProfilePage extends AppCompatActivity {
         Window window = ad_editUser.getWindow();
         if (window != null)
             window.setBackgroundDrawable(new ColorDrawable(0));
+    }
+
+    public void showAuth(){
+        popupDialog.setContentView(R.layout.edit_username_email_auth);
+
+        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupDialog.show();
     }
 }
