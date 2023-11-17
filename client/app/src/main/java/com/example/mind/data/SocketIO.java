@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.mind.R;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 
