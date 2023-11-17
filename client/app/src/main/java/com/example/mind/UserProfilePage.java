@@ -1,5 +1,6 @@
 package com.example.mind;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -16,14 +17,20 @@ import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
+import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DecimalFormat;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 
 public class UserProfilePage extends AppCompatActivity {
 
@@ -186,7 +193,35 @@ public class UserProfilePage extends AppCompatActivity {
         Button btn_saveEdit = view.findViewById(R.id.save_edit_btn);
 
         btn_saveEdit.setOnClickListener(v -> {
+            // Show popup for user input password
 
+            // Starting from this line, code below may migrate inside the onclick listener of the button in the password popup
+            // Please move it if necessary
+
+            // Get the user input
+            String email = et_newEmail.getText().toString().trim();
+            String password = "" /* GET PASSWORD FROM EDIT TEXT */;
+            String username = et_newUsername.getText().toString().trim();
+
+            PostProcess callback = new PostProcess() {
+                @Override
+                public void Success(Object... o) {
+                    Toast.makeText(UserProfilePage.this, "Update successfully", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void Failed(Exception e) {
+                    errorDialog.setMessage("Failed to update details");
+                    errorDialog.show();
+                }
+            };
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+
+            user.reauthenticate(credential)
+                    .addOnSuccessListener(unused -> User.updateEmailAndUserName(email, username, callback))
+                    .addOnFailureListener(callback::Failed);
         });
 
         builder.setView(view);

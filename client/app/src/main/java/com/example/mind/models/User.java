@@ -1,9 +1,13 @@
 package com.example.mind.models;
 
+import androidx.annotation.NonNull;
+
 import com.example.mind.data.SocketIO;
 import com.example.mind.exceptions.InvalidQuizCodeException;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.UniqueID;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -131,6 +135,19 @@ public class User {
 
         // Reset values
         setStatics();
+    }
+
+    public static void updateEmailAndUserName(String email, String username, PostProcess callback) {
+        FirebaseAuth.getInstance().getCurrentUser().updateEmail(email)
+                .addOnSuccessListener(unused -> {
+                    collection.child("username").setValue(username)
+                            .addOnSuccessListener(unused1 -> {
+                                User.current.email = email;
+                                User.current.username = username;
+                            })
+                            .addOnFailureListener(callback::Failed);
+                })
+                .addOnFailureListener(callback::Failed);
     }
 
     public static void getUser(String code, PostProcess callback) {
