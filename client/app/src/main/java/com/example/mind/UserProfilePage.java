@@ -42,6 +42,8 @@ public class UserProfilePage extends AppCompatActivity {
     FirebaseUser authUser;
     Dialog popupDialog;
 
+    String email, password, username;
+
     private void playButtonClickSound() {
         MediaPlayer buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
         if (buttonClickSound != null) {
@@ -197,20 +199,34 @@ public class UserProfilePage extends AppCompatActivity {
         EditText et_newEmail = view.findViewById(R.id.new_email_text);
         Button btn_saveEdit = view.findViewById(R.id.save_edit_btn);
 
+        // Get the user input
+        email = et_newEmail.getText().toString().trim();
+        username = et_newUsername.getText().toString().trim();
+
+        builder.setView(view);
+        ad_editUser = builder.create();
+
         btn_saveEdit.setOnClickListener(v -> {
-            // Show popup for user input password
-            popupDialog.findViewById(R.id.save_edit_btn);
             showAuth();
+        });
 
-            // Starting from this line, code below may migrate inside the onclick listener of the button in the password popup
-            // Please move it if necessary
+        Window window = ad_editUser.getWindow();
+        if (window != null)
+            window.setBackgroundDrawable(new ColorDrawable(0));
+    }
 
-            // Get the user input
-            String email = et_newEmail.getText().toString().trim();
-            String password = "" /* GET PASSWORD FROM EDIT TEXT */;
-            String username = et_newUsername.getText().toString().trim();
+    public void showAuth(){
+//        popupDialog.setContentView(R.layout.edit_username_email_auth);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfilePage.this, R.style.AlertDialogTheme);
+        View viewer = LayoutInflater.from(UserProfilePage.this).inflate(R.layout.edit_username_email_auth, findViewById(R.id.editview));
+
+        EditText auth_password = findViewById(R.id.auth_password);
+        password = auth_password.getText().toString().trim();
 
 
+        Button auth_enter = findViewById(R.id.auth_edit_btn);
+        auth_enter.setOnClickListener(v -> {
             PostProcess callback = new PostProcess() {
                 @Override
                 public void Success(Object... o) {
@@ -225,25 +241,21 @@ public class UserProfilePage extends AppCompatActivity {
             };
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//            AuthCredential credential = EmailAuthProvider.getCredential(email, password);
-//
-//            user.reauthenticate(credential)
-//                    .addOnSuccessListener(unused -> User.updateEmailAndUserName(email, username, callback))
-//                    .addOnFailureListener(callback::Failed);
+            AuthCredential credential = EmailAuthProvider.getCredential(User.current.email, password);
+
+            user.reauthenticate(credential)
+                    .addOnSuccessListener(unused -> User.updateEmailAndUserName(email, username, callback))
+                    .addOnFailureListener(callback::Failed);
         });
 
-        builder.setView(view);
+        builder.setView(viewer);
         ad_editUser = builder.create();
 
         Window window = ad_editUser.getWindow();
         if (window != null)
             window.setBackgroundDrawable(new ColorDrawable(0));
-    }
 
-    public void showAuth(){
-        popupDialog.setContentView(R.layout.edit_username_email_auth);
-
-        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupDialog.show();
+//        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        popupDialog.show();
     }
 }

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChangePassword"
     android:gravity="center">
 
     <LinearLayout
@@ -19,28 +17,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enter Your Email and Password for Security"
+            android:text="Enter Password for Security"
             android:textSize="25sp"
             android:gravity="center"
             android:textColor="@color/white"
             android:fontFamily="sans-serif-medium" />
 
-            <EditText
-                android:id="@+id/auth_email"
-                android:layout_width="280dp"
-                android:layout_height="50dp"
-                android:hint="Email"
-                android:textColor="@color/black"
-                android:fontFamily="@font/work_sans_medium"
-                android:textSize="20sp"
-                android:background="@drawable/light_rounded_contentbg"
-                android:paddingStart="10dp"
-                android:layout_marginTop="20dp"
-                android:inputType="text"/>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             app:passwordToggleEnabled="true">
 
             <EditText
@@ -61,7 +48,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/save_edit_btn"
+            android:id="@+id/auth_edit_btn"
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:text="enter"
