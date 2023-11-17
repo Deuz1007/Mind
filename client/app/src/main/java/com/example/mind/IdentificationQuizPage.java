@@ -22,29 +22,45 @@ import com.example.mind.utilities.ModifyButtons;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+
+
 public class IdentificationQuizPage extends AppCompatActivity {
 
     MediaPlayer buttonClickSound; // For Button Sound Effect
-//    private BackgroundMusicPlayer backgroundMusicPlayer; // For BGM
-
+    private boolean isRedWarning = false;
+    Vibrator vibrator;
     EditText answer;
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak, tv_hintText, tv_correct_ans;
     Button hint;
-
     List<Question> questionList;
     int currentQuestionIndex = 0;
     Question currentQuestion;
     String selectedAnswer = "";
-
     boolean isHinted;
-
     ProgressBar progressBar; // UI For Timer
     CountDownTimer timer; // Timer
-
     QuitDialog quitDialog;
+    private Animation shakeAnimation;
+    private BackgroundMusicManager BackgroundMusicManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        BackgroundMusicManager = BackgroundMusicManager.getInstance(this, R.raw.bgm2);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identification_quiz_page);
 
@@ -126,6 +142,13 @@ public class IdentificationQuizPage extends AppCompatActivity {
         tv_correct_ans.setText(correct.toUpperCase());
         tv_correct_ans.setVisibility(View.VISIBLE);
 
+        Question current = questionList.get(currentQuestionIndex - 1);
+        if (selectedAnswer.equalsIgnoreCase(current.answer)) {
+            // Correct answer, change background to themed_correct_button.xml
+            answer.setBackgroundResource(R.drawable.themed_correct_button);
+            buttonClickSound.start();
+        }
+
         new Handler().postDelayed(this::loadNewQuestion, ConstantValues.QUESTION_DELAY);
     }
 
@@ -133,7 +156,11 @@ public class IdentificationQuizPage extends AppCompatActivity {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
 
-        buttonClickSound.start();
+        if (isRedWarning) {
+            return;
+        }
+
+
 
         if (btnId == R.id.submitAnswer_btn) {
             // Disable buttons
@@ -146,6 +173,30 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
             ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
             updateCounterText();
+
+            if (!selectedAnswer.equalsIgnoreCase(current.answer)) {
+                // Incorrect answer, apply screen shake animation
+                new Handler().postDelayed(() -> {
+                    findViewById(R.id.hint_btn).startAnimation(shakeAnimation);
+                    findViewById(R.id.linearLayout3).startAnimation(shakeAnimation);
+                    findViewById(R.id.constraintLayout3).startAnimation(shakeAnimation);
+                    findViewById(R.id.InfoBar).startAnimation(shakeAnimation);
+
+                    vibrateDevice();
+                    playWrongSoundEffect();
+
+                    answer.setBackgroundResource(R.drawable.red_warning);
+                    // Disable submit button
+                    findViewById(R.id.submitAnswer_btn).setEnabled(false);
+
+                    // Enable submit button after a delay
+                    new Handler().postDelayed(() -> {
+                        findViewById(R.id.submitAnswer_btn).setEnabled(true);
+                    }, 1000); // Delay of 1000 milliseconds
+                }, 0); // Delay of 1000 milliseconds
+            }
+
+
 
             showCorrectAnswer(current.answer);
         }
@@ -181,6 +232,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
         // Reset UI texts
         questionItem.setText(currentQuestion.question);
+        answer.setBackgroundResource(R.drawable.light_rounded_bg);
     }
 
     private void startTimer() {
@@ -204,7 +256,48 @@ public class IdentificationQuizPage extends AppCompatActivity {
 
     private void updateCounterText() {
         // Set counters text
-        tv_hint.setText(ActiveQuiz.active.hints + "");
-        tv_streak.setText(ActiveQuiz.active.streak + "");
+        int totalQuestions = questionList.size();
+        int currentQuestionNumber = Math.min(currentQuestionIndex + 1, totalQuestions); // Add 1 to start from 1
+
+        // Display the current question number and total number of questions after a delay of 1000ms
+        new Handler().postDelayed(() -> {
+            runOnUiThread(() -> {
+                String counterText = currentQuestionNumber + " / " + totalQuestions;
+                numberOfQuestions.setText(counterText);
+
+                tv_hint.setText(ActiveQuiz.active.hints + "");
+                tv_streak.setText(ActiveQuiz.active.streak + "");
+            });
+        }, 2000);
     }
+    private void vibrateDevice() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(150);
+        }
+    }
+
+    private void playWrongSoundEffect() {
+        // Play the wrong sound effect
+        MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong_sfx);
+        wrongSound.start();
+    }
+    protected void onStart() {
+        super.onStart();
+        BackgroundMusicManager.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BackgroundMusicManager.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BackgroundMusicManager.start();
+    }
+
 }

@@ -15,8 +15,13 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import android.widget.ImageView;
+import pl.droidsonroids.gif.GifDrawable;
+import android.util.Log;
+
 import com.example.mind.data.ActiveQuiz;
 import com.example.mind.data.ConstantValues;
+import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.QuitDialog;
 import com.example.mind.models.Question;
 import com.example.mind.utilities.ModifyButtons;
@@ -24,25 +29,31 @@ import com.example.mind.utilities.ModifyButtons;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+
 public class MultiChoiceQuizPage extends AppCompatActivity {
 
+    Vibrator vibrator;
     MediaPlayer buttonClickSound; // For Button Sound Effect
-
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
     Button choiceA, choiceB, choiceC, choiceD, hint;
-
     List<Question> questionList;
     int currentQuestionIndex = 0;
     Question currentQuestion;
     String selectedAnswer = "";
     int hintChoiceBtnId = -1;
-
     ProgressBar progressBar; // UI For Timer
     CountDownTimer timer; // Timer
-
     QuitDialog quitDialog;
-
     int correctColor;
+    Animation shakeAnimation;
+    Button[] choiceButtons;
+    private BackgroundMusicManager BackgroundMusicManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +62,11 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
         // Button Sound Effect
         buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
+
+        // Initialize BackgroundMusicPlayer
+        BackgroundMusicManager = BackgroundMusicManager.getInstance(this, R.raw.bgm2);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         // TextView
         numberOfQuestions = findViewById(R.id.question_num);
@@ -68,8 +84,17 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         // Progress Bar
         progressBar = findViewById(R.id.timerprogressBar);
 
+        choiceButtons = new Button[]{choiceA, choiceB, choiceC, choiceD};
+        shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
+
+        if (shakeAnimation == null) {
+            Log.e("Animation", "Failed to load shakeAnimation");
+        } else {
+            Log.d("Animation", "shakeAnimation loaded successfully");
+        }
+
         // Color of correct answer
-        correctColor = ContextCompat.getColor(this, R.color.correct_ans);
+        //correctColor = ContextCompat.getColor(this, R.color.correct_ans);
 
         // Create new QuitDialog
         quitDialog = new QuitDialog(this);
@@ -88,7 +113,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         // Set the number of questions per level
         numberOfQuestions.setText(currentQuestionIndex);
 
-        Button[] choiceButtons = new Button[] { choiceA, choiceB, choiceC, choiceD };
 
         // Hint Button set to invisible (Default)
         hint.setOnClickListener(v -> {
@@ -103,14 +127,21 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
                 if (hintChoice.equals(currentQuestion.choices.get(i))) {
                     Button hintChoiceBtn = choiceButtons[i];
 
-                    hintChoiceBtn.setBackgroundColor(Color.DKGRAY);
+                    // Change the background to themed_grad_button_inv.xml
+                    hintChoiceBtn.setBackgroundResource(R.drawable.themed_grad_button_inv);
+
+                    // Change the text color to black
+                    hintChoiceBtn.setTextColor(Color.BLACK);
+
                     hintChoiceBtnId = hintChoiceBtn.getId();
+
+                    // Disable the hinted choice button
+                    hintChoiceBtn.setEnabled(false);
 
                     break;
                 }
             }
         });
-
         updateCounterText();
 
         // Load the question
@@ -124,11 +155,11 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     }
 
     public void btnClick(View v) {
+
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
-        int color = ContextCompat.getColor(this, R.color.correct_ans);
 
-        buttonClickSound.start();
+        vibrateDevice();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button || btnId == R.id.choice_three_button || btnId == R.id.choice_four_button) {
             // Disable button action if choice is hint
@@ -141,16 +172,39 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             selectedAnswer = clickedButton.getText().toString();
             Question current = questionList.get(currentQuestionIndex++);
 
+            if (!selectedAnswer.equals(current.answer)) {
+                // Wrong answer, apply screen shake animation
+                findViewById(R.id.InfoBar).startAnimation(shakeAnimation);
+                findViewById(R.id.constraintLayout).startAnimation(shakeAnimation);
+                findViewById(R.id.linearLayout3).startAnimation(shakeAnimation);
+                playWrongSoundEffect();
+
+
+                clickedButton.setBackgroundResource(R.drawable.red_warning);
+
+            } else {
+                // Correct answer, speed up the GIF
+                ImageView gifImageView = findViewById(R.id.animated_background);
+                GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
+                buttonClickSound.start();
+
+                // Check if the drawable is a GifDrawable
+                if (gifDrawable != null) {
+                    gifDrawable.setSpeed(24.0f);  // Speed up the GIF
+
+                    // Revert back to the original speed after 1 second
+                    new Handler().postDelayed(() -> {
+                        gifDrawable.setSpeed(1.0f);  // Original speed
+                    }, 1000);
+                }
+                clickedButton.setBackgroundResource(R.drawable.themed_correct_button);
+            }
+
             ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
             updateCounterText();
 
-            // Show correct and proceed to new question
-            ModifyButtons.showCorrectButton(
-                    current.answer,
-                    correctColor,
-                    o -> loadNewQuestion(),
-                    choiceA, choiceB, choiceC, choiceD
-            );
+            // Show correct and proceed to a new question
+            new Handler().postDelayed(this::loadNewQuestion, 1000);
         }
     }
 
@@ -174,9 +228,13 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         startTimer();
         selectedAnswer = ""; // Selected answer
         hintChoiceBtnId = -1; // Hint
-        // Enable buttons
-        ModifyButtons.setBatchEnabled(true, choiceA, choiceB, choiceC, choiceD);
 
+        for (int i = 0; i < 4; i++) {
+            Button choiceBtn = choiceButtons[i];
+            choiceBtn.setEnabled(true);  // Enable the button
+            choiceBtn.setBackgroundResource(R.drawable.themed_grad_button);  // Reset background
+            choiceBtn.setTextColor(Color.WHITE);  // Reset text color
+        }
         currentQuestion = questionList.get(currentQuestionIndex);
 
         // Reset UI texts
@@ -186,12 +244,15 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         choiceC.setText(currentQuestion.choices.get(2));
         choiceD.setText(currentQuestion.choices.get(3));
 
+        questionItem.setText(currentQuestion.question);
+
         // Reset Color of the Buttons
-        int color = ContextCompat.getColor(this, R.color.cool);
-        choiceA.setBackgroundColor(color);
-        choiceB.setBackgroundColor(color);
-        choiceC.setBackgroundColor(color);
-        choiceD.setBackgroundColor(color);
+        int originalButtonBackground = R.drawable.themed_grad_button; // Replace with the original background resource ID
+        choiceA.setBackgroundResource(originalButtonBackground);
+        choiceB.setBackgroundResource(originalButtonBackground);
+        choiceC.setBackgroundResource(originalButtonBackground);
+        choiceD.setBackgroundResource(originalButtonBackground);
+        updateCounterText();
     }
 
     private void startTimer() {
@@ -222,7 +283,52 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
 
     private void updateCounterText() {
         // Set counters text
-        tv_hint.setText(ActiveQuiz.active.hints + "");
-        tv_streak.setText(ActiveQuiz.active.streak + "");
+        int totalQuestions = questionList.size();
+        int currentQuestionNumber = Math.min(currentQuestionIndex + 1, totalQuestions); // Add 1 to start from 1
+
+        // Display the current question number and total number of questions after a delay of 1000ms
+        new Handler().postDelayed(() -> {
+            runOnUiThread(() -> {
+                String counterText = currentQuestionNumber + " / " + totalQuestions;
+                numberOfQuestions.setText(counterText);
+
+                tv_hint.setText(ActiveQuiz.active.hints + "");
+                tv_streak.setText(ActiveQuiz.active.streak + "");
+            });
+        }, 1000);
+    }
+
+    private void playWrongSoundEffect() {
+        // Play the wrong sound effect
+        MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong_sfx);
+        wrongSound.start();
+    }
+
+    private void vibrateDevice() {
+        if (vibrator != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(150);
+            }
+        }
+
+    }
+
+    protected void onStart() {
+        super.onStart();
+        BackgroundMusicManager.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        BackgroundMusicManager.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BackgroundMusicManager.start();
     }
 }

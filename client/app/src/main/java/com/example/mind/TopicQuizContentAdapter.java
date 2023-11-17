@@ -27,6 +27,7 @@ import org.zwobble.mammoth.internal.documents.Text;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import android.media.MediaPlayer;
 
 public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizContentAdapter.QuizContentHolder>{
     public static class QuizContentHolder extends RecyclerView.ViewHolder  {
@@ -75,12 +76,20 @@ public class TopicQuizContentAdapter extends RecyclerView.Adapter<TopicQuizConte
 
         holder.quizcontentView.setText(quizItem.quiz.quizId);
         holder.quizcontentView.setOnClickListener(view -> {
+            playButtonClickSound();
             // To display upload option popup layout
             quizAnalyticsPopup = new Dialog(context);
             // Show popup
             ShowAnalyticsPopup(quizItem);
         });
     }
+    private void playButtonClickSound() {
+        MediaPlayer buttonClickSound = MediaPlayer.create(context, R.raw.btn_click3);
+        if (buttonClickSound != null) {
+            buttonClickSound.start();
+        }
+    }
+
 
     @Override
     public int getItemCount() {

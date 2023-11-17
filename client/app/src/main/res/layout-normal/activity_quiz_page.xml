@@ -7,6 +7,17 @@
     tools:context=".MultiChoiceQuizPage"
     android:background="@color/black">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/animated_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitEnd"
+        android:src="@drawable/mind_quizanim"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
         android:id="@+id/timerprogressBar"
         style="@style/TimerProgressBarStyle"
@@ -162,7 +173,7 @@
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
             android:text="@string/choice"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -176,7 +187,7 @@
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
             android:text="@string/choice"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -189,7 +200,7 @@
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
             android:text="@string/choice"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -205,7 +216,7 @@
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
             android:text="@string/choice"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

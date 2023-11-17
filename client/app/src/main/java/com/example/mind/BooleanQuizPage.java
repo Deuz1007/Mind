@@ -11,11 +11,13 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mind.data.ActiveQuiz;
 import com.example.mind.data.ConstantValues;
+import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.dialogs.QuitDialog;
@@ -30,30 +32,48 @@ import com.example.mind.utilities.ModifyButtons;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
+import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+
+
 public class BooleanQuizPage extends AppCompatActivity {
 
+    Vibrator vibrator;
     MediaPlayer buttonClickSound; // For Button Sound Effect
-
     TextView numberOfQuestions, questionItem, tv_hint, tv_streak;
     Button choiceA, choiceB, hint;
-
     List<Question> questionList;
     int currentQuestionIndex = 0;
     String selectedAnswer = "";
-
     ProgressBar progressBar; // UI For Timer
     CountDownTimer timer; // Timer
-
     QuitDialog quitDialog;
     ErrorDialog errorDialog;
-
     long currentTimerTime;
     int correctColor;
+    GifImageView gifBackground;
+    private Animation shakeAnimation;
+    BackgroundMusicManager BackgroundMusicManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boolean_quiz_page);
+
+        shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
+
+        BackgroundMusicManager = BackgroundMusicManager.getInstance(this, R.raw.bgm2);
+
+        gifBackground = findViewById(R.id.animated_background);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         // Button Sound Effect
         buttonClickSound = MediaPlayer.create(this, R.raw.button_click);
@@ -72,8 +92,6 @@ public class BooleanQuizPage extends AppCompatActivity {
         // ProgressBar
         progressBar = findViewById(R.id.timerprogressBar);
 
-        // Color of correct answer
-        correctColor = ContextCompat.getColor(this, R.color.correct_ans);
 
         // Create new QuitDialog
         quitDialog = new QuitDialog(this);
@@ -142,6 +160,9 @@ public class BooleanQuizPage extends AppCompatActivity {
         Quiz quiz = topic.quizzes.get(quizId);
 
         initialize(quiz, topic, false);
+
+
+
     }
 
     private void initialize(ActiveQuiz activeQuiz) {
@@ -188,8 +209,6 @@ public class BooleanQuizPage extends AppCompatActivity {
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
 
-        buttonClickSound.start();
-
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button) {
             // Disable buttons
             ModifyButtons.setBatchEnabled(false, choiceA, choiceB);
@@ -198,16 +217,46 @@ public class BooleanQuizPage extends AppCompatActivity {
             selectedAnswer = clickedButton.getText().toString();
             Question current = questionList.get(currentQuestionIndex++);
 
+            if (selectedAnswer.equals(current.answer)) {
+                // Correct answer, change background to themed_correct_button.xml
+                clickedButton.setBackgroundResource(R.drawable.themed_correct_button);
+                ImageView gifImageView = findViewById(R.id.animated_background);
+                GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
+
+                buttonClickSound.start();
+                vibrateDevice();
+
+                // Check if the drawable is a GifDrawable
+                if (gifDrawable != null) {
+                    gifDrawable.setSpeed(20.0f);  // Speed up the GIF
+
+                    // Revert back to the original speed after 1 second
+                    new Handler().postDelayed(() -> {
+                        gifDrawable.setSpeed(1.0f);  // Original speed
+                    }, 1000);
+                }
+            } else {
+                playWrongSoundEffect();
+                vibrateDevice();
+                // Wrong answer, apply screen shake animation
+                new Handler().postDelayed(() -> {
+                    findViewById(R.id.hint_btn).startAnimation(shakeAnimation);
+                    findViewById(R.id.linearLayout3).startAnimation(shakeAnimation);
+                    findViewById(R.id.constraintLayout2).startAnimation(shakeAnimation);
+
+                }, 10); // Delay of 10 milliseconds
+
+                // Change background to themed_wrong_button.xml
+                clickedButton.setBackgroundResource(R.drawable.red_warning);
+            }
+
             ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
             updateCounterText();
 
             // Show correct and proceed to new question
-            ModifyButtons.showCorrectButton(
-                    current.answer,
-                    correctColor,
-                    o -> loadNewQuestion(),
-                    choiceA, choiceB
-            );
+            new Handler().postDelayed(() -> {
+                loadNewQuestion();
+            }, 1000); // Delay for 1 second before loading the new question
         }
     }
 
@@ -239,11 +288,19 @@ public class BooleanQuizPage extends AppCompatActivity {
         questionItem.setText(current.question);
 
         // Reset Color of the Buttons
-        int color = ContextCompat.getColor(this, R.color.cool);
-        choiceA.setBackgroundColor(color);
-        choiceB.setBackgroundColor(color);
-    }
+        int defaultBackground = R.drawable.light_round_btn;
+        choiceA.setBackgroundResource(defaultBackground);
+        choiceB.setBackgroundResource(defaultBackground);
 
+        // Use a Handler to post both actions with the same delay
+        new Handler().post(() -> {
+            runOnUiThread(() -> {
+                // Update counter text
+                updateCounterText();
+                // Perform other actions if needed
+            });
+        });
+    }
     private void startTimer(long totalTime) {
         timer = new CountDownTimer(totalTime, ConstantValues.INTERVAL_TIME) {
             @Override
@@ -272,7 +329,50 @@ public class BooleanQuizPage extends AppCompatActivity {
 
     private void updateCounterText() {
         // Set counters text
-        tv_hint.setText(ActiveQuiz.active.hints + "");
-        tv_streak.setText(ActiveQuiz.active.streak + "");
+        int totalQuestions = questionList.size();
+        int currentQuestionNumber = Math.min(currentQuestionIndex + 1, totalQuestions); // Add 1 to start from 1
+
+        // Display the current question number and total number of questions after a delay of 1000ms
+        new Handler().postDelayed(() -> {
+            runOnUiThread(() -> {
+                String counterText = currentQuestionNumber + " / " + totalQuestions;
+                numberOfQuestions.setText(counterText);
+
+                tv_hint.setText(ActiveQuiz.active.hints + "");
+                tv_streak.setText(ActiveQuiz.active.streak + "");
+            });
+        }, 1000);
     }
+    private void vibrateDevice() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(150);
+        }
+    }
+
+
+    private void playWrongSoundEffect() {
+        // Play the wrong sound effect
+        MediaPlayer wrongSound = MediaPlayer.create(this, R.raw.wrong_sfx);
+        wrongSound.start();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        BackgroundMusicManager.start();
+    }
+
+    protected void onPause() {
+        super.onPause();
+        BackgroundMusicManager.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BackgroundMusicManager.start();
+    }
+
 }

@@ -18,8 +18,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.utilities.ExtractText;
+import android.media.MediaPlayer;
 
 import java.io.File;
 
@@ -33,6 +35,8 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
     File imageFile;
 
     TextView notificationBar;
+    ErrorDialog errorDialog;
+    MediaPlayer buttonClickSound;
 
     final int CAMERA_CAPTURE_REQUEST_CODE = 111;
 
@@ -42,14 +46,19 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture_show_image_page);
 
+        // Initialize button click sound
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
+
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         // To Access Camera and Capture Photo
         imageView = findViewById(R.id.imageCaptured);
         Button camera_button = findViewById(R.id.capture_button);
 
         camera_button.setOnClickListener(view -> {
+            buttonClickSound.start();
             try {
                 imageFile = File.createTempFile("MIND-Capture", ".jpg", getExternalFilesDir(Environment.DIRECTORY_PICTURES));
                 imagePath = imageFile.getAbsolutePath();
@@ -67,13 +76,13 @@ public class Capture_ShowImage_Page extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override

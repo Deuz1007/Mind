@@ -15,6 +15,8 @@ import com.example.mind.models.User;
 import java.text.DecimalFormat;
 
 public class AnalyticsPage extends AppCompatActivity {
+    BackgroundMusicPlayer backgroundMusicPlayer;
+
     TextView notificationBar;
 
     int totalTopics;
@@ -39,6 +41,10 @@ public class AnalyticsPage extends AppCompatActivity {
         TextView tv_average = findViewById(R.id.total_average_score);
         TextView tv_accuracy = findViewById(R.id.answers_accuracy);
         notificationBar = findViewById(R.id.notification);
+
+        // Initialize BackgroundMusicPlayer
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
+        backgroundMusicPlayer.start();
 
         calculateAnalytics();
 
@@ -65,6 +71,13 @@ public class AnalyticsPage extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         SocketIO.quizNotification = notificationBar;
+        backgroundMusicPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        backgroundMusicPlayer.pause();
     }
 
     private void calculateAnalytics() {

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
+import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
@@ -22,13 +23,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DecimalFormat;
+import android.media.MediaPlayer;
 
 public class UserProfilePage extends AppCompatActivity {
 
     AlertDialog ad_editUser;
     TextView notificationBar;
-
+    ErrorDialog errorDialog;
     FirebaseUser authUser;
+
+    private void playButtonClickSound() {
+        MediaPlayer buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
+        if (buttonClickSound != null) {
+            buttonClickSound.start();
+        }
+    }
 
     int totalTopics;
     int totalQuizzes;
@@ -38,11 +47,16 @@ public class UserProfilePage extends AppCompatActivity {
 
     final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
+    BackgroundMusicPlayer backgroundMusicPlayer;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile_page);
+
+        // Initialize BackgroundMusicPlayer
+        backgroundMusicPlayer = BackgroundMusicPlayer.getInstance(this, R.raw.bgm1);
 
         TextView tv_username = findViewById(R.id.display_username);
         TextView tv_email = findViewById(R.id.display_email);
@@ -58,6 +72,7 @@ public class UserProfilePage extends AppCompatActivity {
         Button btn_edit = findViewById(R.id.edit_username_email_btn);
 
         authUser = FirebaseAuth.getInstance().getCurrentUser();
+        errorDialog = new ErrorDialog(this);
 
         calculateAnalytics();
 
@@ -72,14 +87,23 @@ public class UserProfilePage extends AppCompatActivity {
         tv_username.setText(User.current.username);
         tv_email.setText(User.current.email);
 
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
-        btn_home.setOnClickListener(view -> startActivity(new Intent(UserProfilePage.this, home_screen.class)));
-        btn_edit.setOnClickListener(view -> ad_editUser.show());
+        btn_home.setOnClickListener(view -> {
+            playButtonClickSound();
+            startActivity(new Intent(UserProfilePage.this, home_screen.class));
+        });
+
+        btn_edit.setOnClickListener(view -> {
+            playButtonClickSound();
+            ad_editUser.show();
+        });
 
         setEditPopup();
 
+
         btn_logout.setOnClickListener(view -> {
+            playButtonClickSound();
             // Logout user
             User.logout();
 
@@ -92,13 +116,21 @@ public class UserProfilePage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
+        backgroundMusicPlayer.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        backgroundMusicPlayer.pause();
     }
 
     private void calculateAnalytics() {

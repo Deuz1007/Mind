@@ -2,6 +2,7 @@ package com.example.mind;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class GlobalForumAdapter extends RecyclerView.Adapter<GlobalForumAdapter.GlobalForumAdapterHolder> {
 
+    MediaPlayer buttonClickSound;
     private OnItemClickListener listener;
 
     // Interface for item click
@@ -61,18 +63,20 @@ public class GlobalForumAdapter extends RecyclerView.Adapter<GlobalForumAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GlobalForumAdapter.GlobalForumAdapterHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GlobalForumAdapterHolder holder, int position) {
         holder.contentView.setText(items.get(position).title);
 
-//        holder.deleteBtn.setVisibility(View.GONE);
+        // Set click listener for content view
         holder.contentView.setOnClickListener(view -> {
-            // Navigate to the Quiz Content Page
+            // Play button click sound effect
+            MediaPlayer buttonClickSound = MediaPlayer.create(context, R.raw.btn_click3);
+            buttonClickSound.start();
+
+            // Navigate to the Global Quiz Content Page
             Intent intent = new Intent(context, GlobalQuizContentPage.class);
             intent.putExtra("topicId", items.get(position).topicId);
             context.startActivity(intent);
         });
-
-
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.media.MediaPlayer;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
@@ -22,6 +23,7 @@ public class EditTextOptionPage extends AppCompatActivity {
     LoadingDialog loadingDialog;
     ErrorDialog errorDialog;
     TextView notificationBar;
+    MediaPlayer buttonClickSound;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -29,8 +31,12 @@ public class EditTextOptionPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_text_option_page);
 
+        // Initialize button click sound
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
+
         notificationBar = findViewById(R.id.notification);
-        SocketIO.setNotificationBar(notificationBar);
+        errorDialog = new ErrorDialog(this);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
 
         /* Get components */
 
@@ -53,11 +59,15 @@ public class EditTextOptionPage extends AppCompatActivity {
 
         // Discard
         discard.setOnClickListener(view -> {
+            buttonClickSound.start();
+
             startActivity(new Intent(this, home_screen.class));
             finish();
         });
 
         saveContext.setOnClickListener(view -> {
+            buttonClickSound.start();
+
             String title = et_title.getText().toString().trim();
             String content = et_content.getText().toString().trim();
 
@@ -78,6 +88,8 @@ public class EditTextOptionPage extends AppCompatActivity {
             Topic.add(newTopic, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
+                    // Play button click sound effect
+                    buttonClickSound.start();
                     startActivity(new Intent(EditTextOptionPage.this, home_screen.class));
                 }
 
@@ -95,12 +107,12 @@ public class EditTextOptionPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SocketIO.setNotificationBar(notificationBar);
+        SocketIO.setNotificationBar(notificationBar, errorDialog);
     }
 }

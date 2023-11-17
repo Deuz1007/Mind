@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.media.MediaPlayer;
 
 import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     LoadingDialog loadingDialog;
     ErrorDialog errorDialog;
+    MediaPlayer buttonClickSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Error dialog
         errorDialog = new ErrorDialog(this);
+
+        // Button click sound
+        buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
 
         // Check if there is saved user log in information
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -82,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         Button login = findViewById(R.id.login_button);
 
         login.setOnClickListener(view -> {
+            buttonClickSound.start();
+
             String email = emailEditText.getText().toString();
             String password = et_password.getText().toString();
 
@@ -120,7 +127,12 @@ public class MainActivity extends AppCompatActivity {
         // Go to Register Page
         Button goToRegister = findViewById(R.id.create_account_btn);
 
-        goToRegister.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RegisterPage.class)));
+        goToRegister.setOnClickListener(v -> {
+            // Play button click sound effect
+            buttonClickSound.start();
+
+            startActivity(new Intent(MainActivity.this, RegisterPage.class));
+        });
     }
 
     private void dashboard() {

@@ -98,6 +98,10 @@ const processRequests = async () => {
                     qn.choices = options;
                     qn.answer = options[answer];
                 }
+                if (options instanceof Array) {
+                    qn.choices = options;
+                    qn.answer = options[answer];
+                }
 
                 return qn;
             })
@@ -166,6 +170,7 @@ function createPrompt(content, items) {
         }
     ].map(
         ({ type, format }) => `With this given content:
+"${content}"
 "${content}"
 
 Write me a ${items} ${type} questions, written in this json format: ${format}`

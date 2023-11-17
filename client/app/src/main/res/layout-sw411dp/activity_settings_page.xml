@@ -104,7 +104,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/roboto_slab_bold"
                     android:gravity="center|top"
-                    android:text="@string/sound"
+                    android:text="SFX"
                     android:textColor="@color/white"
                     android:textSize="30sp" />
 
