@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
+import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
@@ -36,13 +37,14 @@ import android.widget.Toast;
 
 public class UserProfilePage extends AppCompatActivity {
 
-    AlertDialog ad_editUser;
+    AlertDialog ad_editUser, ad_authenticate;
     TextView notificationBar;
     ErrorDialog errorDialog;
     FirebaseUser authUser;
     Dialog popupDialog;
+    LoadingDialog updateUser;
 
-    String email, password, username;
+    String email, username;
 
     private void playButtonClickSound() {
         MediaPlayer buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
@@ -85,6 +87,7 @@ public class UserProfilePage extends AppCompatActivity {
 
         authUser = FirebaseAuth.getInstance().getCurrentUser();
         errorDialog = new ErrorDialog(this);
+        updateUser = new LoadingDialog(this);
 
         calculateAnalytics();
 
@@ -112,7 +115,7 @@ public class UserProfilePage extends AppCompatActivity {
         });
 
         setEditPopup();
-
+        setShowAuth();
 
         btn_logout.setOnClickListener(view -> {
             playButtonClickSound();
@@ -149,7 +152,9 @@ public class UserProfilePage extends AppCompatActivity {
 
     private void calculateAnalytics() {
         // Get total topics by topics size
-        totalTopics = User.current.topics.size();
+        totalTopics = 0;
+        if (User.current.topics != null)
+            totalTopics = User.current.topics.size();
 
         // Initiate temporary values
         totalQuizzes = 0;
@@ -165,6 +170,8 @@ public class UserProfilePage extends AppCompatActivity {
 
         // Traverse to each topic
         for (Topic topic : User.current.topics.values()) {
+            if (topic.quizzes == null) continue;
+
             // Increment the total quizzes by the quizzes size
             totalQuizzes += topic.quizzes.size();
 
@@ -178,10 +185,7 @@ public class UserProfilePage extends AppCompatActivity {
             }
         }
 
-        if (totalTopics == 0) {
-            accuracy = 0;
-            return;
-        }
+        if (totalQuizzes == 0) return;
 
         // The temporary value of average is the sum of each quiz's average
         // To get the average, divide the total average by the total quiz size
@@ -199,15 +203,15 @@ public class UserProfilePage extends AppCompatActivity {
         EditText et_newEmail = view.findViewById(R.id.new_email_text);
         Button btn_saveEdit = view.findViewById(R.id.save_edit_btn);
 
-        // Get the user input
-        email = et_newEmail.getText().toString().trim();
-        username = et_newUsername.getText().toString().trim();
-
         builder.setView(view);
         ad_editUser = builder.create();
 
         btn_saveEdit.setOnClickListener(v -> {
-            showAuth();
+            // Get the user input
+            email = et_newEmail.getText().toString().trim();
+            username = et_newUsername.getText().toString().trim();
+
+            ad_authenticate.show();
         });
 
         Window window = ad_editUser.getWindow();
@@ -215,47 +219,52 @@ public class UserProfilePage extends AppCompatActivity {
             window.setBackgroundDrawable(new ColorDrawable(0));
     }
 
-    public void showAuth(){
-//        popupDialog.setContentView(R.layout.edit_username_email_auth);
+    public void setShowAuth() {
+        PostProcess callback = new PostProcess() {
+            @Override
+            public void Success(Object... o) {
+                updateUser.dismiss();
+
+                Toast.makeText(UserProfilePage.this, "Update successfully", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(UserProfilePage.this, home_screen.class));
+            }
+
+            @Override
+            public void Failed(Exception e) {
+                updateUser.dismiss();
+                errorDialog.setMessage(e.getMessage());
+                errorDialog.show();
+            }
+        };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(UserProfilePage.this, R.style.AlertDialogTheme);
-        View viewer = LayoutInflater.from(UserProfilePage.this).inflate(R.layout.edit_username_email_auth, findViewById(R.id.editview));
+        View viewer = LayoutInflater.from(UserProfilePage.this).inflate(R.layout.edit_username_email_auth, null);
 
-        EditText auth_password = findViewById(R.id.auth_password);
-        password = auth_password.getText().toString().trim();
-
-
-        Button auth_enter = findViewById(R.id.auth_edit_btn);
+        EditText auth_password = viewer.findViewById(R.id.auth_password);
+        Button auth_enter = viewer.findViewById(R.id.auth_edit_btn);
         auth_enter.setOnClickListener(v -> {
-            PostProcess callback = new PostProcess() {
-                @Override
-                public void Success(Object... o) {
-                    Toast.makeText(UserProfilePage.this, "Update successfully", Toast.LENGTH_LONG).show();
-                }
+            updateUser.setPurpose("Updating password...");
+            updateUser.show();
 
-                @Override
-                public void Failed(Exception e) {
-                    errorDialog.setMessage("Failed to update details");
-                    errorDialog.show();
-                }
-            };
+            String password = auth_password.getText().toString().trim();
+            if (password.isEmpty()) {
+                callback.Failed(new Exception("Empty password"));
+                return;
+            }
 
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             AuthCredential credential = EmailAuthProvider.getCredential(User.current.email, password);
-
-            user.reauthenticate(credential)
-                    .addOnSuccessListener(unused -> User.updateEmailAndUserName(email, username, callback))
+            authUser.reauthenticate(credential)
+                    .addOnSuccessListener(unused -> authUser.updateEmail(email)
+                            .addOnSuccessListener(unused1 -> User.updateEmailAndUserName(email, username, callback))
+                            .addOnFailureListener(callback::Failed))
                     .addOnFailureListener(callback::Failed);
         });
 
         builder.setView(viewer);
-        ad_editUser = builder.create();
+        ad_authenticate = builder.create();
 
-        Window window = ad_editUser.getWindow();
+        Window window = ad_authenticate.getWindow();
         if (window != null)
             window.setBackgroundDrawable(new ColorDrawable(0));
-
-//        popupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        popupDialog.show();
     }
 }

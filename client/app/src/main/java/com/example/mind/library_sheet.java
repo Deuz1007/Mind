@@ -51,6 +51,12 @@ public class library_sheet extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(library_sheet.this, home_screen.class));
+        finish();
+    }
+
     protected void onStart() {
         super.onStart();
         SocketIO.setNotificationBar(notificationBar, errorDialog);

@@ -138,14 +138,15 @@ public class User {
     }
 
     public static void updateEmailAndUserName(String email, String username, PostProcess callback) {
-        FirebaseAuth.getInstance().getCurrentUser().updateEmail(email)
-                .addOnSuccessListener(unused -> {
-                    collection.child("username").setValue(username)
-                            .addOnSuccessListener(unused1 -> {
-                                User.current.email = email;
-                                User.current.username = username;
-                            })
-                            .addOnFailureListener(callback::Failed);
+        Map<String, Object> update = new HashMap<>();
+        update.put("username", username);
+        update.put("email", email);
+
+        collection.updateChildren(update)
+                .addOnSuccessListener(unused1 -> {
+                    User.current.email = email;
+                    User.current.username = username;
+                    callback.Success();
                 })
                 .addOnFailureListener(callback::Failed);
     }

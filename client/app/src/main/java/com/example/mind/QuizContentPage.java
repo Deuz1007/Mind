@@ -230,6 +230,7 @@ public class QuizContentPage extends AppCompatActivity {
                 public void Success(Object... o) {
                     // redirecting to library sheet
                     startActivity(new Intent(QuizContentPage.this, library_sheet.class));
+                    finish();
                 }
 
                 @Override
