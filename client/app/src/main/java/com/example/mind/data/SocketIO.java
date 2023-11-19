@@ -40,7 +40,7 @@ public class SocketIO {
     public static boolean isNotificationShowing = false;
     private static final String CHANNEL_ID = "mind";
     private static final int NOTIFICATION_ID = 1;
-    private static Context context;
+    public static Context context;
 
     public static void createInstance() throws URISyntaxException {
         instance = IO.socket("https://mind-api.onrender.com");
@@ -69,29 +69,8 @@ public class SocketIO {
 
                     System.out.println(quizNotification.getContext());
 
-                    // Create a notification manager
-                    NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-                    // Create a notification channel (required for Android Oreo and above)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        NotificationChannel channel = new NotificationChannel(
-                                CHANNEL_ID,
-                                "MIND",
-                                NotificationManager.IMPORTANCE_DEFAULT);
-                        notificationManager.createNotificationChannel(channel);
-                    }
-
-                    // Build the notification
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                            .setSmallIcon(android.R.drawable.ic_dialog_info)
-                            .setContentTitle("QUIZ GENERATED")
-                            .setContentText("you may view your quiz now")
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-                    notification = builder.build();
-                    notificationManagerCompat = NotificationManagerCompat.from(context);
-
-                    notificationManager.notify(1, builder.build());
+                    context = quizNotification.getContext();
+                    showQuizGeneratedNotification(context);
 
                     User.current = new User(snapshot);
 
@@ -114,6 +93,39 @@ public class SocketIO {
                 errorDialog.setMessage(error);
                 errorDialog.show();
             });
+    }
+
+    @SuppressLint("MissingPermission")
+    public static void showQuizGeneratedNotification(Context context) {
+        // Create a notification manager
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Generate a unique CHANNEL_ID
+        String channelId = "mind_channel_" + System.currentTimeMillis();
+
+        // Create a notification channel (required for Android Oreo and above)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "MIND",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // Build the notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("QUIZ GENERATED")
+                .setContentText("You may view your quiz now")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        Notification notification = builder.build();
+
+        // Use the same notification ID throughout your app to avoid conflicts
+        int notificationId = 1;
+
+        // Display the notification
+        notificationManager.notify(notificationId, notification);
     }
 
 }
