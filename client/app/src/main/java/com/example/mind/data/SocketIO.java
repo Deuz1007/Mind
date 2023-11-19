@@ -1,11 +1,13 @@
 package com.example.mind.data;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
@@ -19,6 +21,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.mind.R;
 import com.example.mind.dialogs.ErrorDialog;
+import com.example.mind.home_screen;
 import com.example.mind.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -27,14 +30,17 @@ import java.net.URISyntaxException;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
-public class SocketIO{
+public class SocketIO {
     public static Socket instance;
     public static TextView quizNotification;
     public static ErrorDialog errorDialog;
+
+    public static NotificationManagerCompat notificationManagerCompat;
+    public static Notification notification;
     public static boolean isNotificationShowing = false;
     private static final String CHANNEL_ID = "mind";
     private static final int NOTIFICATION_ID = 1;
-
+    private static Context context;
 
     public static void createInstance() throws URISyntaxException {
         instance = IO.socket("https://mind-api.onrender.com");
@@ -52,6 +58,7 @@ public class SocketIO{
         errorDialog = errorPopup;
     }
 
+    @SuppressLint("MissingPermission")
     private static void onChatGPT(Object... args) {
         String userId = (String) args[0];
         if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userId))
@@ -62,9 +69,8 @@ public class SocketIO{
 
                     System.out.println(quizNotification.getContext());
 
-                    // trigger notif
                     // Create a notification manager
-                    NotificationManager notificationManager = (NotificationManager) quizNotification.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
                     // Create a notification channel (required for Android Oreo and above)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -76,14 +82,16 @@ public class SocketIO{
                     }
 
                     // Build the notification
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(quizNotification.getContext(), CHANNEL_ID)
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                             .setSmallIcon(android.R.drawable.ic_dialog_info)
                             .setContentTitle("QUIZ GENERATED")
                             .setContentText("you may view your quiz now")
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-                    // Show the notification
-                    notificationManager.notify(NOTIFICATION_ID, builder.build());
+                    notification = builder.build();
+                    notificationManagerCompat = NotificationManagerCompat.from(context);
+
+                    notificationManager.notify(1, builder.build());
 
                     User.current = new User(snapshot);
 
@@ -107,4 +115,5 @@ public class SocketIO{
                 errorDialog.show();
             });
     }
+
 }

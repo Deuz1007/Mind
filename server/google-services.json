@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "639411726078",
+    "firebase_url": "https://mind-6cc7d-default-rtdb.firebaseio.com",
+    "project_id": "mind-6cc7d",
+    "storage_bucket": "mind-6cc7d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639411726078:android:15da29b81b584f91e4a7af",
+        "android_client_info": {
+          "package_name": "com.example.mind"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHB69IKFISzTL7cgEYHIaY6EWqF2Dwy6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
