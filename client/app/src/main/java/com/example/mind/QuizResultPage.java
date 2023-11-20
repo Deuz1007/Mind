@@ -82,30 +82,28 @@ public class QuizResultPage extends AppCompatActivity {
             alertDialog.show();
         });
 
-        try {
-            if (isNetworkAvailable()) {
-                loadingDialog.show();
+        if (ActiveQuiz.active.isFromCode) setTexts();
+        else if (isNetworkAvailable()) {
+            loadingDialog.show();
 
-                // Save score
-                Quiz.saveScore(ActiveQuiz.active.quiz, ActiveQuiz.active.score, ActiveQuiz.active.topic, new PostProcess() {
-                    @Override
-                    public void Success(Object... o) {
-                        loadingDialog.dismiss();
-                        setTexts();
-                    }
+            // Save score
+            Quiz.saveScore(ActiveQuiz.active.quiz, ActiveQuiz.active.score, ActiveQuiz.active.topic, new PostProcess() {
+                @Override
+                public void Success(Object... o) {
+                    loadingDialog.dismiss();
+                    setTexts();
+                }
 
-                    @Override
-                    public void Failed(Exception e) {
-                        Toast.makeText(QuizResultPage.this, "Quiz result not saved", Toast.LENGTH_LONG).show();
-                    }
-                });
-            } else {
-                // No internet connection, skip saving process
-                Toast.makeText(this, "No internet connection. Quiz result not saved.", Toast.LENGTH_LONG).show();
-                setTexts();
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+                @Override
+                public void Failed(Exception e) {
+                    Toast.makeText(QuizResultPage.this, "Quiz result not saved", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        else {
+            // No internet connection, skip saving process
+            Toast.makeText(this, "No internet connection. Quiz result not saved.", Toast.LENGTH_LONG).show();
+            setTexts();
         }
     }
 
