@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 
-const alphabet = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzric';
+const alphabet = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
 
 const generate = () => [...randomBytes(16)].map((b) => alphabet[b & 63]).join('');
 
