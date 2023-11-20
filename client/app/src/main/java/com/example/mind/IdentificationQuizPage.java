@@ -196,8 +196,6 @@ public class IdentificationQuizPage extends AppCompatActivity {
                 }, 0); // Delay of 1000 milliseconds
             }
 
-
-
             showCorrectAnswer(current.answer);
         }
     }
@@ -214,7 +212,7 @@ public class IdentificationQuizPage extends AppCompatActivity {
         }
 
         // change the item number once the button is pressed
-        numberOfQuestions.setText(currentQuestionIndex);
+        numberOfQuestions.setText(currentQuestionIndex + "");
 
         /* Reset values: */
         // Timer

@@ -85,9 +85,11 @@ public class EditTextOptionPage extends AppCompatActivity {
 
             loadingDialog.show();
             Topic newTopic = new Topic(title, content);
+
             Topic.add(newTopic, new PostProcess() {
                 @Override
                 public void Success(Object... o) {
+
                     // Play button click sound effect
                     buttonClickSound.start();
                     startActivity(new Intent(EditTextOptionPage.this, home_screen.class));

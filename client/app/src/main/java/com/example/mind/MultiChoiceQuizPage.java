@@ -111,8 +111,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
                 .collect(Collectors.toList());
 
         // Set the number of questions per level
-        numberOfQuestions.setText(currentQuestionIndex);
-
+        numberOfQuestions.setText(currentQuestionIndex + "");
 
         // Hint Button set to invisible (Default)
         hint.setOnClickListener(v -> {
@@ -220,7 +219,7 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         }
 
         // change the item number once the button is pressed
-        numberOfQuestions.setText(currentQuestionIndex);
+        numberOfQuestions.setText(currentQuestionIndex + "");
 
         /* Reset values: */
         // Timer

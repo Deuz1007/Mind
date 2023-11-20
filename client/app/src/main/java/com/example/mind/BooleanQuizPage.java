@@ -133,6 +133,7 @@ public class BooleanQuizPage extends AppCompatActivity {
 
                 @Override
                 public void Failed(Exception e) {
+                    fromCodeDialog.dismiss();
                     // Invalid code
                     errorDialog.setMessage("Invalid quiz code");
                     errorDialog.show();
@@ -160,9 +161,6 @@ public class BooleanQuizPage extends AppCompatActivity {
         Quiz quiz = topic.quizzes.get(quizId);
 
         initialize(quiz, topic, false);
-
-
-
     }
 
     private void initialize(ActiveQuiz activeQuiz) {
@@ -180,7 +178,7 @@ public class BooleanQuizPage extends AppCompatActivity {
                 .collect(Collectors.toList());
 
         // Set the number of questions per level
-        numberOfQuestions.setText(currentQuestionIndex);
+        numberOfQuestions.setText(currentQuestionIndex + "");
 
         // Update texts
         updateCounterText();
@@ -272,7 +270,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         }
 
         // change the item number once the button is pressed
-        numberOfQuestions.setText(currentQuestionIndex);
+        numberOfQuestions.setText(currentQuestionIndex + "");
 
         /* Reset values: */
         // Timer
@@ -290,7 +288,6 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Reset Color of the Buttons
         int defaultBackground = R.drawable.light_round_btn;
         choiceA.setBackgroundResource(defaultBackground);
-        choiceB.setBackgroundResource(defaultBackground);
 
         // Use a Handler to post both actions with the same delay
         new Handler().post(() -> {

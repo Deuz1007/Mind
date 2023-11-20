@@ -61,7 +61,10 @@ public class GlobalForum extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("users")
                 .get()
                 .addOnSuccessListener(snapshot -> {
+                    System.out.println("Entry: 1");
                     Map<String, User> users = snapshot.getValue(new GenericTypeIndicator<Map<String, User>>() {});
+
+                    System.out.println("Entry: 2");
 
                     allTopics = users.values().stream()
                             .filter(user -> user.topics != null)

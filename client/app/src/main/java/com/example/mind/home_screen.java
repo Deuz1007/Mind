@@ -50,7 +50,6 @@ public class home_screen extends AppCompatActivity {
     BackgroundMusicPlayer backgroundMusicPlayer;
     MediaPlayer buttonClickSound;
 
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {
@@ -64,6 +63,7 @@ public class home_screen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
         //Animation
         shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
         // Initialize BackgroundMusicPlayer

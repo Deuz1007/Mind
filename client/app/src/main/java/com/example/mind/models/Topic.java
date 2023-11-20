@@ -88,6 +88,9 @@ public class Topic {
         getCollection(newTopic)
                 .setValue(newTopic)
                 .addOnSuccessListener(unused -> {
+                    if (User.current.topics == null)
+                        User.current.topics = new HashMap<>();
+
                     // Save new topic
                     User.current.topics.put(newTopic.topicId, newTopic);
 

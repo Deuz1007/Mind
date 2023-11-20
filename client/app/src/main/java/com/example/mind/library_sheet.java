@@ -1,12 +1,7 @@
 package com.example.mind;
 
-import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mind.data.SocketIO;
 import com.example.mind.dialogs.ErrorDialog;
-import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 

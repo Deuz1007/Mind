@@ -27,6 +27,8 @@ import com.example.mind.models.Quiz;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
 
+import org.json.JSONObject;
+
 public class QuizContentPage extends AppCompatActivity {
     EditText et_contentField;
     Button btn_back, btn_edit, btn_save, btn_generate, btn_delete, btn_quizzes;
@@ -88,7 +90,8 @@ public class QuizContentPage extends AppCompatActivity {
 
                         // Generate question
                         try {
-                            SocketIO.instance.emit("chatgpt", Topic.createQuizData(topic, topic.content, items));
+                            JSONObject body = Topic.createQuizData(topic, topic.content, items);
+                            SocketIO.instance.emit("chatgpt", body);
 
                             loadingDialog.setPurpose("Added to queue");
                             new Handler().postDelayed(() -> {
@@ -96,6 +99,7 @@ public class QuizContentPage extends AppCompatActivity {
                                     loadingDialog.dismiss();
                             }, 1500);
                         } catch (Exception e) {
+                            loadingDialog.dismiss();
                             errorDialog.setMessage(e.getMessage());
                             errorDialog.show();
                         }

@@ -47,8 +47,6 @@ public class GlobalQuizContentPage extends AppCompatActivity {
             intent.putExtra("topicId", topicId);
             startActivity(intent);
         });
-
-
     }
 
     @Override
