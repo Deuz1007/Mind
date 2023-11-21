@@ -37,13 +37,12 @@ public class SettingsPage extends AppCompatActivity {
 
     AlertDialog ad_verify, ad_changePass;
     FirebaseUser authUser;
-    SeekBar volumeSeekBar; // to control music volume
+    SeekBar musicVolumeSeekBar, btnVolumeSeekbar; // to control music volume
+    BackgroundMusicPlayer backgroundMusicPlayer;
+    MediaPlayer buttonClickSound;
     AudioManager audioManager;
     TextView notificationBar;
     ErrorDialog errorDialog;
-    BackgroundMusicPlayer backgroundMusicPlayer;
-    MediaPlayer buttonClickSound;
-
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -89,21 +88,39 @@ public class SettingsPage extends AppCompatActivity {
         setChangePasswordPopup();
 
         // Volume Control
-        volumeSeekBar = findViewById(R.id.music);
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        musicVolumeSeekBar = findViewById(R.id.music);
+        btnVolumeSeekbar = findViewById(R.id.volume);
 
         // Get Max Volume
-        int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int maxVol =100;
 
-        // Get Current Volume
-        int currentVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int holdVol = 30;
 
-        volumeSeekBar.setMax(maxVol);
-        volumeSeekBar.setProgress(currentVol);
-        volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        musicVolumeSeekBar.setMax(maxVol);
+        musicVolumeSeekBar.setProgress(holdVol);
+        musicVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+                float bgmVolume = progress / 100f;
+                backgroundMusicPlayer.setVolume(bgmVolume, bgmVolume);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        btnVolumeSeekbar.setMax(maxVol);
+        btnVolumeSeekbar.setProgress(holdVol);
+        btnVolumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                float bgmVolume = progress / maxVol;
+                backgroundMusicPlayer.setVolume(bgmVolume, bgmVolume);
             }
 
             @Override
