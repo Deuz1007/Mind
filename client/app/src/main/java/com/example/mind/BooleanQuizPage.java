@@ -288,6 +288,7 @@ public class BooleanQuizPage extends AppCompatActivity {
         // Reset Color of the Buttons
         int defaultBackground = R.drawable.light_round_btn;
         choiceA.setBackgroundResource(defaultBackground);
+        choiceB.setBackgroundResource(defaultBackground);
 
         // Use a Handler to post both actions with the same delay
         new Handler().post(() -> {

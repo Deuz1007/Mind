@@ -191,8 +191,9 @@ public class home_screen extends AppCompatActivity {
                     intent.putExtra("extractedText", extractedText);
                     startActivity(intent);
                 }
-            } catch (Exception e) {
-                errorDialog.setMessage("File upload error");
+            }
+            catch (Exception e) {
+                errorDialog.setMessage(e.getMessage());
                 errorDialog.show();
             }
         }
