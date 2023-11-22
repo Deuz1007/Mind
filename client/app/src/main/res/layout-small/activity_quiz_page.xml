@@ -7,6 +7,17 @@
     tools:context=".MultiChoiceQuizPage"
     android:background="@color/black">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/animated_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitEnd"
+        android:src="@drawable/mind_quizanim"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
         android:id="@+id/timerprogressBar"
         style="@style/TimerProgressBarStyle"
@@ -116,12 +127,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/question"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -136,15 +147,14 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        app:layout_constraintVertical_bias="0.861" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
+        android:layout_width="299dp"
+        android:layout_height="203dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -153,60 +163,68 @@
 
         <Button
             android:id="@+id/choice_one_button"
-            android:layout_width="180dp"
-            android:layout_height="90dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/round_button_cool"
+            android:layout_width="135dp"
+            android:layout_height="95dp"
+            android:background="@drawable/themed_grad_button"
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
+            android:paddingRight="10dp"
             android:text="@string/choice"
-            android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:textSize="9sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/choice_two_button"
-            android:layout_width="180dp"
-            android:layout_height="90dp"
+            android:layout_width="135dp"
+            android:layout_height="95dp"
             android:layout_marginLeft="15dp"
-            android:background="@drawable/round_button_cool"
+            android:background="@drawable/themed_grad_button"
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
             android:text="@string/choice"
-            android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:textSize="9sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/choice_three_button"
-            android:layout_width="180dp"
-            android:layout_height="90dp"
-            android:background="@drawable/round_button_cool"
+            android:layout_width="135dp"
+            android:layout_height="95dp"
+            android:background="@drawable/themed_grad_button_inv"
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
             android:text="@string/choice"
-            android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/choice_one_button"
             app:layout_constraintVertical_bias="1.0" />
 
         <Button
             android:id="@+id/choice_four_button"
-            android:layout_width="180dp"
-            android:layout_height="90dp"
+            android:layout_width="135dp"
+            android:layout_height="95dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/round_button_cool"
+            android:background="@drawable/themed_grad_button_inv"
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
             android:text="@string/choice"
-            android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/choice_two_button"
             app:layout_constraintVertical_bias="1.0" />
 
