@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MultiChoiceQuizPage"
+    tools:context=".BooleanQuizPage"
     android:background="@color/black">
 
     <pl.droidsonroids.gif.GifImageView
@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitEnd"
-        android:src="@drawable/mind_quizanim"
+        android:src="@drawable/mind_bg_final"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:max="20"
-        android:progress="20"
+        android:max="30"
+        android:progress="30"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,8 +34,8 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="25dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/timerprogressBar"
         tools:layout_editor_absoluteX="0dp">
@@ -49,26 +49,26 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginRight="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fontFamily="@font/work_sans_medium"
                     android:text="Hint Remaining"
                     android:textColor="@color/white"
-                    android:textSize="15sp" />
+                    android:textSize="20sp"
+                    android:fontFamily="@font/work_sans_medium"/>
 
                 <TextView
                     android:id="@+id/hint_count"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fontFamily="@font/work_sans_medium"
-                    android:gravity="center"
                     android:text="0"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/work_sans_medium"/>
 
             </LinearLayout>
 
@@ -87,26 +87,26 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fontFamily="@font/work_sans_medium"
-                    android:text="Score Streak"
+                    android:text="Correct Streak"
                     android:textColor="@color/white"
-                    android:textSize="15sp" />
+                    android:textSize="20sp"
+                    android:fontFamily="@font/work_sans_medium"/>
 
                 <TextView
                     android:id="@+id/streak_count"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fontFamily="@font/work_sans_medium"
-                    android:gravity="center"
                     android:text="0"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/work_sans_medium"/>
 
             </LinearLayout>
 
@@ -118,116 +118,79 @@
             android:layout_marginTop="12dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
-            android:text="Multiple Choice"
+            android:text="True or False"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/display_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="65dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/question"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="15sp" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/hint_btn"
-        android:layout_width="60dp"
-        android:layout_height="30dp"
+        android:layout_width="80dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/nofill_button"
         android:fontFamily="@font/work_sans_medium"
         android:text="HINT"
         android:textColor="@color/white"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         app:layout_constraintVertical_bias="1.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="299dp"
-        android:layout_height="203dp"
+        android:id="@+id/constraintLayout2"
+        android:layout_width="380dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.683">
 
         <Button
             android:id="@+id/choice_one_button"
-            android:layout_width="135dp"
-            android:layout_height="95dp"
+            android:layout_width="180dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/themed_grad_button"
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
-            android:paddingRight="10dp"
-            android:text="@string/choice"
+            android:text="true"
             android:textColor="@color/black"
-            android:textSize="9sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <Button
-            android:id="@+id/choice_two_button"
-            android:layout_width="135dp"
-            android:layout_height="95dp"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/themed_grad_button"
-            android:fontFamily="@font/work_sans_bold"
-            android:onClick="btnClick"
-            android:text="@string/choice"
-            android:textColor="@color/black"
-            android:textSize="9sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/choice_three_button"
-            android:layout_width="135dp"
-            android:layout_height="95dp"
-            android:background="@drawable/themed_grad_button_inv"
+            android:id="@+id/choice_two_button"
+            android:layout_width="180dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/themed_grad_button"
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
-            android:text="@string/choice"
+            android:text="false"
             android:textColor="@color/black"
-            android:textSize="9sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/choice_one_button"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <Button
-            android:id="@+id/choice_four_button"
-            android:layout_width="135dp"
-            android:layout_height="95dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/themed_grad_button_inv"
-            android:fontFamily="@font/work_sans_bold"
-            android:onClick="btnClick"
-            android:text="@string/choice"
-            android:textColor="@color/black"
-            android:textSize="9sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/choice_two_button"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
