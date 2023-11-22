@@ -35,7 +35,7 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="381dp"
-        android:layout_height="323dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -129,7 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="15dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/question"
             android:textAlignment="center"
@@ -151,18 +151,18 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="380dp"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        app:layout_constraintVertical_bias="0.726">
+        app:layout_constraintVertical_bias="0.945">
 
         <TextView
             android:id="@+id/show_hint_text"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="16dp"
             android:fontFamily="@font/work_sans_medium"
             android:gravity="center"
             android:text="Hint Message"
@@ -173,13 +173,12 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.847" />
+            app:layout_constraintVertical_bias="1.0" />
 
         <EditText
             android:id="@+id/user_answer"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:layout_marginBottom="108dp"
             android:background="@drawable/light_rounded_bg"
             android:fontFamily="@font/work_sans_medium"
             android:hint="Answer"
@@ -191,7 +190,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="0.111" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.312" />
 
         <Button
             android:id="@+id/submitAnswer_btn"
@@ -210,20 +210,22 @@
             app:layout_constraintTop_toBottomOf="@id/user_answer"
             app:layout_constraintVertical_bias="0.0" />
 
-        <Button
-            android:id="@+id/hint_btn"
-            android:layout_width="90dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="36dp"
-            android:background="@drawable/nofill_button"
-            android:fontFamily="@font/work_sans_medium"
-            android:text="HINT"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/show_hint_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/hint_btn"
+        android:layout_width="90dp"
+        android:layout_height="50dp"
+        android:background="@drawable/nofill_button"
+        android:fontFamily="@font/work_sans_medium"
+        android:text="HINT"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.943" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BooleanQuizPage"
+    tools:context=".MultiChoiceQuizPage"
     android:background="@color/black">
 
     <pl.droidsonroids.gif.GifImageView
@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitEnd"
-        android:src="@drawable/mind_bg_final"
+        android:src="@drawable/mind_quizanim"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:max="30"
-        android:progress="30"
+        android:max="20"
+        android:progress="20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +34,7 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/timerprogressBar"
@@ -57,7 +57,7 @@
                     android:layout_height="match_parent"
                     android:text="Hint Remaining"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textSize="20sp"
                     android:fontFamily="@font/work_sans_medium"/>
 
                 <TextView
@@ -93,9 +93,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Correct Streak"
+                    android:text="Score Streak"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textSize="20sp"
                     android:fontFamily="@font/work_sans_medium"/>
 
                 <TextView
@@ -118,7 +118,7 @@
             android:layout_marginTop="12dp"
             android:fontFamily="@font/roboto_slab"
             android:gravity="center"
-            android:text="True or False"
+            android:text="Multiple Choice"
             android:textColor="@color/white"
             android:textSize="15sp" />
 
@@ -127,12 +127,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:fontFamily="@font/roboto_slab"
             android:text="@string/question"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="17sp" />
 
     </LinearLayout>
 
@@ -146,33 +146,34 @@
         android:text="HINT"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintVertical_bias="0.945" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/constraintLayout"
         android:layout_width="380dp"
-        android:layout_height="200dp"
-        android:layout_marginBottom="20dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        app:layout_constraintVertical_bias="0.405">
+        app:layout_constraintVertical_bias="0.94">
 
         <Button
             android:id="@+id/choice_one_button"
             android:layout_width="180dp"
             android:layout_height="130dp"
+            android:layout_marginRight="15dp"
             android:background="@drawable/themed_grad_button"
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
-            android:text="true"
-            android:textColor="@color/white"
+            android:text="@string/choice"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -181,14 +182,46 @@
             android:id="@+id/choice_two_button"
             android:layout_width="180dp"
             android:layout_height="130dp"
+            android:layout_marginLeft="15dp"
             android:background="@drawable/themed_grad_button"
             android:fontFamily="@font/work_sans_bold"
             android:onClick="btnClick"
-            android:text="false"
-            android:textColor="@color/white"
+            android:text="@string/choice"
+            android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/choice_three_button"
+            android:layout_width="180dp"
+            android:layout_height="130dp"
+            android:background="@drawable/themed_grad_button_inv"
+            android:fontFamily="@font/work_sans_bold"
+            android:onClick="btnClick"
+            android:text="@string/choice"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/choice_one_button"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <Button
+            android:id="@+id/choice_four_button"
+            android:layout_width="180dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/themed_grad_button_inv"
+            android:fontFamily="@font/work_sans_bold"
+            android:onClick="btnClick"
+            android:text="@string/choice"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/choice_two_button"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
