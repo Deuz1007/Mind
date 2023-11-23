@@ -154,11 +154,8 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
     }
 
     public void btnClick(View v) {
-
         Button clickedButton = (Button) v;
         int btnId = clickedButton.getId();
-
-        vibrateDevice();
 
         if (btnId == R.id.choice_one_button || btnId == R.id.choice_two_button || btnId == R.id.choice_three_button || btnId == R.id.choice_four_button) {
             // Disable button action if choice is hint
@@ -172,17 +169,17 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
             Question current = questionList.get(currentQuestionIndex++);
 
             if (!selectedAnswer.equals(current.answer)) {
-                // Wrong answer, apply screen shake animation
-                findViewById(R.id.InfoBar).startAnimation(shakeAnimation);
-                findViewById(R.id.constraintLayout).startAnimation(shakeAnimation);
-                findViewById(R.id.linearLayout3).startAnimation(shakeAnimation);
-                playWrongSoundEffect();
-
-
                 clickedButton.setBackgroundResource(R.drawable.red_warning);
+                // Wrong answer, apply screen shake animation
+                findViewById(R.id.hint_btn).startAnimation(shakeAnimation);
+                findViewById(R.id.linearLayout3).startAnimation(shakeAnimation);
+                findViewById(R.id.constraintLayout).startAnimation(shakeAnimation);
+                vibrateDevice();
+                playWrongSoundEffect();
 
             } else {
                 // Correct answer, speed up the GIF
+                clickedButton.setBackgroundResource(R.drawable.themed_correct_button);
                 ImageView gifImageView = findViewById(R.id.animated_background);
                 GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
                 buttonClickSound.start();
@@ -196,7 +193,6 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
                         gifDrawable.setSpeed(1.0f);  // Original speed
                     }, 1000);
                 }
-                clickedButton.setBackgroundResource(R.drawable.themed_correct_button);
             }
 
             ActiveQuiz.active.updateScore(selectedAnswer, current.answer, current.question);
@@ -251,7 +247,15 @@ public class MultiChoiceQuizPage extends AppCompatActivity {
         choiceB.setBackgroundResource(originalButtonBackground);
         choiceC.setBackgroundResource(originalButtonBackground);
         choiceD.setBackgroundResource(originalButtonBackground);
-        updateCounterText();
+//        updateCounterText();
+        // Use a Handler to post both actions with the same delay
+        new Handler().post(() -> {
+            runOnUiThread(() -> {
+                // Update counter text
+                updateCounterText();
+                // Perform other actions if needed
+            });
+        });
     }
 
     private void startTimer() {

@@ -222,7 +222,6 @@ public class BooleanQuizPage extends AppCompatActivity {
                 GifDrawable gifDrawable = (GifDrawable) gifImageView.getDrawable();
 
                 buttonClickSound.start();
-                vibrateDevice();
 
                 // Check if the drawable is a GifDrawable
                 if (gifDrawable != null) {
