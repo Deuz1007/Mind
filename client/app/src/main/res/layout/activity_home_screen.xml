@@ -128,42 +128,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout"
                 app:layout_constraintVertical_bias="0.0">
 
-                <!--                <Button-->
-                <!--                    android:id="@+id/capture_button"-->
-                <!--                    android:layout_width="100dp"-->
-                <!--                    android:layout_height="135dp"-->
-                <!--                    android:layout_margin="30dp"-->
-                <!--                    android:layout_marginEnd="28dp"-->
-                <!--                    android:layout_marginBottom="28dp"-->
-                <!--                    android:background="@drawable/round_button_blue"-->
-                <!--                    android:drawableTop="@drawable/capture_logo"-->
-                <!--                    android:drawablePadding="-20dp"-->
-                <!--                    android:fontFamily="@font/roboto_slab_bold"-->
-                <!--                    android:paddingTop="20dp"-->
-                <!--                    android:text="@string/capture"-->
-                <!--                    android:textColor="#FFFFFF"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent" />-->
-
-                <!--                <Button-->
-                <!--                    android:id="@+id/upload_btn"-->
-                <!--                    android:layout_width="100dp"-->
-                <!--                    android:layout_height="135dp"-->
-                <!--                    android:layout_marginEnd="16dp"-->
-                <!--                    android:layout_marginBottom="28dp"-->
-                <!--                    android:background="@drawable/round_button_blue"-->
-                <!--                    android:drawableTop="@drawable/upload_logo"-->
-                <!--                    android:drawablePadding="-20dp"-->
-                <!--                    android:fontFamily="@font/roboto_slab_bold"-->
-                <!--                    android:onClick="buttonOpenFile"-->
-                <!--                    android:paddingTop="20dp"-->
-                <!--                    android:text="@string/upload"-->
-                <!--                    android:textColor="#FFFFFF"-->
-                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--                    app:layout_constraintEnd_toStartOf="@+id/capture_button"-->
-                <!--                    app:layout_constraintHorizontal_bias="1.0"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent" />-->
-
                 <Button
                     android:id="@+id/create_option_btn"
                     android:layout_width="190dp"

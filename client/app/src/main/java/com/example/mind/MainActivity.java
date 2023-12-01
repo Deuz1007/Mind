@@ -1,9 +1,13 @@
 package com.example.mind;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -17,17 +21,25 @@ import android.media.MediaPlayer;
 
 import com.example.mind.dialogs.ErrorDialog;
 import com.example.mind.dialogs.LoadingDialog;
+import com.example.mind.dialogs.SuccessDialog;
 import com.example.mind.interfaces.PostProcess;
+import com.example.mind.models.Topic;
 import com.example.mind.models.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-
+    Dialog popupDialog;
     LoadingDialog loadingDialog;
     ErrorDialog errorDialog;
+
+    SuccessDialog successDialog;
     MediaPlayer buttonClickSound;
+
+    AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Error dialog
         errorDialog = new ErrorDialog(this);
+
+        // Success dialog
+        successDialog = new SuccessDialog(this);
 
         // Button click sound
         buttonClickSound = MediaPlayer.create(this, R.raw.btn_click3);
@@ -133,10 +148,74 @@ public class MainActivity extends AppCompatActivity {
 
             startActivity(new Intent(MainActivity.this, RegisterPage.class));
         });
+
+        // Forgot password
+        Button resetPassword = findViewById(R.id.forgotPassword_btn);
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show popup
+            }
+        });
+
+        Button forgotPassword = findViewById(R.id.forgotPassword_btn);
+        forgotPassword.setOnClickListener(v -> {
+            showForgotEmailPopup();
+        });
     }
 
     private void dashboard() {
         startActivity(new Intent(MainActivity.this, home_screen.class));
         finish();
+    }
+
+    // Call this function for reset/forgot password
+    // A reset link will be sent to the provided email
+    private void resetPassword(String email) {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                .addOnSuccessListener(unused -> {
+                    // Show something to user that a reset password link was sent
+                    successDialog.setMessage("EMAIL SENT!");
+                    successDialog.show();
+                })
+                .addOnFailureListener(e -> {
+                    // Show something to user that send email reset link was failed to send
+                    errorDialog.setMessage("Send Failed!");
+                    errorDialog.show();
+                });
+    }
+
+    public void showForgotEmailPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.forgot_password_email_popup, null);
+
+        EditText et_email = view.findViewById(R.id.email_forgotPassword);
+        TextView errorMessage = view.findViewById(R.id.error_message_tv);
+        Button submitBtn = view.findViewById(R.id.submit_btn);
+
+        errorMessage.setVisibility(View.INVISIBLE);
+
+        submitBtn.setOnClickListener(v -> {
+            String email = et_email.getText().toString();
+
+            if (TextUtils.isEmpty(email)) {
+                errorMessage.setText("Email is empty");
+                errorMessage.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            resetPassword(email);
+        });
+
+        System.out.println("Entry 4");
+
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+
+        alertDialog.show();
     }
 }
