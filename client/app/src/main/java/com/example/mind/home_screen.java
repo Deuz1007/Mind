@@ -31,6 +31,11 @@ import com.example.mind.dialogs.LoadingDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.User;
 import com.example.mind.utilities.ExtractText;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,6 +54,10 @@ public class home_screen extends AppCompatActivity {
     final int FILE_PICKER_REQUEST_CODE = 1;
     BackgroundMusicPlayer backgroundMusicPlayer;
     MediaPlayer buttonClickSound;
+
+    // Google Signin
+    GoogleSignInOptions googleSignInOptions;
+    GoogleSignInClient googleSignInClient;
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -127,6 +136,16 @@ public class home_screen extends AppCompatActivity {
                 }
             }, 50);
         });
+
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+
+        GoogleSignInAccount gAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if(gAccount != null)
+        {
+            String userName = gAccount.getDisplayName();
+            btn_profile.setText(userName);
+        }
     }
 
     @Override

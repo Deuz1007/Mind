@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.media.MediaPlayer;
@@ -25,8 +26,15 @@ import com.example.mind.dialogs.SuccessDialog;
 import com.example.mind.interfaces.PostProcess;
 import com.example.mind.models.Topic;
 import com.example.mind.models.User;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,10 +49,17 @@ public class MainActivity extends AppCompatActivity {
 
     AlertDialog alertDialog;
 
+    // Google Signin
+    GoogleSignInOptions googleSignInOptions;
+    GoogleSignInClient googleSignInClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Imaage View
+        ImageView googleSigninButton = findViewById(R.id.googleSigninBtn);
 
         // EditText
         EditText et_password = findViewById(R.id.password);
@@ -162,6 +177,13 @@ public class MainActivity extends AppCompatActivity {
         forgotPassword.setOnClickListener(v -> {
             showForgotEmailPopup();
         });
+
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+
+        googleSigninButton.setOnClickListener(v -> {
+            SignInGoogle();
+        });
     }
 
     private void dashboard() {
@@ -218,4 +240,29 @@ public class MainActivity extends AppCompatActivity {
 
         alertDialog.show();
     }
+
+    void SignInGoogle()
+    {
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, 1000);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1000)
+        {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+            try {
+                task.getResult(ApiException.class);
+                dashboard();
+            } catch (ApiException e){
+                e.printStackTrace();
+                System.out.println(e);
+            }
+        }
+    }
+
 }

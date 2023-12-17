@@ -68,6 +68,7 @@ dependencies {
     implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.23")
     implementation ("com.google.android.material:material:1.5.0")
 
-
     implementation ("androidx.core:core-ktx:1.6.0")
+
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
 }
