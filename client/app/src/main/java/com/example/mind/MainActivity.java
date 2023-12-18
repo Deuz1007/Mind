@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Image View as button for Google Signin
-        ImageView googleSigninButton = findViewById(R.id.googleSigninBtn);
+        Button googleSigninButton = findViewById(R.id.googleSigninBtn);
 
         // EditText
         EditText et_password = findViewById(R.id.password);
@@ -189,12 +189,12 @@ public class MainActivity extends AppCompatActivity {
 
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
-
-        if(googleSignInAccount != null){
-            startActivity(new Intent(MainActivity.this, home_screen.class));
-            finish();
-        }
-
+//
+//        if(googleSignInAccount != null){
+//            startActivity(new Intent(MainActivity.this, home_screen.class));
+//            finish();
+//        }
+//
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -204,8 +204,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         googleSigninButton.setOnClickListener(v -> {
-//            SignInGoogle();
-
             Intent signinIntent = googleSignInClient.getSignInIntent();
             activityResultLauncher.launch(signinIntent);
         });
@@ -262,7 +260,6 @@ public class MainActivity extends AppCompatActivity {
         if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
-
         alertDialog.show();
     }
 
@@ -281,4 +278,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void googleSignInClick()
+    {
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                handleSigninTask(task);
+            }
+        });
+
+        Intent signinIntent = googleSignInClient.getSignInIntent();
+        activityResultLauncher.launch(signinIntent);
+    }
 }
