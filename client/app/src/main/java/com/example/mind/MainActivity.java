@@ -1,5 +1,9 @@
 package com.example.mind;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -52,13 +56,14 @@ public class MainActivity extends AppCompatActivity {
     // Google Signin
     GoogleSignInOptions googleSignInOptions;
     GoogleSignInClient googleSignInClient;
+    GoogleSignInAccount googleSignInAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Imaage View
+        // Image View as button for Google Signin
         ImageView googleSigninButton = findViewById(R.id.googleSigninBtn);
 
         // EditText
@@ -178,11 +183,31 @@ public class MainActivity extends AppCompatActivity {
             showForgotEmailPopup();
         });
 
-        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+
+        if(googleSignInAccount != null){
+            startActivity(new Intent(MainActivity.this, home_screen.class));
+            finish();
+        }
+
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                handleSigninTask(task);
+            }
+        });
 
         googleSigninButton.setOnClickListener(v -> {
-            SignInGoogle();
+//            SignInGoogle();
+
+            Intent signinIntent = googleSignInClient.getSignInIntent();
+            activityResultLauncher.launch(signinIntent);
         });
     }
 
@@ -241,27 +266,18 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    void SignInGoogle()
+    private void handleSigninTask(Task<GoogleSignInAccount> task)
     {
-        Intent signInIntent = googleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, 1000);
-    }
+        try {
+            GoogleSignInAccount account = task.getResult(ApiException.class);
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+            final String getUsername = account.getDisplayName();
 
-        if (requestCode == 1000)
-        {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
-            try {
-                task.getResult(ApiException.class);
-                dashboard();
-            } catch (ApiException e){
-                e.printStackTrace();
-                System.out.println(e);
-            }
+            startActivity(new Intent(MainActivity.this, home_screen.class));
+            finish();
+        } catch (ApiException e){
+            e.printStackTrace();
+            Toast.makeText(this, "Failed or Canceled", Toast.LENGTH_SHORT).show();
         }
     }
 

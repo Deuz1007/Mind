@@ -141,11 +141,9 @@ public class home_screen extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         GoogleSignInAccount gAccount = GoogleSignIn.getLastSignedInAccount(this);
-        if(gAccount != null)
-        {
-            String userName = gAccount.getDisplayName();
-            btn_profile.setText(userName);
-        }
+
+        String userName = gAccount.getDisplayName();
+        btn_profile.setText(userName);
     }
 
     @Override
