@@ -43,6 +43,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.security.AuthProvider;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     Dialog popupDialog;
     LoadingDialog loadingDialog;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog alertDialog;
 
     // Google Signin
+    FirebaseAuth auth;
     GoogleSignInOptions googleSignInOptions;
     GoogleSignInClient googleSignInClient;
     GoogleSignInAccount googleSignInAccount;
@@ -189,8 +193,10 @@ public class MainActivity extends AppCompatActivity {
 
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
-//
+
+        // Checking if the user is already signed in
 //        if(googleSignInAccount != null){
+            // go to home page
 //            startActivity(new Intent(MainActivity.this, home_screen.class));
 //            finish();
 //        }
@@ -198,8 +204,12 @@ public class MainActivity extends AppCompatActivity {
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                handleSigninTask(task);
+                if(result.getResultCode() == RESULT_OK)
+                {
+                    // Getting signed in account after user selected an account from accounts dialog
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                    handleSigninTask(task);
+                }
             }
         });
 
@@ -268,27 +278,16 @@ public class MainActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
 
+            // Getting account data
             final String getUsername = account.getDisplayName();
 
+            // Go to home
             startActivity(new Intent(MainActivity.this, home_screen.class));
             finish();
+            
         } catch (ApiException e){
             e.printStackTrace();
             Toast.makeText(this, "Failed or Canceled", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void googleSignInClick()
-    {
-        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                handleSigninTask(task);
-            }
-        });
-
-        Intent signinIntent = googleSignInClient.getSignInIntent();
-        activityResultLauncher.launch(signinIntent);
     }
 }
