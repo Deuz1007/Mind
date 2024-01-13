@@ -36,15 +36,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.security.AuthProvider;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     Dialog popupDialog;
@@ -61,6 +67,38 @@ public class MainActivity extends AppCompatActivity {
     GoogleSignInOptions googleSignInOptions;
     GoogleSignInClient googleSignInClient;
     GoogleSignInAccount googleSignInAccount;
+    
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if(result.getResultCode() == RESULT_OK){
+                Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                try{
+                    googleSignInAccount = accountTask.getResult(ApiException.class);
+                    AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+                    auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                auth =FirebaseAuth.getInstance();
+
+                                Toast.makeText(MainActivity.this, "Signed in Successfully!", Toast.LENGTH_SHORT).show();
+
+                                startActivity(new Intent(MainActivity.this, home_screen.class));
+                                finish();
+                            }
+
+                            else{
+                                Toast.makeText(MainActivity.this, "Failed to signed in: " + task.getException(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }catch (ApiException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,35 +225,22 @@ public class MainActivity extends AppCompatActivity {
             showForgotEmailPopup();
         });
 
+        FirebaseApp.initializeApp(this);
+
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.client_id))
                 .requestEmail()
                 .build();
+        googleSignInClient = GoogleSignIn.getClient(MainActivity.this, googleSignInOptions);
 
-        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        auth = FirebaseAuth.getInstance();
 
-        // Checking if the user is already signed in
-//        if(googleSignInAccount != null){
-            // go to home page
-//            startActivity(new Intent(MainActivity.this, home_screen.class));
-//            finish();
-//        }
-//
-        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        googleSigninButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onActivityResult(ActivityResult result) {
-                if(result.getResultCode() == RESULT_OK)
-                {
-                    // Getting signed in account after user selected an account from accounts dialog
-                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                    handleSigninTask(task);
-                }
+            public void onClick(View v) {
+                Intent intent = googleSignInClient.getSignInIntent();
+                activityResultLauncher.launch(intent);
             }
-        });
-
-        googleSigninButton.setOnClickListener(v -> {
-            Intent signinIntent = googleSignInClient.getSignInIntent();
-            activityResultLauncher.launch(signinIntent);
         });
     }
 
@@ -284,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
             // Go to home
             startActivity(new Intent(MainActivity.this, home_screen.class));
             finish();
-            
+
         } catch (ApiException e){
             e.printStackTrace();
             Toast.makeText(this, "Failed or Canceled", Toast.LENGTH_SHORT).show();

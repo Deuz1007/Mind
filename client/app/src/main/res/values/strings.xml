@@ -1,4 +1,6 @@
 <resources>
+    <string name="client_id">483602095902-4cbkjhmnluft8mi4kl7bqk04gtigls34.apps.googleusercontent.com</string>
+
     <string name="app_name">Mind</string>
 
     <string name="username">Email</string>
