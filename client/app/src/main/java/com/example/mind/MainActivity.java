@@ -80,12 +80,10 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                auth =FirebaseAuth.getInstance();
+                                auth = FirebaseAuth.getInstance();
 
                                 Toast.makeText(MainActivity.this, "Signed in Successfully!", Toast.LENGTH_SHORT).show();
-
-                                startActivity(new Intent(MainActivity.this, home_screen.class));
-                                finish();
+                                dashboard();
                             }
 
                             else{
@@ -226,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FirebaseApp.initializeApp(this);
-
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.client_id))
                 .requestEmail()
