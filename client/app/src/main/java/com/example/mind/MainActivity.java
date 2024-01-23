@@ -16,6 +16,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     GoogleSignInOptions googleSignInOptions;
     GoogleSignInClient googleSignInClient;
     GoogleSignInAccount googleSignInAccount;
+
+    private static final int RC_SIGN_IN = 101;
 
     /**
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -234,16 +237,19 @@ public class MainActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.client_id))
                 .requestEmail()
                 .build();
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser fUser = auth.getCurrentUser();
+
         googleSignInClient = GoogleSignIn.getClient(MainActivity.this, googleSignInOptions);
 
-        auth = FirebaseAuth.getInstance();
+        Intent intent = googleSignInClient.getSignInIntent();
+        startActivityForResult(intent, RC_SIGN_IN);
 
         googleSigninButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("tapped Google logo");
-                Intent intent = googleSignInClient.getSignInIntent();
-                startActivityForResult(intent, 1234);
+
             }
         });
     }
@@ -302,30 +308,37 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1234){
+        if(requestCode == RC_SIGN_IN){
             System.out.println("request sign in");
 
             Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             try{
                 googleSignInAccount = accountTask.getResult(ApiException.class);
+
                 AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
-                FirebaseAuth.getInstance().signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                auth.signInWithCredential(authCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            auth = FirebaseAuth.getInstance();
+                            // if sign in succes, logging in
 
                             System.out.println("Google Signin, log in successully");
                             Toast.makeText(MainActivity.this, "Signed in Successfully!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainActivity.this, home_screen.class));
+
+                            FirebaseUser user = auth.getCurrentUser();
+                            Intent intent = new Intent(MainActivity.this, home_screen.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
                         }
 
                         else{
-                            System.out.println("Google signin Failed!!!");
+                            // if failed, display error message to user
 
+                            System.out.println("Google signin Failed!!!");
+                            finish();
                             Toast.makeText(MainActivity.this, "Failed to signed in: " + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -334,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
             }catch (ApiException e){
                 System.out.println(e.getMessage());
                 e.printStackTrace();
+                finish();
             }
         }
     }
