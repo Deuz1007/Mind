@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TopicQuizContentPage"
+    tools:context="com.mindapps.mind.TopicQuizContentPage"
     android:background="@drawable/themed_grad_bg">
 
     <LinearLayout

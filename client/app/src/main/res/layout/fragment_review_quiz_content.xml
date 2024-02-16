@@ -7,7 +7,7 @@
     android:background="@color/black"
     android:gravity="center|top"
     android:orientation="vertical"
-    tools:context=".ReviewQuizContentFragment">
+    tools:context="com.mindapps.mind.ReviewQuizContentFragment">
 
     <ScrollView
         android:layout_width="match_parent"

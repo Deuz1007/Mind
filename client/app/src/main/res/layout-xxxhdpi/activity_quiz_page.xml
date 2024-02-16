@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MultiChoiceQuizPage"
+    tools:context="com.mindapps.mind.MultiChoiceQuizPage"
     android:background="@color/black">
 
     <pl.droidsonroids.gif.GifImageView

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Capture_ShowImage_Page"
+    tools:context="com.mindapps.mind.Capture_ShowImage_Page"
     android:background="@color/black">
 
     <View

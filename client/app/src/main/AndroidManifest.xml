@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.mind">
+    package="com.mindapps.mind">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -24,13 +24,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".GlobalTopicQuizContentPage"
+            android:name="com.mindapps.mind.GlobalTopicQuizContentPage"
             android:exported="false" />
         <activity
-            android:name=".GlobalQuizContentPage"
+            android:name="com.mindapps.mind.GlobalQuizContentPage"
             android:exported="false" />
         <activity
-            android:name=".GlobalForum"
+            android:name="com.mindapps.mind.GlobalForum"
             android:exported="false" />
 
         <provider
@@ -44,60 +44,60 @@
         </provider>
 
         <activity
-            android:name=".Instructions_Popup"
+            android:name="com.mindapps.mind.Instructions_Popup"
             android:exported="false" />
         <activity
-            android:name=".TopicQuizContentPage"
+            android:name="com.mindapps.mind.TopicQuizContentPage"
             android:exported="false" />
         <activity
-            android:name=".BooleanQuizPage"
+            android:name="com.mindapps.mind.BooleanQuizPage"
             android:exported="false" />
         <activity
-            android:name=".IdentificationQuizPage"
+            android:name="com.mindapps.mind.IdentificationQuizPage"
             android:exported="false" />
         <activity
-            android:name=".QuizResultPage"
+            android:name="com.mindapps.mind.QuizResultPage"
             android:exported="false" />
         <activity
-            android:name=".MultiChoiceQuizPage"
+            android:name="com.mindapps.mind.MultiChoiceQuizPage"
             android:exported="false" />
         <activity
-            android:name=".EditTextOptionPage"
+            android:name="com.mindapps.mind.EditTextOptionPage"
             android:exported="false" />
         <activity
-            android:name=".CreditsPage"
+            android:name="com.mindapps.mind.CreditsPage"
             android:exported="false" />
         <activity
-            android:name=".QuizContentPage"
+            android:name="com.mindapps.mind.QuizContentPage"
             android:exported="false" />
         <activity
-            android:name=".RegisterPage"
+            android:name="com.mindapps.mind.RegisterPage"
             android:exported="false" />
         <activity
-            android:name=".Capture_ShowImage_Page"
+            android:name="com.mindapps.mind.Capture_ShowImage_Page"
             android:exported="false" />
         <activity
-            android:name=".AnalyticsPage"
+            android:name="com.mindapps.mind.AnalyticsPage"
             android:exported="false" />
         <activity
-            android:name=".UserProfilePage"
+            android:name="com.mindapps.mind.UserProfilePage"
             android:exported="false" />
         <activity
-            android:name=".SettingsPage"
+            android:name="com.mindapps.mind.SettingsPage"
             android:exported="false" /> <!-- <activity -->
         <!-- android:name=".HomePage" -->
         <!-- android:exported="false" /> -->
         <activity
-            android:name=".library_sheet"
+            android:name="com.mindapps.mind.library_sheet"
             android:exported="false" />
         <activity
             android:name=".login"
             android:exported="false" />
         <activity
-            android:name=".home_screen"
+            android:name="com.mindapps.mind.home_screen"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.mindapps.mind.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
